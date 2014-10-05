@@ -1,3 +1,5 @@
 ﻿namespace SharpSenses {
-    public interface ICamera {}
+    public interface ICamera {
+        
+    }
 }
