@@ -1,5 +1,7 @@
-﻿namespace SharpSenses {
-    public interface ICamera {
+﻿using System;
+
+namespace SharpSenses {
+    public interface ICamera : IDisposable {
         
     }
 }
