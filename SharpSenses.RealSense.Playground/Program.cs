@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpSenses.RealSense.Playground {
     class Program {
@@ -10,6 +6,16 @@ namespace SharpSenses.RealSense.Playground {
             var cam = new Camera();
             cam.Start();
 
+            cam.LeftHand.Moved += d => {
+                Console.WriteLine("Left: X: {0} Y: {1} Z: {2}",
+                    d.X, d.Y, d.Z);
+            };
+            cam.RightHand.Moved += d => {
+                Console.WriteLine("Right: X: {0} Y: {1} Z: {2}",
+                    d.X, d.Y, d.Z);
+            };
+
+            cam.Dispose();
             Console.ReadLine();
         }
     }
