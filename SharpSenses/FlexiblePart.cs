@@ -1,7 +1,6 @@
 using System;
-using System.Diagnostics;
 
-namespace SharpPerceptual {
+namespace SharpSenses {
     public class FlexiblePart : Item {
         
         private bool _isOpen;
@@ -27,7 +26,6 @@ namespace SharpPerceptual {
         }
 
         protected virtual void OnClosed() {
-            Debug.WriteLine(GetType()+" Closed");
             Action handler = Closed;
             if (handler != null) handler();
         }

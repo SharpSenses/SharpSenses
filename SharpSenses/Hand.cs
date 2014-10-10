@@ -1,4 +1,4 @@
-﻿using SharpPerceptual;
+﻿using System.Collections.Generic;
 
 namespace SharpSenses {
     public class Hand : FlexiblePart {
@@ -8,6 +8,16 @@ namespace SharpSenses {
         public Finger Ring { get; private set; }
         public Finger Pinky { get; private set; }
         public Side Side { get; set; }
+
+        public List<Finger> GetAllFingers() {
+            return new List<Finger> {
+                Thumb,
+                Index,
+                Middle,
+                Ring,
+                Pinky
+            };
+        }
 
         public Hand(Side side) {
             Thumb = new Finger();

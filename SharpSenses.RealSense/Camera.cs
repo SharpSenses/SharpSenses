@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,8 +39,8 @@ namespace SharpSenses.RealSense {
                 handConfig.EnableAllGestures();
                 handConfig.EnableTrackedJoints(true);
                 handConfig.EnableSegmentationImage(true);
-                handConfig.Update();
                 handConfig.ApplyChanges();
+                handConfig.Update();
             }
             var handData = handModule.CreateOutput();
             handModule.Dispose();
@@ -61,12 +62,43 @@ namespace SharpSenses.RealSense {
                 return;
             }
             hand.IsVisible = true;
-            hand.IsOpen = handInfo.QueryOpenness() > 75;
-            var location = handInfo.QueryMassCenterWorld();
-            Func<double, double> meterToCentimeters = p => p * 100;
-            hand.Position = new Point3D(meterToCentimeters(location.x), 
-                                        meterToCentimeters(location.y),
-                                        meterToCentimeters(location.z));
+            SetHandOpenness(hand, handInfo);
+            SetPosition(hand, handInfo.QueryMassCenterWorld());
+            TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP);
+            TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP);
+            TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP);
+            TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP);
+            TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP);
+        }
+
+        private static void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
+            int openness = handInfo.QueryOpenness();
+            if (openness > 75) {
+                hand.IsOpen = true;
+            }
+            else if (openness < 35) {
+                hand.IsOpen = false;
+            }
+        }
+
+        private void TrackFinger(Finger finger, PXCMHandData.IHand handInfo, PXCMHandData.JointType jointKind) {
+            PXCMHandData.JointData jointData;
+            if (handInfo.QueryTrackedJoint(jointKind, out jointData) != NoError) {
+                finger.IsVisible = false;
+                return;
+            }
+            finger.IsVisible = true;
+            SetPosition(finger, jointData.positionWorld);
+        }
+
+        private void SetPosition(Item item, PXCMPoint3DF32 position) {
+            item.Position = new Point3D(ToRoundedCentimeters(position.x),
+                                        ToRoundedCentimeters(position.y),
+                                        ToRoundedCentimeters(position.z));
+        }
+
+        private double ToRoundedCentimeters(double value) {
+            return Math.Round(value * 100, 2);
         }
 
         public void Dispose() {

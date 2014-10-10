@@ -1,7 +1,6 @@
 using System;
-using SharpSenses;
 
-namespace SharpPerceptual {
+namespace SharpSenses {
     public class Item {
         private bool _isVisible;
         public bool IsVisible {

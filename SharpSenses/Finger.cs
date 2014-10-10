@@ -1,6 +1,4 @@
-﻿using SharpPerceptual;
-
-namespace SharpSenses {
+﻿namespace SharpSenses {
     public class Finger : Item {
         
     }
