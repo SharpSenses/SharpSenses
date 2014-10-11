@@ -1,5 +1,6 @@
 ﻿using System;
 using SharpSenses.Gestures;
+using SharpSenses.Poses;
 
 namespace SharpSenses.RealSense.Playground {
     class Program {
@@ -8,8 +9,14 @@ namespace SharpSenses.RealSense.Playground {
             cam.Start();
 
             //TrackHandMovement(cam);
-            TrackVisibleAndOpen(cam);
-            
+            //TrackVisibleAndOpen(cam);
+            //var gesture = new CustomGesture();
+            //gesture.AddStep()
+            //Movement m = new MovementBackward(10);
+            //gesture.AddMovement();
+
+            cam.PoseSensor.PeaceBegin += n => Console.WriteLine("Peace Begin: " + n.Side);
+            cam.PoseSensor.PeaceEnd += n => Console.WriteLine("Peace End" + n.Side);
 
             Console.ReadLine();
             cam.Dispose();

@@ -2,14 +2,20 @@ using System;
 
 namespace SharpSenses.Poses {
     public class PoseSensor : IPoseSensor {
-        public event Action PosePeaceEnd;
-        public event Action PosePeaceBegin;
+        public event Action<Hand> PeaceBegin;
+        public event Action<Hand> PeaceEnd;
+
         public event Action PoseThumbsUpBegin;
         public event Action PoseThumbsUpEnd;
         public event Action PoseThumbsDownBegin;
         public event Action PoseThumbsDownEnd;
         public event Action BigFiveBegin;
         public event Action BigFiveEnd;
+
+        public PoseSensor(ICamera camera) {
+            PosePeace.Configue(camera.LeftHand, this);
+            PosePeace.Configue(camera.RightHand, this);
+        }
 
         public virtual void OnBigFiveEnd() {
             Action handler = BigFiveEnd;
@@ -22,9 +28,14 @@ namespace SharpSenses.Poses {
         }
 
             
-        public void OnPosePeaceBegin() {
-            Action handler = PosePeaceBegin;
-            if (handler != null) handler();
+        public void OnPosePeaceBegin(Hand hand) {
+            Action<Hand> handler = PeaceBegin;
+            if (handler != null) handler(hand);
+        }
+
+        public void OnPosePeaceEnd(Hand hand) {
+            Action<Hand> handler = PeaceEnd;
+            if (handler != null) handler(hand);
         }
 
         public void OnPoseThumbsUpBegin() {
@@ -34,11 +45,6 @@ namespace SharpSenses.Poses {
 
         public void OnPoseThumbsDownBegin() {
             Action handler = PoseThumbsDownBegin;
-            if (handler != null) handler();
-        }
-
-        public void OnPosePeaceEnd() {
-            Action handler = PosePeaceEnd;
             if (handler != null) handler();
         }
 

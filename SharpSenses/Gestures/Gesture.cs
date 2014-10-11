@@ -3,21 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SharpSenses.Gestures {
-    public abstract class GestureBase {
+    public class Gesture {
         public event Action GestureDetected;
-
-        protected virtual void OnGestureDetected() {
-            Action handler = GestureDetected;
-            if (handler != null) handler();
-        }
         protected int CurrentStep;
-        protected List<Movement> GestureSteps;
+        protected List<GestureStep> GestureSteps = new List<GestureStep>();
 
-        protected GestureBase(Item item) {
-            item.NotVisible += () => CurrentStep = 0;
-            item.Moved += HandMoved;
+        public void AddStep(GestureStep step) {
+            CurrentStep = 0;
+            GestureSteps.Add(step);
         }
-
+        
         private void HandMoved(Point3D position) {
             EnsureSteps();
             var step = GestureSteps[CurrentStep];
@@ -43,12 +38,12 @@ namespace SharpSenses.Gestures {
             return CurrentStep >= GestureSteps.Count;
         }
 
-        private void EnsureSteps() {
-            if (GestureSteps == null) {
-                GestureSteps = GetGestureSteps().ToList();
-            }
+        //protected abstract IEnumerable<Movement> GetGestureSteps();
+
+        protected virtual void OnGestureDetected() {
+            Action handler = GestureDetected;
+            if (handler != null) handler();
         }
 
-        protected abstract IEnumerable<Movement> GetGestureSteps();
     }
 }

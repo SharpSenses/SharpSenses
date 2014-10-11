@@ -2,7 +2,7 @@
 
 namespace SharpSenses.Gestures {
     public class MovementForward : Movement {
-        public MovementForward(double distance, TimeSpan window) : base(distance, window) {}
+        public MovementForward(Item item, double distance) : base(item, distance) {}
 
         protected override Point3D RemoveNoise(Point3D position) {
             position.Z = Math.Round(position.Z, 2);

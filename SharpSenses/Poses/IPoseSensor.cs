@@ -2,8 +2,8 @@ using System;
 
 namespace SharpSenses.Poses {
     public interface IPoseSensor {
-        event Action PosePeaceBegin;
-        event Action PosePeaceEnd;
+        event Action<Hand> PeaceBegin;
+        event Action<Hand> PeaceEnd;
         
         event Action PoseThumbsUpBegin;
         event Action PoseThumbsUpEnd;

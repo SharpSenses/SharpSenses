@@ -20,10 +20,10 @@ namespace SharpSenses.RealSense {
         public IPoseSensor PoseSensor { get; set; }
 
         public Camera() {
-            GestureSensor = new GestureSensor();
-            PoseSensor = new PoseSensor();
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
+            GestureSensor = new GestureSensor(this);
+            PoseSensor = new PoseSensor(this);
             _session = PXCMSession.CreateInstance();
             _manager = _session.CreateSenseManager();
             Debug.WriteLine("SDK Version {0}.{1}", _session.QueryVersion().major, _session.QueryVersion().minor);

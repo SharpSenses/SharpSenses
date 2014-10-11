@@ -11,6 +11,10 @@ namespace SharpSenses.Gestures {
         public event Action GestureHandWave;
         public event Action GestureHandCircle;
 
+        public GestureSensor(ICamera camera) {
+                
+        }
+
         public void OnGestureHandCircle() {
             Action handler = GestureHandCircle;
             if (handler != null) handler();

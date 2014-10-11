@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
-namespace SharpSenses.Gestures {
-    public class CustomPose {
+namespace SharpSenses.Poses {
+    public class Pose {
         private Dictionary<int, bool> _flags = new Dictionary<int, bool>();
         private bool _active;
 
@@ -14,7 +13,7 @@ namespace SharpSenses.Gestures {
 
         public string Name { get; set; }
 
-        public CustomPose(string name = "pose") {
+        public Pose(string name = "pose") {
             Name = name;
         }
 
@@ -28,13 +27,13 @@ namespace SharpSenses.Gestures {
             if (handler != null) handler(Name);
         }
 
-        public int AddFlag() {
+        internal int AddFlag() {
             int id = _flags.Count;
             _flags.Add(id, false);
             return id;
         }
 
-        public void Flag(int id, bool state) {
+        internal void Flag(int id, bool state) {
             _flags[id] = state;
             Evaluate();
         }

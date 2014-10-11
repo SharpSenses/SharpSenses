@@ -2,56 +2,74 @@
 
 namespace SharpSenses.Gestures {
 
+    public enum MovementStatus {
+        Idle,
+        Working,
+        Completed
+    }
+
     public abstract class Movement {
-
-        public static MovementForward Forward(double distanceInCm, int millis) {
-            return new MovementForward(distanceInCm, TimeSpan.FromMilliseconds(millis));
-        }
-
-        public static MovementBackward Backward(double distanceInCm, int millis) {
-            return new MovementBackward(distanceInCm, TimeSpan.FromMilliseconds(millis));
-        }
-
-        public double Distance { get; protected set; }
-        public TimeSpan Window { get; protected set; }
-
         private int _count;
-        private bool _idle;
+        public MovementStatus Status { get; private set; }
         protected Point3D StartPosition { get; set; }
         protected Point3D LastPosition { get; set; }
-        protected DateTime StartTime { get; set; }
 
-        protected Movement(double distance, TimeSpan window) {
+        public Item Item { get; protected set; }
+        public double Distance { get; protected set; }
+
+        public event Action Update;
+        public event Action Completed;
+
+        protected Movement(Item item, double distance) {
+            Item = item;
             Distance = distance;
-            Window = window;
         }
 
-        public bool ComputePosition(Point3D position) {
-            if (_count++%2 != 0) return false;
+        public bool Active {
+            set {
+                if (value) {
+                    Status = MovementStatus.Idle;
+                    Item.Moved += ItemOnMoved;
+                    Item.NotVisible += Reset;
+                }
+                else {
+                    Status = MovementStatus.Idle;
+                    Item.Moved -= ItemOnMoved;
+                    Item.NotVisible -= Reset;
+                }
+            }
+        }
+
+        private void ItemOnMoved(Point3D point3D) {
+            if (ComputePosition(point3D)) {
+                OnCompleted();                
+                return;
+            }
+            OnUpdate();
+        }
+
+        private bool ComputePosition(Point3D position) {
+            if (Status == MovementStatus.Completed || _count++%2 != 0) return false;
             position = RemoveNoise(position);
-            if (_idle) {
-                _idle = false;
+            if (Status == MovementStatus.Idle) {
+                Status = Status = MovementStatus.Working;
                 StartPosition = position;
                 LastPosition = position;
-                StartTime = DateTime.Now;
                 return false;
             }
-            if (TimedOut()) {
-                _idle = true;
-            }
             if (!IsRightDirection(position)) {
-                _idle = true;
+                Status = MovementStatus.Working;
                 return false;
             }
             if (StepCompleted(position)) {
-                _idle = true;
+                Status = MovementStatus.Completed;
                 return true;
             }
             return false;
         }
 
-        private bool TimedOut() {
-            return (DateTime.Now - StartTime) > Window;
+        public void Reset() {
+            Status = MovementStatus.Idle;
         }
 
         protected abstract bool StepCompleted(Point3D position);
@@ -62,5 +80,23 @@ namespace SharpSenses.Gestures {
         }
 
         protected abstract bool IsRightDirection(Point3D currentLocation);
+
+        protected virtual void OnUpdate() {
+            Action handler = Update;
+            if (handler != null) handler();
+        }
+
+        protected virtual void OnCompleted() {
+            Action handler = Completed;
+            if (handler != null) handler();
+        }
+
+        public static MovementForward Forward(Item item, double distanceInCm) {
+            return new MovementForward(item, distanceInCm);
+        }
+
+        public static MovementBackward Backward(Item item, double distanceInCm) {
+            return new MovementBackward(item, distanceInCm);
+        }
     }
 }
