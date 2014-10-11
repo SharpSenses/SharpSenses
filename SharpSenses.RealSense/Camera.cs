@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpSenses.Gestures;
+using SharpSenses.Poses;
 
 namespace SharpSenses.RealSense {
     public class Camera : ICamera {
@@ -13,8 +15,13 @@ namespace SharpSenses.RealSense {
 
         public Hand LeftHand { get; private set; }
         public Hand RightHand { get; private set; }
+        public IGestureSensor GestureSensor { get; set; }
+
+        public IPoseSensor PoseSensor { get; set; }
 
         public Camera() {
+            GestureSensor = new GestureSensor();
+            PoseSensor = new PoseSensor();
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
             _session = PXCMSession.CreateInstance();
@@ -24,35 +31,52 @@ namespace SharpSenses.RealSense {
 
         public void Start() {
             _cancellationToken = new CancellationTokenSource();
-            Task.Factory.StartNew(Loop, 
+            _manager.EnableHand();
+            using (var handModule = _manager.QueryHand()) {
+                using (var handConfig = handModule.CreateActiveConfiguration()) {
+                    handConfig.EnableAllAlerts();
+                    handConfig.EnableAllGestures();
+                    handConfig.EnableTrackedJoints(true);
+                    //handConfig.EnableSegmentationImage(true);
+                    handConfig.SubscribeGesture(OnGesture);
+                    handConfig.ApplyChanges();
+                }
+            }
+            var status = _manager.Init();
+            if (status != NoError) {
+                throw new CameraException(status.ToString());
+            }
+            Task.Factory.StartNew(Loop,
                                   TaskCreationOptions.LongRunning,
                                   _cancellationToken.Token);
         }
 
         private void Loop(object notUsed) {
-            if (_manager.EnableHand() == NoError) {
-                Debug.WriteLine("HandModule OK");
+            using (var handModule = _manager.QueryHand()) {
+                using (var handData = handModule.CreateOutput()) {
+                    while (!_cancellationToken.IsCancellationRequested) {
+                        _manager.AcquireFrame(true);
+                        handData.Update();
+                        TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
+                        TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
+                        _manager.ReleaseFrame();
+                    }
+                }
             }
-            var handModule = _manager.QueryHand();
-            using (var handConfig = handModule.CreateActiveConfiguration()) {
-                handConfig.EnableAllAlerts();
-                handConfig.EnableAllGestures();
-                handConfig.EnableTrackedJoints(true);
-                handConfig.EnableSegmentationImage(true);
-                handConfig.ApplyChanges();
-                handConfig.Update();
-            }
-            var handData = handModule.CreateOutput();
-            handModule.Dispose();
-            _manager.Init();
+        }
 
-            while (!_cancellationToken.IsCancellationRequested) {
-                _manager.AcquireFrame(true);
-                handData.Update();
-                TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
-                TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
-                _manager.ReleaseFrame();
+        private string _last = "";
+
+        private void OnGesture(PXCMHandData.GestureData gesturedata) {
+            string g = String.Format("Gesture: {0}-{1}-{2}",
+                gesturedata.name,
+                gesturedata.handId,
+                gesturedata.state);
+            if (_last == g) {
+                return;
             }
+            _last = g;
+            Debug.WriteLine(g);
         }
 
         private void TrackHandAndFingers(Hand hand, PXCMHandData data, PXCMHandData.AccessOrderType label) {
@@ -64,11 +88,11 @@ namespace SharpSenses.RealSense {
             hand.IsVisible = true;
             SetHandOpenness(hand, handInfo);
             SetPosition(hand, handInfo.QueryMassCenterWorld());
-            TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP);
-            TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP);
-            TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP);
-            TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP);
-            TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP);
+            TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, PXCMHandData.FingerType.FINGER_INDEX);
+            TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, PXCMHandData.FingerType.FINGER_MIDDLE);
+            TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP, PXCMHandData.FingerType.FINGER_RING);
+            TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, PXCMHandData.FingerType.FINGER_PINKY);
+            TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, PXCMHandData.FingerType.FINGER_THUMB);
         }
 
         private static void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
@@ -81,7 +105,7 @@ namespace SharpSenses.RealSense {
             }
         }
 
-        private void TrackFinger(Finger finger, PXCMHandData.IHand handInfo, PXCMHandData.JointType jointKind) {
+        private void TrackFinger(Finger finger, PXCMHandData.IHand handInfo, PXCMHandData.JointType jointKind, PXCMHandData.FingerType fingerType) {
             PXCMHandData.JointData jointData;
             if (handInfo.QueryTrackedJoint(jointKind, out jointData) != NoError) {
                 finger.IsVisible = false;
@@ -89,6 +113,11 @@ namespace SharpSenses.RealSense {
             }
             finger.IsVisible = true;
             SetPosition(finger, jointData.positionWorld);
+            PXCMHandData.FingerData fingerData;
+            if (handInfo.QueryFingerData(fingerType, out fingerData) != NoError) {
+                return;
+            }
+            finger.IsOpen = fingerData.foldedness == 100;
         }
 
         private void SetPosition(Item item, PXCMPoint3DF32 position) {

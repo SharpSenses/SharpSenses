@@ -1,5 +1,5 @@
 ﻿namespace SharpSenses {
-    public class Finger : Item {
+    public class Finger : FlexiblePart {
         
     }
 }
