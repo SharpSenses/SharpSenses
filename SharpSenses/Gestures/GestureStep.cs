@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace SharpSenses.Gestures {
     public class GestureStep {
+        private object _sync = new object();
 
         public event Action StepCompleted;
         public TimeSpan Window { get; set; }
         public List<Movement> Movements { get; set; }
-
         protected DateTime StartTime { get; set; }
 
         public GestureStep(TimeSpan window, params Movement[] movements) {
@@ -22,15 +22,29 @@ namespace SharpSenses.Gestures {
             }
         }
 
+        public void Activate() {
+            lock (_sync) {
+                Movements.ForEach(x => x.Activate());                
+            }
+        }
+
+        public void Deactivate() {
+            lock (_sync) {
+                Movements.ForEach(x => x.Deactivate());                            
+            }
+        }
+
         public void AddMovement(Movement movement) {
-            movement.Update += () => {
+            movement.Progress += d => {
                 if (DateTime.Now - StartTime > Window) {
-                    movement.Reset();
+                    movement.Restart();
                 }
             };
             movement.Completed += () => {
-                if (Movements.All(m => m.Status == MovementStatus.Completed)) {
-                    OnStepCompleted();
+                lock (_sync) {
+                    if (Movements.All(m => m.Status == MovementStatus.Completed)) {
+                        OnStepCompleted();
+                    }
                 }
             };
         }

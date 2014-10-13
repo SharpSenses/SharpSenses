@@ -10,13 +10,18 @@ namespace SharpSenses.RealSense.Playground {
 
             //TrackHandMovement(cam);
             //TrackVisibleAndOpen(cam);
-            //var gesture = new CustomGesture();
-            //gesture.AddStep()
+            var step = new GestureStep(TimeSpan.FromMilliseconds(500), Movement.Forward(cam.LeftHand, 10));
+            
+            var gesture = new Gesture();
+            gesture.AddStep(step);
+            gesture.GestureDetected += () => {
+                Console.WriteLine("Punch!");
+            };
             //Movement m = new MovementBackward(10);
             //gesture.AddMovement();
 
-            cam.PoseSensor.PeaceBegin += n => Console.WriteLine("Peace Begin: " + n.Side);
-            cam.PoseSensor.PeaceEnd += n => Console.WriteLine("Peace End" + n.Side);
+            //cam.PoseSensor.PeaceBegin += n => Console.WriteLine("Peace Begin: " + n.Side);
+            //cam.PoseSensor.PeaceEnd += n => Console.WriteLine("Peace End" + n.Side);
 
             Console.ReadLine();
             cam.Dispose();

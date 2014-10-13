@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SharpSenses.Gestures {
     public class Gesture {
+        private object _sync = new object();
         public event Action GestureDetected;
         protected int CurrentStep;
         protected List<GestureStep> GestureSteps = new List<GestureStep>();
@@ -11,34 +12,42 @@ namespace SharpSenses.Gestures {
         public void AddStep(GestureStep step) {
             CurrentStep = 0;
             GestureSteps.Add(step);
-        }
-        
-        private void HandMoved(Point3D position) {
-            EnsureSteps();
-            var step = GestureSteps[CurrentStep];
-            if (!step.ComputePosition(position)) {
-                return;
-            }
-            NextStep();
-            if (IsOver()) {
-                OnGestureDetected();
-                StartOver();
-            }
+            step.StepCompleted += NextStep;
         }
 
+        public void StartListening() {
+            CurrentStep = 0;
+            ChangeStep();
+        }
+        
         private void StartOver() {
             CurrentStep = 0;
+            ChangeStep();
+        }
+
+        private void ChangeStep() {
+            lock (_sync) {
+                GestureSteps.ForEach(x => x.Deactivate());
+                GestureSteps[CurrentStep].Activate();                
+            }
         }
 
         private void NextStep() {
-            CurrentStep++;
+            lock (_sync) {
+                CurrentStep++;
+                if (IsOver()) {
+                    OnGestureDetected();
+                    StartOver();
+                }
+                else {
+                    ChangeStep();
+                }
+            }
         }
 
         private bool IsOver() {
             return CurrentStep >= GestureSteps.Count;
         }
-
-        //protected abstract IEnumerable<Movement> GetGestureSteps();
 
         protected virtual void OnGestureDetected() {
             Action handler = GestureDetected;

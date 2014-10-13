@@ -35,10 +35,10 @@ namespace SharpSenses.RealSense {
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
                     handConfig.EnableAllAlerts();
-                    handConfig.EnableAllGestures();
+                    //handConfig.EnableAllGestures();
                     handConfig.EnableTrackedJoints(true);
                     //handConfig.EnableSegmentationImage(true);
-                    handConfig.SubscribeGesture(OnGesture);
+                    //handConfig.SubscribeGesture(OnGesture);
                     handConfig.ApplyChanges();
                 }
             }
@@ -76,7 +76,7 @@ namespace SharpSenses.RealSense {
                 return;
             }
             _last = g;
-            Debug.WriteLine(g);
+            //Debug.WriteLine(g);
         }
 
         private void TrackHandAndFingers(Hand hand, PXCMHandData data, PXCMHandData.AccessOrderType label) {
@@ -121,7 +121,7 @@ namespace SharpSenses.RealSense {
         }
 
         private void SetPosition(Item item, PXCMPoint3DF32 position) {
-            item.Position = new Point3D(ToRoundedCentimeters(position.x),
+            item.Position = new Point3d(ToRoundedCentimeters(position.x),
                                         ToRoundedCentimeters(position.y),
                                         ToRoundedCentimeters(position.z));
         }

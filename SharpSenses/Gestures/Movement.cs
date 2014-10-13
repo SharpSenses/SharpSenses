@@ -1,23 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace SharpSenses.Gestures {
-
-    public enum MovementStatus {
-        Idle,
-        Working,
-        Completed
-    }
-
     public abstract class Movement {
         private int _count;
+        private object _sync = new object();
         public MovementStatus Status { get; private set; }
-        protected Point3D StartPosition { get; set; }
-        protected Point3D LastPosition { get; set; }
-
+        protected Point3d StartPosition { get; set; }
+        protected Point3d LastPosition { get; set; }
         public Item Item { get; protected set; }
         public double Distance { get; protected set; }
 
-        public event Action Update;
+        public event Action Restarted;
+        public event Action<double> Progress;
         public event Action Completed;
 
         protected Movement(Item item, double distance) {
@@ -25,65 +20,74 @@ namespace SharpSenses.Gestures {
             Distance = distance;
         }
 
-        public bool Active {
-            set {
-                if (value) {
-                    Status = MovementStatus.Idle;
-                    Item.Moved += ItemOnMoved;
-                    Item.NotVisible += Reset;
-                }
-                else {
-                    Status = MovementStatus.Idle;
-                    Item.Moved -= ItemOnMoved;
-                    Item.NotVisible -= Reset;
-                }
+        public void Activate() {
+            lock (_sync) {
+                Deactivate();
+                Status = MovementStatus.Idle;
+                Item.Moved += ItemOnMoved;
+                Item.NotVisible += Restart;                
             }
         }
 
-        private void ItemOnMoved(Point3D point3D) {
-            if (ComputePosition(point3D)) {
-                OnCompleted();                
+        public void Deactivate() {
+            lock (_sync) {
+                Status = MovementStatus.Idle;
+                Item.Moved -= ItemOnMoved;
+                Item.NotVisible -= Restart;                
+            }
+        }
+
+        private void ItemOnMoved(Point3d point3D) {
+            Debug.WriteLine("Mov -> " + point3D);
+            ComputePosition(point3D);
+        }
+
+        private void ComputePosition(Point3d position) {
+            if (Status == MovementStatus.Completed) {
                 return;
             }
-            OnUpdate();
-        }
-
-        private bool ComputePosition(Point3D position) {
-            if (Status == MovementStatus.Completed || _count++%2 != 0) return false;
             position = RemoveNoise(position);
             if (Status == MovementStatus.Idle) {
                 Status = Status = MovementStatus.Working;
                 StartPosition = position;
                 LastPosition = position;
-                return false;
+                return;
             }
             if (!IsRightDirection(position)) {
-                Status = MovementStatus.Working;
-                return false;
+                Restart();
+                return;
             }
-            if (StepCompleted(position)) {
+            if (IsMovementCompleted(position)) {
                 Status = MovementStatus.Completed;
-                return true;
+                OnCompleted();
+                return;
             }
-            return false;
+            LastPosition = position;
+            OnProgress(GetProgress(position));
         }
 
-        public void Reset() {
+        public void Restart() {
             Status = MovementStatus.Idle;
+            OnRestarted();
         }
 
-        protected abstract bool StepCompleted(Point3D position);
-
-        protected virtual Point3D RemoveNoise(Point3D position) {
+        protected bool IsMovementCompleted(Point3d position) {
+            return GetProgress(position) >= Distance;
+        }
+        protected abstract double GetProgress(Point3d currentLocation);
+        protected abstract bool IsRightDirection(Point3d currentLocation);
+        protected virtual Point3d RemoveNoise(Point3d position) {
             position.Z = Math.Round(position.Z, 2);
             return position;
         }
-
-        protected abstract bool IsRightDirection(Point3D currentLocation);
-
-        protected virtual void OnUpdate() {
-            Action handler = Update;
+        protected virtual void OnRestarted() {
+            Action handler = Restarted;
             if (handler != null) handler();
+        }
+
+        protected virtual void OnProgress(double progress) {
+            Action<double> handler = Progress;
+            if (handler != null) handler(progress);
         }
 
         protected virtual void OnCompleted() {

@@ -1,5 +1,7 @@
+using System;
+
 namespace SharpSenses {
-    public struct Point3D {
+    public struct Point3d {
         private double _x;
         private double _y;
         private double _z;
@@ -19,23 +21,23 @@ namespace SharpSenses {
             set { _z = value; }
         }
 
-        public Point3D(double x = 0, double y = 0, double z = 0) {
+        public Point3d(double x = 0, double y = 0, double z = 0) {
             _x = x;
             _y = y;
             _z = z;
         }
 
-        public bool Equals(Point3D other) {
+        public bool Equals(Point3d other) {
             return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
         }
 
-        public Point3D Clone() {
-            return new Point3D(_x, _y, _z);
+        public Point3d Clone() {
+            return new Point3d(_x, _y, _z);
         }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is Point3D && Equals((Point3D) obj);
+            return obj is Point3d && Equals((Point3d) obj);
         }
 
         public override int GetHashCode() {
@@ -47,32 +49,36 @@ namespace SharpSenses {
             }
         }
 
-        public static Point3D Zero {
-            get { return new Point3D(); }
+        public static Point3d Zero {
+            get { return new Point3d(); }
         }
 
-        public static Point3D operator +(Point3D a, Point3D b) {
-            return new Point3D {
+        public static Point3d operator +(Point3d a, Point3d b) {
+            return new Point3d {
                 X = a.X + b.X,
                 Y = a.Y + b.Y,
                 Z = a.Z + b.Z
             };
         }
 
-        public static Point3D operator -(Point3D a, Point3D b) {
-            return new Point3D {
+        public static Point3d operator -(Point3d a, Point3d b) {
+            return new Point3d {
                 X = a.X - b.X,
                 Y = a.Y - b.Y,
                 Z = a.Z - b.Z
             };
         }
 
-        public static Point3D operator *(Point3D a, int times) {
-            return new Point3D {
+        public static Point3d operator *(Point3d a, int times) {
+            return new Point3d {
                 X = a.X*times,
                 Y = a.Y*times,
                 Z = a.Z*times
             };
+        }
+
+        public override string ToString() {
+            return String.Format("Point3d x:{0} y:{1} z:{2}", X,Y,Z);
         }
 
         //public Point MapToScreen(int screenWidth, int screenHeight) {
