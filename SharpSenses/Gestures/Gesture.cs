@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SharpSenses.Gestures {
     public class Gesture {
         private object _sync = new object();
         public event Action GestureDetected;
+        public event Action<int> NextStep;
+
         protected int CurrentStep;
         protected List<GestureStep> GestureSteps = new List<GestureStep>();
+
+        public void AddStep(int windowInMilli, params Movement[] movements) {
+            AddStep(new GestureStep(TimeSpan.FromMilliseconds(windowInMilli), movements));
+        }
 
         public void AddStep(GestureStep step) {
             CurrentStep = 0;
             GestureSteps.Add(step);
-            step.StepCompleted += NextStep;
+            step.StepCompleted += AdvanceStep;
         }
 
-        public void StartListening() {
-            CurrentStep = 0;
-            ChangeStep();
-        }
-        
-        private void StartOver() {
+        public void Activate() {
             CurrentStep = 0;
             ChangeStep();
         }
@@ -32,7 +32,7 @@ namespace SharpSenses.Gestures {
             }
         }
 
-        private void NextStep() {
+        private void AdvanceStep() {
             lock (_sync) {
                 CurrentStep++;
                 if (IsOver()) {
@@ -40,6 +40,7 @@ namespace SharpSenses.Gestures {
                     StartOver();
                 }
                 else {
+                    OnNextStep(CurrentStep);
                     ChangeStep();
                 }
             }
@@ -48,6 +49,17 @@ namespace SharpSenses.Gestures {
         private bool IsOver() {
             return CurrentStep >= GestureSteps.Count;
         }
+
+        private void StartOver() {
+            CurrentStep = 0;
+            ChangeStep();
+        }
+
+        protected virtual void OnNextStep(int obj) {
+            Action<int> handler = NextStep;
+            if (handler != null) handler(obj);
+        }
+
 
         protected virtual void OnGestureDetected() {
             Action handler = GestureDetected;

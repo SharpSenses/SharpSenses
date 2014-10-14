@@ -43,6 +43,7 @@
     <Compile Include="CameraException.cs" />
     <Compile Include="Finger.cs" />
     <Compile Include="FlexiblePart.cs" />
+    <Compile Include="Gestures\GestureBuilder.cs" />
     <Compile Include="Gestures\GestureStep.cs" />
     <Compile Include="Gestures\MovementDown.cs" />
     <Compile Include="Gestures\MovementLeft.cs" />

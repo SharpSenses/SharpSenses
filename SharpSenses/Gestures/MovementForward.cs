@@ -10,7 +10,7 @@ namespace SharpSenses.Gestures {
         }
 
         protected override bool IsRightDirection(Point3d currentLocation) {
-            return currentLocation.Z >= LastPosition.Z;
+            return currentLocation.Z <= LastPosition.Z;
         }
 
         protected override double GetProgress(Point3d currentLocation) {

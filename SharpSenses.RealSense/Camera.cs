@@ -16,7 +16,6 @@ namespace SharpSenses.RealSense {
         public Hand LeftHand { get; private set; }
         public Hand RightHand { get; private set; }
         public IGestureSensor GestureSensor { get; set; }
-
         public IPoseSensor PoseSensor { get; set; }
 
         public Camera() {
@@ -35,10 +34,15 @@ namespace SharpSenses.RealSense {
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
                     handConfig.EnableAllAlerts();
-                    //handConfig.EnableAllGestures();
+                    int numGestures = handConfig.QueryGesturesTotalNumber();
+                    for (int i = 0; i < numGestures; i++) {
+                        string name;
+                        handConfig.QueryGestureNameByIndex(i, out name);
+                        Debug.WriteLine("Gestures: " + name);
+                    }
+                    handConfig.EnableAllGestures();
                     handConfig.EnableTrackedJoints(true);
-                    //handConfig.EnableSegmentationImage(true);
-                    //handConfig.SubscribeGesture(OnGesture);
+                    handConfig.SubscribeGesture(OnGesture);
                     handConfig.ApplyChanges();
                 }
             }
@@ -76,7 +80,7 @@ namespace SharpSenses.RealSense {
                 return;
             }
             _last = g;
-            //Debug.WriteLine(g);
+            Debug.WriteLine(g);
         }
 
         private void TrackHandAndFingers(Hand hand, PXCMHandData data, PXCMHandData.AccessOrderType label) {
@@ -86,16 +90,26 @@ namespace SharpSenses.RealSense {
                 return;
             }
             hand.IsVisible = true;
-            SetHandOpenness(hand, handInfo);
+            //SetHandOpenness(hand, handInfo);
             SetPosition(hand, handInfo.QueryMassCenterWorld());
             TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, PXCMHandData.FingerType.FINGER_INDEX);
             TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, PXCMHandData.FingerType.FINGER_MIDDLE);
             TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP, PXCMHandData.FingerType.FINGER_RING);
             TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, PXCMHandData.FingerType.FINGER_PINKY);
             TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, PXCMHandData.FingerType.FINGER_THUMB);
+            SetHandOpenness(hand);
+        }
+
+        private void SetHandOpenness(Hand hand) {
+            if (hand.IsOpen) {
+                hand.IsOpen = hand.GetAllFingers().Any(f => f.IsOpen);
+                return;
+            }
+            hand.IsOpen = hand.GetAllFingers().All(f => f.IsOpen);
         }
 
         private static void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
+            //allways returns 0 for me :(
             int openness = handInfo.QueryOpenness();
             if (openness > 75) {
                 hand.IsOpen = true;

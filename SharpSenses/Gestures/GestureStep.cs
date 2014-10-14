@@ -36,17 +36,22 @@ namespace SharpSenses.Gestures {
 
         public void AddMovement(Movement movement) {
             movement.Progress += d => {
-                if (DateTime.Now - StartTime > Window) {
-                    movement.Restart();
+                lock (_sync) {
+                    if (DateTime.Now - StartTime > Window) {
+                        //Movements.ForEach(x => x.Restart());
+                    }
                 }
             };
             movement.Completed += () => {
                 lock (_sync) {
                     if (Movements.All(m => m.Status == MovementStatus.Completed)) {
                         OnStepCompleted();
+                        Movements.ForEach(m => m.Restart());
                     }
                 }
             };
+            movement.AutoRestart = false;
+            Movements.Add(movement);
         }
 
         protected virtual void OnStepCompleted() {

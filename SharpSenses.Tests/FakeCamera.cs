@@ -21,6 +21,21 @@ namespace SharpSenses.Tests {
             LeftHand.Position = new Point3d(p.X, p.Y, z);
         }
 
+        public void MoveRightHandZ(double z) {
+            var p = RightHand.Position;
+            RightHand.Position = new Point3d(p.X, p.Y, z);
+        }
+
+        public void MoveLeftHandX(double x) {
+            var p = LeftHand.Position;
+            LeftHand.Position = new Point3d(x, p.Y, p.Z);
+        }
+
+        public void MoveRightHandX(double x) {
+            var p = RightHand.Position;
+            RightHand.Position = new Point3d(x, p.Y, p.Z);
+        }
+
         public void Start() {
         }
         public void Dispose() {

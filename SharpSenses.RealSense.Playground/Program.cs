@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
@@ -8,15 +10,52 @@ namespace SharpSenses.RealSense.Playground {
             var cam = new Camera();
             cam.Start();
 
+            cam.GestureSensor.SwipeLeft += () => {
+                Console.WriteLine("Swipe Left");
+            };
+            cam.GestureSensor.SwipeRight += () => {
+                Console.WriteLine("Swipe Right");
+            };
+            cam.GestureSensor.SwipeUp += () => {
+                Console.WriteLine("Swipe Up");
+            };
+            cam.GestureSensor.SwipeDown += () => {
+                Console.WriteLine("Swipe Down");
+            };
+            //TrackCustomPoseWithBothHands(cam);
+            //TrackMovement(cam);
             //TrackHandMovement(cam);
             //TrackVisibleAndOpen(cam);
-            var step = new GestureStep(TimeSpan.FromMilliseconds(500), Movement.Forward(cam.LeftHand, 10));
+
+            //var s1Left = Movement.Forward(cam.LeftHand, 15);
+            //var s1Right = Movement.Forward(cam.RightHand, 15);
+            //var s2Left = Movement.Left(cam.LeftHand, 15);
+            //var s2Right = Movement.Right(cam.RightHand, 15);
+
+            //var g = new Gesture();
+            //g.AddStep(800, s1Left, s1Right);
+            //g.AddStep(800, s2Left, s2Right);
+            //g.NextStep += i => {
+            //    Console.WriteLine("STEP -> " + i);
+            //};
+            //g.GestureDetected += () => {
+            //    Console.WriteLine("WOWWWWWWWWWWWWWWWWWWWWWWWWW!!!");
+            //};
+            //g.Activate();
+
+            //TrackMovement(lh);
+            //TrackMovement(rh);
+
+            //lh.Activate();
+            //var step = new GestureStep(TimeSpan.FromHours(800), lh, rh);
+            //step.StepCompleted += () => Console.WriteLine("HADOKEN HADOKEN HADOKEN HADOKEN ");
+            //step.Activate();
             
-            var gesture = new Gesture();
-            gesture.AddStep(step);
-            gesture.GestureDetected += () => {
-                Console.WriteLine("Punch!");
-            };
+            //var gesture = new Gesture();
+            //gesture.AddStep(step);
+            //gesture.GestureDetected += () => {
+            //    Console.WriteLine("Punch!");
+            //};
             //Movement m = new MovementBackward(10);
             //gesture.AddMovement();
 
@@ -27,13 +66,35 @@ namespace SharpSenses.RealSense.Playground {
             cam.Dispose();
         }
 
+        private static void TrackCustomPoseWithBothHands(Camera cam) {
+            var bothHandsClosed = PoseBuilder.Combine(cam.LeftHand, State.Closed)
+                .With(cam.RightHand, State.Closed)
+                .With(cam.LeftHand, State.Visible)
+                .With(cam.RightHand, State.Visible)
+                .Build("bothhandsclosed");
+            bothHandsClosed.Begin += s => Console.WriteLine("BOTH Begin");
+            bothHandsClosed.End += s => Console.WriteLine("BOTH End");
+        }
+
+        private static void TrackMovement(Movement m) {
+            m.Completed += () => Console.WriteLine(m.Name + " -> DONE!!!!");
+            m.Restarted += () => Console.WriteLine(m.Name + " -> Restarted");
+            m.Progress += d => {
+                Console.Write(m.Name + " -> ");
+                for (int i = 0; i < d; i++) {
+                    Console.Write("-");
+                }
+                Console.WriteLine(">");
+            };
+        }
+
         private static void TrackVisibleAndOpen(Camera cam) {
             cam.LeftHand.Opened += () => Console.WriteLine("Left Open");
             cam.LeftHand.Closed += () => Console.WriteLine("Left Closed");
             cam.LeftHand.Visible += () => Console.WriteLine("Left Visible");
             cam.LeftHand.NotVisible += () => Console.WriteLine("Left Not Visible");
-            cam.LeftHand.Index.Opened += () => Console.WriteLine("Left Index Open");
-            cam.LeftHand.Index.Closed += () => Console.WriteLine("Left Index Closed");
+            //cam.LeftHand.Index.Opened += () => Console.WriteLine("Left Index Open");
+            //cam.LeftHand.Index.Closed += () => Console.WriteLine("Left Index Closed");
 
             cam.RightHand.Opened += () => Console.WriteLine("Right Open");
             cam.RightHand.Closed += () => Console.WriteLine("Right Closed");

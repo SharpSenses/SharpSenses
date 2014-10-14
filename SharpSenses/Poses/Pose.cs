@@ -54,7 +54,7 @@ namespace SharpSenses.Poses {
                     OnBegin();
                 }
                 else {
-                    Debug.WriteLine("Custom pose end: " + End);
+                    Debug.WriteLine("Custom pose end: " + Name);
                     OnEnd();
                 }
             }

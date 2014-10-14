@@ -5,19 +5,25 @@ namespace SharpSenses.Gestures {
     public abstract class Movement {
         private int _count;
         private object _sync = new object();
+        public string Name { get; set; }
         public MovementStatus Status { get; private set; }
         protected Point3d StartPosition { get; set; }
         protected Point3d LastPosition { get; set; }
         public Item Item { get; protected set; }
         public double Distance { get; protected set; }
+        public bool AutoRestart { get; set; }
+        private int _wrongDirectionFaults;
+        public int ToleranceForWrongDirection { get; set; }
 
         public event Action Restarted;
         public event Action<double> Progress;
         public event Action Completed;
 
-        protected Movement(Item item, double distance) {
+        protected Movement(Item item, double distance, string name = "") {
             Item = item;
             Distance = distance;
+            AutoRestart = true;
+            ToleranceForWrongDirection = 3;
         }
 
         public void Activate() {
@@ -37,13 +43,11 @@ namespace SharpSenses.Gestures {
             }
         }
 
-        private void ItemOnMoved(Point3d point3D) {
-            Debug.WriteLine("Mov -> " + point3D);
-            ComputePosition(point3D);
-        }
-
-        private void ComputePosition(Point3d position) {
+        private void ItemOnMoved(Point3d position) {
             if (Status == MovementStatus.Completed) {
+                if (AutoRestart && !IsRightDirection(position)) {
+                    Status = MovementStatus.Idle;
+                }
                 return;
             }
             position = RemoveNoise(position);
@@ -54,9 +58,13 @@ namespace SharpSenses.Gestures {
                 return;
             }
             if (!IsRightDirection(position)) {
-                Restart();
+                _wrongDirectionFaults++;
+                if (_wrongDirectionFaults > ToleranceForWrongDirection) {
+                    Restart();                    
+                }
                 return;
             }
+            _wrongDirectionFaults = 0;
             if (IsMovementCompleted(position)) {
                 Status = MovementStatus.Completed;
                 OnCompleted();
@@ -101,6 +109,41 @@ namespace SharpSenses.Gestures {
 
         public static MovementBackward Backward(Item item, double distanceInCm) {
             return new MovementBackward(item, distanceInCm);
+        }
+
+        public static MovementLeft Left(Item item, double distanceInCm) {
+            return new MovementLeft(item, distanceInCm);
+        }
+
+        public static MovementRight Right(Item item, double distanceInCm) {
+            return new MovementRight(item, distanceInCm);
+        }
+
+        public static MovementUp Up(Item item, double distanceInCm) {
+            return new MovementUp(item, distanceInCm);
+        }
+
+        public static MovementDown Down(Item item, double distanceInCm) {
+            return new MovementDown(item, distanceInCm);
+        }
+
+        public static Movement CreateMovement(Direction direction, Item item, double distanceInCm) {
+            switch (direction) {
+                case Direction.Forward:
+                    return new MovementForward(item, distanceInCm);
+                case Direction.Backward:
+                    return new MovementBackward(item, distanceInCm);
+                case Direction.Up:
+                    return new MovementUp(item, distanceInCm);
+                case Direction.Down:
+                    return new MovementDown(item, distanceInCm);
+                case Direction.Left:
+                    return new MovementLeft(item, distanceInCm);
+                case Direction.Right:
+                    return new MovementRight(item, distanceInCm);
+                default:
+                    throw new ArgumentOutOfRangeException("direction");
+            }
         }
     }
 }
