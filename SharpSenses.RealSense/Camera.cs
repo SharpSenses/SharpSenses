@@ -15,14 +15,14 @@ namespace SharpSenses.RealSense {
 
         public Hand LeftHand { get; private set; }
         public Hand RightHand { get; private set; }
-        public IGestureSensor GestureSensor { get; set; }
-        public IPoseSensor PoseSensor { get; set; }
+        public IGestureSensor Gestures { get; set; }
+        public IPoseSensor Poses { get; set; }
 
         public Camera() {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
-            GestureSensor = new GestureSensor(this);
-            PoseSensor = new PoseSensor(this);
+            Gestures = new GestureSensor(this);
+            Poses = new PoseSensor(this);
             _session = PXCMSession.CreateInstance();
             _manager = _session.CreateSenseManager();
             Debug.WriteLine("SDK Version {0}.{1}", _session.QueryVersion().major, _session.QueryVersion().minor);
@@ -135,7 +135,7 @@ namespace SharpSenses.RealSense {
         }
 
         private void SetPosition(Item item, PXCMPoint3DF32 position) {
-            item.Position = new Point3d(ToRoundedCentimeters(position.x),
+            item.Position = new Point3D(ToRoundedCentimeters(position.x),
                                         ToRoundedCentimeters(position.y),
                                         ToRoundedCentimeters(position.z));
         }

@@ -13,7 +13,7 @@ namespace SharpSenses.Gestures {
     }
 
     public static class DirectionHelper {
-        public static Direction GetDirection(Point3d before, Point3d after) {
+        public static Direction GetDirection(Point3D before, Point3D after) {
             var dif = after - before;
             var mz = Math.Abs(dif.Z);
             var mx = Math.Abs(dif.X);
@@ -28,7 +28,7 @@ namespace SharpSenses.Gestures {
         }
 
         public static Direction GetDirection(Point before, Point after) {
-            return GetDirection(new Point3d(before.X, before.Y), new Point3d(after.X, after.Y));
+            return GetDirection(new Point3D(before.X, before.Y), new Point3D(after.X, after.Y));
         }
     }
 }

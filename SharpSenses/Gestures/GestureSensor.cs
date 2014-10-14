@@ -8,7 +8,7 @@ namespace SharpSenses.Gestures {
         public event Action SwipeRight;
         public event Action SwipeUp;
         public event Action SwipeDown;
-
+        public event Action MoveForward;
 
         public GestureSensor(ICamera camera) {
             CreateSwipeGesture(camera.LeftHand, Direction.Left).GestureDetected += OnGestureSwipeLeft;
@@ -22,6 +22,10 @@ namespace SharpSenses.Gestures {
 
             CreateSwipeGesture(camera.LeftHand, Direction.Down).GestureDetected += OnGestureSwipeDown;
             CreateSwipeGesture(camera.RightHand, Direction.Down).GestureDetected += OnGestureSwipeDown;
+
+            CreateSwipeGesture(camera.LeftHand, Direction.Forward).GestureDetected += OnMoveForward;
+            CreateSwipeGesture(camera.RightHand, Direction.Forward).GestureDetected += OnMoveForward;
+            
         }
 
         private Gesture CreateSwipeGesture(Hand hand, Direction direction) {
@@ -49,5 +53,11 @@ namespace SharpSenses.Gestures {
             Action handler = SwipeDown;
             if (handler != null) handler();
         }
+
+        protected virtual void OnMoveForward() {
+            Action handler = MoveForward;
+            if (handler != null) handler();
+        }
+
     }
 }

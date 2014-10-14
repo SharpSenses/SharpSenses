@@ -44,7 +44,7 @@ namespace SharpSenses.Tests {
         }
 
         private void SetHandZ(double location) {
-            _camera.LeftHand.Position = new Point3d(0,0,location);
+            _camera.LeftHand.Position = new Point3D(0,0,location);
         }
     }
 }

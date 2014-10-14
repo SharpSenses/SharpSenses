@@ -10,22 +10,25 @@ namespace SharpSenses.RealSense.Playground {
             var cam = new Camera();
             cam.Start();
 
-            cam.GestureSensor.SwipeLeft += () => {
+            cam.Gestures.SwipeLeft += () => {
                 Console.WriteLine("Swipe Left");
             };
-            cam.GestureSensor.SwipeRight += () => {
+            cam.Gestures.SwipeRight += () => {
                 Console.WriteLine("Swipe Right");
             };
-            cam.GestureSensor.SwipeUp += () => {
+            cam.Gestures.SwipeUp += () => {
                 Console.WriteLine("Swipe Up");
             };
-            cam.GestureSensor.SwipeDown += () => {
+            cam.Gestures.SwipeDown += () => {
                 Console.WriteLine("Swipe Down");
+            };
+            cam.Poses.PeaceBegin += hand => {
+                Console.WriteLine("Peace, bro");
             };
             //TrackCustomPoseWithBothHands(cam);
             //TrackMovement(cam);
             //TrackHandMovement(cam);
-            //TrackVisibleAndOpen(cam);
+            TrackVisibleAndOpen(cam);
 
             //var s1Left = Movement.Forward(cam.LeftHand, 15);
             //var s1Right = Movement.Forward(cam.RightHand, 15);
@@ -59,8 +62,8 @@ namespace SharpSenses.RealSense.Playground {
             //Movement m = new MovementBackward(10);
             //gesture.AddMovement();
 
-            //cam.PoseSensor.PeaceBegin += n => Console.WriteLine("Peace Begin: " + n.Side);
-            //cam.PoseSensor.PeaceEnd += n => Console.WriteLine("Peace End" + n.Side);
+            //cam.Poses.PeaceBegin += n => Console.WriteLine("Peace Begin: " + n.Side);
+            //cam.Poses.PeaceEnd += n => Console.WriteLine("Peace End" + n.Side);
 
             Console.ReadLine();
             cam.Dispose();

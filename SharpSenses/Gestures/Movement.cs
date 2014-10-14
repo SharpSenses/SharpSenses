@@ -7,8 +7,8 @@ namespace SharpSenses.Gestures {
         private object _sync = new object();
         public string Name { get; set; }
         public MovementStatus Status { get; private set; }
-        protected Point3d StartPosition { get; set; }
-        protected Point3d LastPosition { get; set; }
+        protected Point3D StartPosition { get; set; }
+        protected Point3D LastPosition { get; set; }
         public Item Item { get; protected set; }
         public double Distance { get; protected set; }
         public bool AutoRestart { get; set; }
@@ -43,7 +43,7 @@ namespace SharpSenses.Gestures {
             }
         }
 
-        private void ItemOnMoved(Point3d position) {
+        private void ItemOnMoved(Point3D position) {
             if (Status == MovementStatus.Completed) {
                 if (AutoRestart && !IsRightDirection(position)) {
                     Status = MovementStatus.Idle;
@@ -79,12 +79,12 @@ namespace SharpSenses.Gestures {
             OnRestarted();
         }
 
-        protected bool IsMovementCompleted(Point3d position) {
+        protected bool IsMovementCompleted(Point3D position) {
             return GetProgress(position) >= Distance;
         }
-        protected abstract double GetProgress(Point3d currentLocation);
-        protected abstract bool IsRightDirection(Point3d currentLocation);
-        protected virtual Point3d RemoveNoise(Point3d position) {
+        protected abstract double GetProgress(Point3D currentLocation);
+        protected abstract bool IsRightDirection(Point3D currentLocation);
+        protected virtual Point3D RemoveNoise(Point3D position) {
             position.Z = Math.Round(position.Z, 2);
             return position;
         }

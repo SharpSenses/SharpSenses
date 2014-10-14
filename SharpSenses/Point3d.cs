@@ -1,7 +1,12 @@
 using System;
 
 namespace SharpSenses {
-    public struct Point3d {
+    public struct Position {
+        public Point3D Image { get; set; }
+        public Point3D World { get; set; }
+    }
+
+    public struct Point3D {
         private double _x;
         private double _y;
         private double _z;
@@ -21,23 +26,23 @@ namespace SharpSenses {
             set { _z = value; }
         }
 
-        public Point3d(double x = 0, double y = 0, double z = 0) {
+        public Point3D(double x = 0, double y = 0, double z = 0) {
             _x = x;
             _y = y;
             _z = z;
         }
 
-        public bool Equals(Point3d other) {
+        public bool Equals(Point3D other) {
             return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
         }
 
-        public Point3d Clone() {
-            return new Point3d(_x, _y, _z);
+        public Point3D Clone() {
+            return new Point3D(_x, _y, _z);
         }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is Point3d && Equals((Point3d) obj);
+            return obj is Point3D && Equals((Point3D) obj);
         }
 
         public override int GetHashCode() {
@@ -49,28 +54,28 @@ namespace SharpSenses {
             }
         }
 
-        public static Point3d Zero {
-            get { return new Point3d(); }
+        public static Point3D Origin {
+            get { return new Point3D(); }
         }
 
-        public static Point3d operator +(Point3d a, Point3d b) {
-            return new Point3d {
+        public static Point3D operator +(Point3D a, Point3D b) {
+            return new Point3D {
                 X = a.X + b.X,
                 Y = a.Y + b.Y,
                 Z = a.Z + b.Z
             };
         }
 
-        public static Point3d operator -(Point3d a, Point3d b) {
-            return new Point3d {
+        public static Point3D operator -(Point3D a, Point3D b) {
+            return new Point3D {
                 X = a.X - b.X,
                 Y = a.Y - b.Y,
                 Z = a.Z - b.Z
             };
         }
 
-        public static Point3d operator *(Point3d a, int times) {
-            return new Point3d {
+        public static Point3D operator *(Point3D a, int times) {
+            return new Point3D {
                 X = a.X*times,
                 Y = a.Y*times,
                 Z = a.Z*times
@@ -80,15 +85,5 @@ namespace SharpSenses {
         public override string ToString() {
             return String.Format("Point3d x:{0} y:{1} z:{2}", X,Y,Z);
         }
-
-        //public Point MapToScreen(int screenWidth, int screenHeight) {
-        //    screenWidth = Convert.ToInt32(screenWidth*1.75);
-        //    screenHeight = Convert.ToInt32(screenHeight * 1.5);
-        //    var left = (int)(screenWidth - (X / Camera.ResolutionWidth) * screenWidth);
-        //    var top = (int)((Y / Camera.ResolutionHeight) * screenHeight);
-        //    left = left - screenWidth/5;
-        //    top = top - screenHeight/4;
-        //    return new Point(left, top);
-        //}
     }
 }

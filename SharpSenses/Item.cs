@@ -29,9 +29,9 @@ namespace SharpSenses {
             if (handler != null) handler();
         }
 
-        private Point3d _position;
+        private Point3D _position;
 
-        public Point3d Position {
+        public Point3D Position {
             get { return _position; }
             set {
                 if (_position.Equals(value)) return;
@@ -39,12 +39,12 @@ namespace SharpSenses {
                 OnMove(value);
             }
         }
-        protected virtual void OnMove(Point3d moveRecord) {
-            Action<Point3d> handler = Moved;
+        protected virtual void OnMove(Point3D moveRecord) {
+            Action<Point3D> handler = Moved;
             if (handler != null) handler(moveRecord);
         }
 
-        public event Action<Point3d> Moved;
+        public event Action<Point3D> Moved;
         
     }
 }

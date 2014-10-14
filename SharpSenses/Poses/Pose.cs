@@ -5,8 +5,8 @@ using System.Linq;
 
 namespace SharpSenses.Poses {
     public class Pose {
-        private Dictionary<int, bool> _flags = new Dictionary<int, bool>();
         private bool _active;
+        private Dictionary<int, bool> _flags = new Dictionary<int, bool>();
 
         public event Action<string> Begin;
         public event Action<string> End;
@@ -45,7 +45,8 @@ namespace SharpSenses.Poses {
         public bool Active {
             get { return _active; }
             private set {
-                if (_active == value) {
+                //Debug.WriteLine("Detected: {0} | Active: {1}", value, _active);
+                if (value == _active) {
                     return;
                 }
                 _active = value;
