@@ -43,21 +43,22 @@ namespace SharpSenses.Gestures {
             }
         }
 
-        private void ItemOnMoved(Point3D position) {
+        private void ItemOnMoved(Position position) {
+            var point = position.World;
             if (Status == MovementStatus.Completed) {
-                if (AutoRestart && !IsRightDirection(position)) {
+                if (AutoRestart && !IsRightDirection(point)) {
                     Status = MovementStatus.Idle;
                 }
                 return;
             }
-            position = RemoveNoise(position);
+            point = RemoveNoise(point);
             if (Status == MovementStatus.Idle) {
                 Status = Status = MovementStatus.Working;
-                StartPosition = position;
-                LastPosition = position;
+                StartPosition = point;
+                LastPosition = point;
                 return;
             }
-            if (!IsRightDirection(position)) {
+            if (!IsRightDirection(point)) {
                 _wrongDirectionFaults++;
                 if (_wrongDirectionFaults > ToleranceForWrongDirection) {
                     Restart();                    
@@ -65,13 +66,13 @@ namespace SharpSenses.Gestures {
                 return;
             }
             _wrongDirectionFaults = 0;
-            if (IsMovementCompleted(position)) {
+            if (IsMovementCompleted(point)) {
                 Status = MovementStatus.Completed;
                 OnCompleted();
                 return;
             }
-            LastPosition = position;
-            OnProgress(GetProgress(position));
+            LastPosition = point;
+            OnProgress(GetProgress(point));
         }
 
         public void Restart() {

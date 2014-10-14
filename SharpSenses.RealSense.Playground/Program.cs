@@ -27,8 +27,8 @@ namespace SharpSenses.RealSense.Playground {
             };
             //TrackCustomPoseWithBothHands(cam);
             //TrackMovement(cam);
-            //TrackHandMovement(cam);
-            TrackVisibleAndOpen(cam);
+            TrackHandMovement(cam);
+            //TrackVisibleAndOpen(cam);
 
             //var s1Left = Movement.Forward(cam.LeftHand, 15);
             //var s1Right = Movement.Forward(cam.RightHand, 15);
@@ -106,8 +106,15 @@ namespace SharpSenses.RealSense.Playground {
         }
 
         private static void TrackHandMovement(Camera cam) {
-            cam.LeftHand.Moved += d => Console.WriteLine("Left: X: {0} Y: {1} Z: {2}", d.X, d.Y, d.Z);
-            cam.RightHand.Moved += d => Console.WriteLine("Right: X: {0} Y: {1} Z: {2}", d.X, d.Y, d.Z);
+            int i = 0;
+            cam.LeftHand.Moved += d => {
+                i++;
+                if (i%3 == 0) {
+                    Console.WriteLine("Left: IX: {0} IY: {1} WX: {2}, WY:{3} WZ: {4} ",
+                        d.Image.X, d.Image.Y, d.World.X, d.World.Y, d.World.Z);
+                }
+            };
+            cam.RightHand.Moved += d => Console.WriteLine("Right: X: {0} Y: {1} Z: {2}", d.Image.X, d.Image.Y, d.World.Z);
         }
     }
 }

@@ -14,7 +14,8 @@ namespace SharpSenses {
         }
 
         public virtual string GetInfo() {
-            return String.Format("{0} o:{1} x:{2} y:{3}", IsVisible, IsOpen, Position.X, Position.Y);
+            return String.Format("{0} o:{1} x:{2} y:{3}", 
+                IsVisible, IsOpen, Position.Image.X, Position.Image.Y);
         }
 
         public bool IsOpen {

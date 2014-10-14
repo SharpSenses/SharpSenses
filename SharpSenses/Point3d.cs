@@ -1,10 +1,6 @@
 using System;
 
 namespace SharpSenses {
-    public struct Position {
-        public Point3D Image { get; set; }
-        public Point3D World { get; set; }
-    }
 
     public struct Point3D {
         private double _x;

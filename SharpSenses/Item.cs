@@ -29,22 +29,22 @@ namespace SharpSenses {
             if (handler != null) handler();
         }
 
-        private Point3D _position;
+        private Position _position;
 
-        public Point3D Position {
+        public Position Position {
             get { return _position; }
             set {
-                if (_position.Equals(value)) return;
+                if (_position.Image.Equals(value.Image)) return;
                 _position = value;
                 OnMove(value);
             }
         }
-        protected virtual void OnMove(Point3D moveRecord) {
-            Action<Point3D> handler = Moved;
+        protected virtual void OnMove(Position moveRecord) {
+            Action<Position> handler = Moved;
             if (handler != null) handler(moveRecord);
         }
 
-        public event Action<Point3D> Moved;
+        public event Action<Position> Moved;
         
     }
 }

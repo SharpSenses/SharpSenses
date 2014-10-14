@@ -91,13 +91,19 @@ namespace SharpSenses.RealSense {
             }
             hand.IsVisible = true;
             //SetHandOpenness(hand, handInfo);
-            SetPosition(hand, handInfo.QueryMassCenterWorld());
+            SetHandPosition(hand, handInfo);
             TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, PXCMHandData.FingerType.FINGER_INDEX);
             TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, PXCMHandData.FingerType.FINGER_MIDDLE);
             TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP, PXCMHandData.FingerType.FINGER_RING);
             TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, PXCMHandData.FingerType.FINGER_PINKY);
             TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, PXCMHandData.FingerType.FINGER_THUMB);
             SetHandOpenness(hand);
+        }
+
+        private void SetHandPosition(Hand hand, PXCMHandData.IHand handInfo) {
+            var imagePosition = ToPoint3D(handInfo.QueryMassCenterImage());
+            var worldPosition = ToPoint3D(handInfo.QueryMassCenterWorld());
+            hand.Position = CreatePosition(imagePosition, worldPosition);
         }
 
         private void SetHandOpenness(Hand hand) {
@@ -126,7 +132,7 @@ namespace SharpSenses.RealSense {
                 return;
             }
             finger.IsVisible = true;
-            SetPosition(finger, jointData.positionWorld);
+            SetJointPosition(finger, jointData);
             PXCMHandData.FingerData fingerData;
             if (handInfo.QueryFingerData(fingerType, out fingerData) != NoError) {
                 return;
@@ -134,10 +140,27 @@ namespace SharpSenses.RealSense {
             finger.IsOpen = fingerData.foldedness == 100;
         }
 
-        private void SetPosition(Item item, PXCMPoint3DF32 position) {
-            item.Position = new Point3D(ToRoundedCentimeters(position.x),
-                                        ToRoundedCentimeters(position.y),
-                                        ToRoundedCentimeters(position.z));
+        private void SetJointPosition(Finger finger, PXCMHandData.JointData jointData) {
+            var imagePosition = ToPoint3D(jointData.positionImage);
+            var worldPosition = ToPoint3D(jointData.positionWorld);
+            finger.Position = CreatePosition(imagePosition, worldPosition);
+        }
+
+        private Point3D ToPoint3D(PXCMPointF32 p) {
+            return new Point3D(p.x, p.y);            
+        }
+
+        private Point3D ToPoint3D(PXCMPoint3DF32 p) {
+            return new Point3D(p.x, p.y, p.z);
+        }
+
+        private Position CreatePosition(Point3D imagePosition, Point3D worldPosition) {
+            return new Position {
+                Image = new Point3D(imagePosition.X, imagePosition.Y),
+                World = new Point3D(ToRoundedCentimeters(worldPosition.X),
+                                    ToRoundedCentimeters(worldPosition.Y),
+                                    ToRoundedCentimeters(worldPosition.Z))
+            };
         }
 
         private double ToRoundedCentimeters(double value) {

@@ -1,4 +1,5 @@
-﻿using SharpSenses.Gestures;
+﻿using System.Security.Cryptography.X509Certificates;
+using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
 namespace SharpSenses.Tests {
@@ -17,23 +18,30 @@ namespace SharpSenses.Tests {
         }
 
         public void MoveLeftHandZ(double z) {
-            var p = LeftHand.Position;
-            LeftHand.Position = new Point3D(p.X, p.Y, z);
+            var p = LeftHand.Position.World;
+            LeftHand.Position = CreatePosition(p.X, p.Y, z);
         }
 
         public void MoveRightHandZ(double z) {
-            var p = RightHand.Position;
-            RightHand.Position = new Point3D(p.X, p.Y, z);
+            var p = RightHand.Position.World;
+            RightHand.Position = CreatePosition(p.X, p.Y, z);
         }
 
         public void MoveLeftHandX(double x) {
-            var p = LeftHand.Position;
-            LeftHand.Position = new Point3D(x, p.Y, p.Z);
+            var p = LeftHand.Position.World;
+            LeftHand.Position = CreatePosition(x, p.Y, p.Z);
         }
 
         public void MoveRightHandX(double x) {
-            var p = RightHand.Position;
-            RightHand.Position = new Point3D(x, p.Y, p.Z);
+            var p = RightHand.Position.World;
+            RightHand.Position = CreatePosition(x, p.Y, p.Z);
+        }
+
+        private Position CreatePosition(double x, double y, double z) {
+            return new Position {
+                Image = new Point3D(x, y, z),
+                World = new Point3D(x, y, z)
+            };
         }
 
         public void Start() {

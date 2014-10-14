@@ -3,7 +3,7 @@ using SharpSenses.Gestures;
 
 namespace SharpSenses.Tests {
     public class MovementTests {
-        private ICamera _camera;
+        private FakeCamera _camera;
         private Movement _movement;
 
 
@@ -18,8 +18,8 @@ namespace SharpSenses.Tests {
         public void Should_Report_Progress() {
             double progress = 0;
             _movement.Progress += d => progress = d;
-            SetHandZ(1);
-            SetHandZ(2);
+            _camera.MoveLeftHandZ(1);
+            _camera.MoveLeftHandZ(2);
             Assert.IsTrue(progress > 0);
         }
 
@@ -27,9 +27,9 @@ namespace SharpSenses.Tests {
         public void Should_Restart_when_wrong_direction() {
             bool restarted = false;
             _movement.Restarted += () => restarted = true;
-            SetHandZ(1);
-            SetHandZ(2);
-            SetHandZ(1);
+            _camera.MoveLeftHandZ(1);
+            _camera.MoveLeftHandZ(2);
+            _camera.MoveLeftHandZ(1);
             Assert.AreEqual(MovementStatus.Idle, _movement.Status);
             Assert.IsTrue(restarted);
         }
@@ -38,13 +38,9 @@ namespace SharpSenses.Tests {
         public void Should_complete_movement() {
             var completed = true;
             _movement.Completed += () => completed = true;
-            SetHandZ(1);
-            SetHandZ(5);
+            _camera.MoveLeftHandZ(1);
+            _camera.MoveLeftHandZ(5);
             Assert.IsTrue(completed);
-        }
-
-        private void SetHandZ(double location) {
-            _camera.LeftHand.Position = new Point3D(0,0,location);
         }
     }
 }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SharpSenses.Poses {
     public class Pose {
-        private bool _active;
+        private volatile bool _active;
         private Dictionary<int, bool> _flags = new Dictionary<int, bool>();
 
         public event Action<string> Begin;
@@ -42,20 +44,39 @@ namespace SharpSenses.Poses {
             Active = _flags.Values.All(x => x);
         }
 
+        private CancellationTokenSource _token;
+        private volatile bool _waiting;
+
         public bool Active {
             get { return _active; }
             private set {
-                //Debug.WriteLine("Detected: {0} | Active: {1}", value, _active);
                 if (value == _active) {
                     return;
                 }
                 _active = value;
                 if (_active) {
-                    Debug.WriteLine("Custom pose begin: " + Name);
-                    OnBegin();
+                    _waiting = true;
+                    _token = new CancellationTokenSource();
+                    Task.Run(async () => {
+                        try {
+                            await Task.Delay(500, _token.Token);
+                        }
+                        catch {}
+                        if (_active) {
+                            //Debug.WriteLine("Custom pose begin: " + Name);
+                            OnBegin();                            
+                        }
+                        _waiting = false;
+                    });
+                }
+                else if (_waiting) {
+                    if (_token != null) {
+                        _token.Cancel();
+                        //Debug.WriteLine("Pose cancelled");
+                    }
                 }
                 else {
-                    Debug.WriteLine("Custom pose end: " + Name);
+                    //Debug.WriteLine("Custom pose end: " + Name);
                     OnEnd();
                 }
             }
