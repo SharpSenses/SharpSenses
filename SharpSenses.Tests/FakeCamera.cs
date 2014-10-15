@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using SharpSenses.Gestures;
+﻿using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
 namespace SharpSenses.Tests {
@@ -7,12 +6,14 @@ namespace SharpSenses.Tests {
         
         public Hand LeftHand { get; private set; }
         public Hand RightHand { get; private set; }
+        public Face Face { get; private set; }
         public IGestureSensor Gestures { get; set; }
         public IPoseSensor Poses { get; set; }
 
         public FakeCamera() {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
+            Face = new Face();
             Gestures = new GestureSensor(this);
             Poses = new PoseSensor(this);
         }

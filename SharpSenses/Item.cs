@@ -12,7 +12,7 @@ namespace SharpSenses {
                     OnVisible();
                 }
                 else {
-                    Position = new Position();
+                    _position = new Position();
                     OnNotVisible();
                 }
             }

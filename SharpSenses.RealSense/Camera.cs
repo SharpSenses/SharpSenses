@@ -15,12 +15,15 @@ namespace SharpSenses.RealSense {
 
         public Hand LeftHand { get; private set; }
         public Hand RightHand { get; private set; }
+        public Face Face { get; private set; }
         public IGestureSensor Gestures { get; set; }
         public IPoseSensor Poses { get; set; }
+        public int CyclePauseInMillis { get; set; }
 
         public Camera() {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
+            Face = new Face();
             Gestures = new GestureSensor(this);
             Poses = new PoseSensor(this);
             _session = PXCMSession.CreateInstance();
@@ -31,6 +34,7 @@ namespace SharpSenses.RealSense {
         public void Start() {
             _cancellationToken = new CancellationTokenSource();
             _manager.EnableHand();
+            _manager.EnableFace();
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
                     //handConfig.EnableAllAlerts();
@@ -56,16 +60,42 @@ namespace SharpSenses.RealSense {
         }
 
         private void Loop(object notUsed) {
-            using (var handModule = _manager.QueryHand()) {
-                using (var handData = handModule.CreateOutput()) {
-                    while (!_cancellationToken.IsCancellationRequested) {
-                        _manager.AcquireFrame(true);
-                        handData.Update();
-                        TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
-                        TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
-                        _manager.ReleaseFrame();
-                    }
+            var handModule = _manager.QueryHand();
+            var faceModule = _manager.QueryFace();
+            var handData = handModule.CreateOutput();
+            var faceData = faceModule.CreateOutput();
+
+            while (!_cancellationToken.IsCancellationRequested) {
+                _manager.AcquireFrame(true);
+                handData.Update();
+                TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
+                TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
+
+                faceData.Update();
+                TrackFace(faceData);
+
+                _manager.ReleaseFrame();
+                if (CyclePauseInMillis > 0) {
+                    Thread.Sleep(CyclePauseInMillis);
                 }
+            }
+            handData.Dispose();
+            faceData.Dispose();
+            handModule.Dispose();
+            faceModule.Dispose();
+        }
+
+        private void TrackFace(PXCMFaceData faceData) {
+            if (faceData.QueryNumberOfDetectedFaces() > 0) {
+                Face.IsVisible = true;
+                var face = faceData.QueryFaces().First();
+                PXCMRectI32 rect;
+                face.QueryDetection().QueryBoundingRect(out rect);
+                var point = new Point3D(rect.x - (rect.w/2), rect.h - (rect.h/2));
+                Face.Position = CreatePosition(point, new Point3D());
+            }
+            else {
+                Face.IsVisible = false;
             }
         }
 

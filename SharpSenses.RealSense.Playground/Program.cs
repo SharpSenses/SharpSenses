@@ -29,23 +29,37 @@ namespace SharpSenses.RealSense.Playground {
             //    Console.WriteLine("Peace, bro");
             //};
 
-            var pLeft = new Point3D();
-            var pRight = new Point3D();
-            var action = new Action<string, Point3D, Point3D>((s, p1, p2) => {
-                var x = MathEx.CalcDistance(p1, p2);
-                Console.WriteLine(s + "-> x1: {0} x2: {1} Dist-> {2}", p1.X, p2.X, x);
-                if (x <= 30) {
-                    Console.WriteLine("BOOOOOMMMM!");
-                }
-            });
-            cam.LeftHand.Index.Moved += p => {
-                pLeft = p.Image;
-                action.Invoke("L", pLeft, pRight);
+            cam.Face.Visible += () => {
+                Console.WriteLine("Face visible!");
             };
-            cam.RightHand.Index.Moved += p => {
-                pRight = p.Image;
-                action.Invoke("R", pLeft, pRight);
+            cam.Face.NotVisible += () => {
+                Console.WriteLine("Face not visible!");
             };
+            cam.Face.Moved += p => {
+                Console.WriteLine("FACE -> x: {0}|{1} y: {2}|{3}", 
+                    p.Image.X, 
+                    cam.LeftHand.Position.Image.X,  
+                    p.Image.Y,  
+                    cam.LeftHand.Position.Image.Y);
+            };
+
+            //var pLeft = new Point3D();
+            //var pRight = new Point3D();
+            //var action = new Action<string, Point3D, Point3D>((s, p1, p2) => {
+            //    var x = MathEx.CalcDistance(p1, p2);
+            //    Console.WriteLine(s + "-> x1: {0} x2: {1} Dist-> {2}", p1.X, p2.X, x);
+            //    if (x <= 30) {
+            //        Console.WriteLine("BOOOOOMMMM!");
+            //    }
+            //});
+            //cam.LeftHand.Index.Moved += p => {
+            //    pLeft = p.Image;
+            //    action.Invoke("L", pLeft, pRight);
+            //};
+            //cam.RightHand.Index.Moved += p => {
+            //    pRight = p.Image;
+            //    action.Invoke("R", pLeft, pRight);
+            //};
 
 
             //var m = Movement.Right(cam.LeftHand, 18);
