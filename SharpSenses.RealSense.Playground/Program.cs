@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
@@ -25,9 +26,34 @@ namespace SharpSenses.RealSense.Playground {
             cam.Poses.PeaceBegin += hand => {
                 Console.WriteLine("Peace, bro");
             };
+
+            //var m = Movement.Right(cam.LeftHand, 20);
+            //m.Restarted += () => {
+            //    Console.WriteLine("Restarted");
+            //};
+
+            //var s = new GestureStep(TimeSpan.FromDays(1), m);
+            //s.StepProgress += d => {
+            //    Console.WriteLine("Progress: " + d);
+            //};
+            //s.StepCompleted += () => {
+            //    Console.WriteLine("Gesture---------------------");
+            //};
+            //s.Activate();
+
+            //var swipe = new Gesture("hello");
+            //swipe.AddStep(800, m);
+            //swipe.StepProgress += d => {
+            //    Console.WriteLine("Progress: " + d);
+            //};
+            //swipe.GestureDetected += () => {
+            //    Console.WriteLine("Gesture");
+            //};
+            //swipe.Activate();
+           
             //TrackCustomPoseWithBothHands(cam);
             //TrackMovement(cam);
-            TrackHandMovement(cam);
+            //TrackHandMovement(cam);
             //TrackVisibleAndOpen(cam);
 
             //var s1Left = Movement.Forward(cam.LeftHand, 15);

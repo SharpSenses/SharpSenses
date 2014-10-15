@@ -4,11 +4,6 @@ namespace SharpSenses.Gestures {
     public class MovementForward : Movement {
         public MovementForward(Item item, double distance) : base(item, distance) {}
 
-        protected override Point3D RemoveNoise(Point3D position) {
-            position.Z = Math.Round(position.Z, 2);
-            return position;
-        }
-
         protected override bool IsRightDirection(Point3D currentLocation) {
             return currentLocation.Z <= LastPosition.Z;
         }

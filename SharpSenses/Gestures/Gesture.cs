@@ -1,14 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SharpSenses.Gestures {
     public class Gesture {
         private object _sync = new object();
         public event Action GestureDetected;
         public event Action<int> NextStep;
+        public event Action<double> StepProgress;
+
+        public string Name { get; set; }
 
         protected int CurrentStep;
         protected List<GestureStep> GestureSteps = new List<GestureStep>();
+
+        public Gesture() {}
+
+        public Gesture(string name) {
+            Name = name;
+        }
 
         public void AddStep(int windowInMilli, params Movement[] movements) {
             AddStep(new GestureStep(TimeSpan.FromMilliseconds(windowInMilli), movements));
@@ -17,12 +27,20 @@ namespace SharpSenses.Gestures {
         public void AddStep(GestureStep step) {
             CurrentStep = 0;
             GestureSteps.Add(step);
+            step.StepProgress += OnStepProgress;
             step.StepCompleted += AdvanceStep;
         }
 
         public void Activate() {
             CurrentStep = 0;
             ChangeStep();
+        }
+
+        public void Deactivate() {
+            CurrentStep = 0;
+            lock (_sync) {
+                GestureSteps.ForEach(x => x.Deactivate());
+            }
         }
 
         private void ChangeStep() {
@@ -37,7 +55,7 @@ namespace SharpSenses.Gestures {
                 CurrentStep++;
                 if (IsOver()) {
                     OnGestureDetected();
-                    StartOver();
+                    PauseAndRestart();
                 }
                 else {
                     OnNextStep(CurrentStep);
@@ -46,13 +64,16 @@ namespace SharpSenses.Gestures {
             }
         }
 
-        private bool IsOver() {
-            return CurrentStep >= GestureSteps.Count;
+        private void PauseAndRestart() {
+            Deactivate();
+            Task.Run(async () => {
+                await Task.Delay(800);
+                Activate();
+            });
         }
 
-        private void StartOver() {
-            CurrentStep = 0;
-            ChangeStep();
+        private bool IsOver() {
+            return CurrentStep >= GestureSteps.Count;
         }
 
         protected virtual void OnNextStep(int obj) {
@@ -66,5 +87,9 @@ namespace SharpSenses.Gestures {
             if (handler != null) handler();
         }
 
+        protected virtual void OnStepProgress(double progress) {
+            Action<double> handler = StepProgress;
+            if (handler != null) handler(progress);
+        }
     }
 }

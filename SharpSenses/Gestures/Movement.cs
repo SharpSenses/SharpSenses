@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using SharpSenses.Poses;
 
 namespace SharpSenses.Gestures {
     public abstract class Movement {
@@ -19,7 +20,7 @@ namespace SharpSenses.Gestures {
         public event Action<double> Progress;
         public event Action Completed;
 
-        protected Movement(Item item, double distance, string name = "") {
+        protected Movement(Item item, double distance) {
             Item = item;
             Distance = distance;
             AutoRestart = true;
@@ -51,9 +52,8 @@ namespace SharpSenses.Gestures {
                 }
                 return;
             }
-            point = RemoveNoise(point);
             if (Status == MovementStatus.Idle) {
-                Status = Status = MovementStatus.Working;
+                Status = MovementStatus.Working;
                 StartPosition = point;
                 LastPosition = point;
                 return;
@@ -85,10 +85,7 @@ namespace SharpSenses.Gestures {
         }
         protected abstract double GetProgress(Point3D currentLocation);
         protected abstract bool IsRightDirection(Point3D currentLocation);
-        protected virtual Point3D RemoveNoise(Point3D position) {
-            position.Z = Math.Round(position.Z, 2);
-            return position;
-        }
+        
         protected virtual void OnRestarted() {
             Action handler = Restarted;
             if (handler != null) handler();

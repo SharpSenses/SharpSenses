@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SharpSenses.Gestures {
     public class GestureSensor : IGestureSensor {
@@ -28,8 +31,8 @@ namespace SharpSenses.Gestures {
         }
 
         private Gesture CreateSwipeGesture(Hand hand, Direction direction) {
-            var swipe = new Gesture();
-            swipe.AddStep(1000, Movement.CreateMovement(direction, hand, 20));
+            var swipe = new Gesture("hand"+hand.Side + "_" + direction);
+            swipe.AddStep(800, Movement.CreateMovement(direction, hand, 18));
             swipe.Activate();
             return swipe;
         }
