@@ -39,6 +39,6 @@ namespace SharpSenses {
     }
 
     public enum Side {
-        Left, Right
+        Left, Right, Both
     }
 }

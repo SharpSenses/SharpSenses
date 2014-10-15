@@ -1,32 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SharpSenses.Gestures {
     public class GestureSensor : IGestureSensor {
 
-        public event Action SwipeLeft;
-        public event Action SwipeRight;
-        public event Action SwipeUp;
-        public event Action SwipeDown;
-        public event Action MoveForward;
+        public event Action<Hand> SwipeLeft;
+        public event Action<Hand> SwipeRight;
+        public event Action<Hand> SwipeUp;
+        public event Action<Hand> SwipeDown;
+        public event Action<Hand> MoveForward;
 
         public GestureSensor(ICamera camera) {
-            CreateSwipeGesture(camera.LeftHand, Direction.Left).GestureDetected += OnGestureSwipeLeft;
-            CreateSwipeGesture(camera.RightHand, Direction.Left).GestureDetected += OnGestureSwipeLeft;
+            CreateSwipeGesture(camera.LeftHand, Direction.Left).GestureDetected += () => OnGestureSwipeLeft(camera.LeftHand);
+            CreateSwipeGesture(camera.RightHand, Direction.Left).GestureDetected += () => OnGestureSwipeLeft(camera.RightHand);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Right).GestureDetected += OnGestureSwipeRight;
-            CreateSwipeGesture(camera.RightHand, Direction.Right).GestureDetected += OnGestureSwipeRight;
+            CreateSwipeGesture(camera.LeftHand, Direction.Right).GestureDetected += () => OnGestureSwipeRight(camera.LeftHand);
+            CreateSwipeGesture(camera.RightHand, Direction.Right).GestureDetected += () => OnGestureSwipeRight(camera.RightHand);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Up).GestureDetected += OnGestureSwipeUp;
-            CreateSwipeGesture(camera.RightHand, Direction.Up).GestureDetected += OnGestureSwipeUp;
+            CreateSwipeGesture(camera.LeftHand, Direction.Up).GestureDetected += () => OnGestureSwipeUp(camera.LeftHand);
+            CreateSwipeGesture(camera.RightHand, Direction.Up).GestureDetected += () => OnGestureSwipeUp(camera.RightHand);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Down).GestureDetected += OnGestureSwipeDown;
-            CreateSwipeGesture(camera.RightHand, Direction.Down).GestureDetected += OnGestureSwipeDown;
+            CreateSwipeGesture(camera.LeftHand, Direction.Down).GestureDetected += () => OnGestureSwipeDown(camera.LeftHand);
+            CreateSwipeGesture(camera.RightHand, Direction.Down).GestureDetected += () => OnGestureSwipeDown(camera.RightHand);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Forward).GestureDetected += OnMoveForward;
-            CreateSwipeGesture(camera.RightHand, Direction.Forward).GestureDetected += OnMoveForward;
+            CreateSwipeGesture(camera.LeftHand, Direction.Forward).GestureDetected += () => OnMoveForward(camera.LeftHand);
+            CreateSwipeGesture(camera.RightHand, Direction.Forward).GestureDetected += () => OnMoveForward(camera.RightHand);
             
         }
 
@@ -37,28 +34,28 @@ namespace SharpSenses.Gestures {
             return swipe;
         }
 
-        public void OnGestureSwipeRight() {
-            Action handler = SwipeRight;
-            if (handler != null) handler();
+        public void OnGestureSwipeRight(Hand hand) {
+            Action<Hand> handler = SwipeRight;
+            if (handler != null) handler(hand);
         }
 
-        public void OnGestureSwipeLeft() {
-            Action handler = SwipeLeft;
-            if (handler != null) handler();
+        public void OnGestureSwipeLeft(Hand hand) {
+            Action<Hand> handler = SwipeLeft;
+            if (handler != null) handler(hand);
         }
 
-        public virtual void OnGestureSwipeUp() {
-            Action handler = SwipeUp;
-            if (handler != null) handler();
+        public virtual void OnGestureSwipeUp(Hand hand) {
+            Action<Hand> handler = SwipeUp;
+            if (handler != null) handler(hand);
         }
-        public virtual void OnGestureSwipeDown() {
-            Action handler = SwipeDown;
-            if (handler != null) handler();
+        public virtual void OnGestureSwipeDown(Hand hand) {
+            Action<Hand> handler = SwipeDown;
+            if (handler != null) handler(hand);
         }
 
-        protected virtual void OnMoveForward() {
-            Action handler = MoveForward;
-            if (handler != null) handler();
+        protected virtual void OnMoveForward(Hand hand) {
+            Action<Hand> handler = MoveForward;
+            if (handler != null) handler(hand);
         }
 
     }

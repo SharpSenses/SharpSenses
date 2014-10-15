@@ -2,10 +2,10 @@
 
 namespace SharpSenses.Gestures {
     public interface IGestureSensor {
-        event Action SwipeLeft;
-        event Action SwipeRight;
-        event Action SwipeUp;
-        event Action SwipeDown;
-        event Action MoveForward;
+        event Action<Hand> SwipeLeft;
+        event Action<Hand> SwipeRight;
+        event Action<Hand> SwipeUp;
+        event Action<Hand> SwipeDown;
+        event Action<Hand> MoveForward;
     }
 }

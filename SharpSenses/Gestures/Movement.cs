@@ -4,6 +4,7 @@ using SharpSenses.Poses;
 
 namespace SharpSenses.Gestures {
     public abstract class Movement {
+        private readonly Pose _pose;
         private int _count;
         private object _sync = new object();
         public string Name { get; set; }
@@ -15,6 +16,9 @@ namespace SharpSenses.Gestures {
         public bool AutoRestart { get; set; }
         private int _wrongDirectionFaults;
         public int ToleranceForWrongDirection { get; set; }
+
+        public Func<bool> Check { get; set; }
+        public Pose Pose { get; set; }
 
         public event Action Restarted;
         public event Action<double> Progress;
@@ -56,6 +60,12 @@ namespace SharpSenses.Gestures {
                 Status = MovementStatus.Working;
                 StartPosition = point;
                 LastPosition = point;
+                return;
+            }
+            if (_pose != null && !_pose.Active) {
+                return;
+            }
+            if (Check != null && !Check.Invoke()) {
                 return;
             }
             if (!IsRightDirection(point)) {

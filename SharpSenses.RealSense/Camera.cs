@@ -33,16 +33,16 @@ namespace SharpSenses.RealSense {
             _manager.EnableHand();
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
-                    handConfig.EnableAllAlerts();
+                    //handConfig.EnableAllAlerts();
                     int numGestures = handConfig.QueryGesturesTotalNumber();
                     for (int i = 0; i < numGestures; i++) {
                         string name;
                         handConfig.QueryGestureNameByIndex(i, out name);
                         Debug.WriteLine("Gestures: " + name);
                     }
-                    handConfig.EnableAllGestures();
+                    //handConfig.EnableAllGestures();
                     handConfig.EnableTrackedJoints(true);
-                    handConfig.SubscribeGesture(OnGesture);
+                    //handConfig.SubscribeGesture(OnGesture);
                     handConfig.ApplyChanges();
                 }
             }

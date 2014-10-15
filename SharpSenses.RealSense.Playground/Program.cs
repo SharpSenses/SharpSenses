@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
+using SharpSenses.Util;
 
 namespace SharpSenses.RealSense.Playground {
     class Program {
@@ -11,26 +13,53 @@ namespace SharpSenses.RealSense.Playground {
             var cam = new Camera();
             cam.Start();
 
-            cam.Gestures.SwipeLeft += () => {
-                Console.WriteLine("Swipe Left");
+            //cam.Gestures.SwipeLeft += s => {
+            //    Console.WriteLine("Swipe Left");
+            //};
+            //cam.Gestures.SwipeRight += s => {
+            //    Console.WriteLine("Swipe Right");
+            //};
+            //cam.Gestures.SwipeUp += s => {
+            //    Console.WriteLine("Swipe Up");
+            //};
+            //cam.Gestures.SwipeDown += s => {
+            //    Console.WriteLine("Swipe Down");
+            //};
+            //cam.Poses.PeaceBegin += hand => {
+            //    Console.WriteLine("Peace, bro");
+            //};
+
+            var pLeft = new Point3D();
+            var pRight = new Point3D();
+            var action = new Action<string, Point3D, Point3D>((s, p1, p2) => {
+                var x = MathEx.CalcDistance(p1, p2);
+                Console.WriteLine(s + "-> x1: {0} x2: {1} Dist-> {2}", p1.X, p2.X, x);
+                if (x <= 30) {
+                    Console.WriteLine("BOOOOOMMMM!");
+                }
+            });
+            cam.LeftHand.Index.Moved += p => {
+                pLeft = p.Image;
+                action.Invoke("L", pLeft, pRight);
             };
-            cam.Gestures.SwipeRight += () => {
-                Console.WriteLine("Swipe Right");
-            };
-            cam.Gestures.SwipeUp += () => {
-                Console.WriteLine("Swipe Up");
-            };
-            cam.Gestures.SwipeDown += () => {
-                Console.WriteLine("Swipe Down");
-            };
-            cam.Poses.PeaceBegin += hand => {
-                Console.WriteLine("Peace, bro");
+            cam.RightHand.Index.Moved += p => {
+                pRight = p.Image;
+                action.Invoke("R", pLeft, pRight);
             };
 
-            //var m = Movement.Right(cam.LeftHand, 20);
+
+            //var m = Movement.Right(cam.LeftHand, 18);
+            //m.Check = () => cam.LeftHand.GetAllFingers().Any(f => f.IsOpen);
             //m.Restarted += () => {
             //    Console.WriteLine("Restarted");
             //};
+            //m.Progress += d => {
+            //    Console.WriteLine("Progress: " + d);
+            //};
+            //m.Completed += () => {
+            //    Console.WriteLine("Gesture---------------------");
+            //};
+            //m.Activate();
 
             //var s = new GestureStep(TimeSpan.FromDays(1), m);
             //s.StepProgress += d => {
