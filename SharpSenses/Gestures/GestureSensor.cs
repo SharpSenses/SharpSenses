@@ -29,7 +29,7 @@ namespace SharpSenses.Gestures {
 
         private Gesture CreateSwipeGesture(Hand hand, Direction direction) {
             var swipe = new Gesture("hand"+hand.Side + "_" + direction);
-            swipe.AddStep(800, Movement.CreateMovement(direction, hand, 18));
+            swipe.AddStep(800, Movement.CreateMovement(direction, hand, 12));
             swipe.Activate();
             return swipe;
         }

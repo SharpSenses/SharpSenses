@@ -7,8 +7,10 @@ namespace SharpSenses.Gestures {
             return Math.Abs(StartPosition.Y - currentLocation.Y);
         }
 
-        protected override bool IsRightDirection(Point3D currentLocation) {
-            return currentLocation.Y <= LastPosition.Y;
+        protected override bool IsGoingRightDirection(Point3D currentLocation) {
+            return currentLocation.Y <= LastPosition.Y &&
+                   Math.Abs(StartPosition.Z - currentLocation.Z) < ToleranceForWrongDirection &&
+                   Math.Abs(StartPosition.X - currentLocation.X) < ToleranceForWrongDirection;
         }
     }
 }

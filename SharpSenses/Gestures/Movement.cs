@@ -16,7 +16,6 @@ namespace SharpSenses.Gestures {
         public bool AutoRestart { get; set; }
         private int _wrongDirectionFaults;
         public int ToleranceForWrongDirection { get; set; }
-
         public Func<bool> Check { get; set; }
         public Pose Pose { get; set; }
 
@@ -28,7 +27,7 @@ namespace SharpSenses.Gestures {
             Item = item;
             Distance = distance;
             AutoRestart = true;
-            ToleranceForWrongDirection = 3;
+            ToleranceForWrongDirection = 8;
         }
 
         public void Activate() {
@@ -51,7 +50,7 @@ namespace SharpSenses.Gestures {
         private void ItemOnMoved(Position position) {
             var point = position.World;
             if (Status == MovementStatus.Completed) {
-                if (AutoRestart && !IsRightDirection(point)) {
+                if (AutoRestart && !IsGoingRightDirection(point)) {
                     Status = MovementStatus.Idle;
                 }
                 return;
@@ -68,11 +67,8 @@ namespace SharpSenses.Gestures {
             if (Check != null && !Check.Invoke()) {
                 return;
             }
-            if (!IsRightDirection(point)) {
-                _wrongDirectionFaults++;
-                if (_wrongDirectionFaults > ToleranceForWrongDirection) {
-                    Restart();                    
-                }
+            if (!IsGoingRightDirection(point)) {
+                Restart();
                 return;
             }
             _wrongDirectionFaults = 0;
@@ -94,7 +90,7 @@ namespace SharpSenses.Gestures {
             return GetProgress(position) >= Distance;
         }
         protected abstract double GetProgress(Point3D currentLocation);
-        protected abstract bool IsRightDirection(Point3D currentLocation);
+        protected abstract bool IsGoingRightDirection(Point3D currentLocation);
         
         protected virtual void OnRestarted() {
             Action handler = Restarted;

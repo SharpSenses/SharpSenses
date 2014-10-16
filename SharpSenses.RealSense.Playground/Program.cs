@@ -13,35 +13,35 @@ namespace SharpSenses.RealSense.Playground {
             var cam = new Camera();
             cam.Start();
 
-            //cam.Gestures.SwipeLeft += s => {
-            //    Console.WriteLine("Swipe Left");
-            //};
-            //cam.Gestures.SwipeRight += s => {
-            //    Console.WriteLine("Swipe Right");
-            //};
-            //cam.Gestures.SwipeUp += s => {
-            //    Console.WriteLine("Swipe Up");
-            //};
-            //cam.Gestures.SwipeDown += s => {
-            //    Console.WriteLine("Swipe Down");
-            //};
-            //cam.Poses.PeaceBegin += hand => {
-            //    Console.WriteLine("Peace, bro");
-            //};
+            cam.Gestures.SwipeLeft += sl => {
+                Console.WriteLine("Swipe Left");
+            };
+            cam.Gestures.SwipeRight += s => {
+                Console.WriteLine("Swipe Right");
+            };
+            cam.Gestures.SwipeUp += s => {
+                Console.WriteLine("Swipe Up");
+            };
+            cam.Gestures.SwipeDown += s => {
+                Console.WriteLine("Swipe Down");
+            };
+            cam.Poses.PeaceBegin += hand => {
+                Console.WriteLine("Peace, bro");
+            };
 
-            cam.Face.Visible += () => {
-                Console.WriteLine("Face visible!");
-            };
-            cam.Face.NotVisible += () => {
-                Console.WriteLine("Face not visible!");
-            };
-            cam.Face.Moved += p => {
-                Console.WriteLine("FACE -> x: {0}|{1} y: {2}|{3}", 
-                    p.Image.X, 
-                    cam.LeftHand.Position.Image.X,  
-                    p.Image.Y,  
-                    cam.LeftHand.Position.Image.Y);
-            };
+            //cam.Face.Visible += () => {
+            //    Console.WriteLine("Face visible!");
+            //};
+            //cam.Face.NotVisible += () => {
+            //    Console.WriteLine("Face not visible!");
+            //};
+            //cam.Face.Moved += p => {
+            //    Console.WriteLine("FACE -> x: {0}|{1} y: {2}|{3}", 
+            //        p.Image.X, 
+            //        cam.LeftHand.Position.Image.X,  
+            //        p.Image.Y,  
+            //        cam.LeftHand.Position.Image.Y);
+            //};
 
             //var pLeft = new Point3D();
             //var pRight = new Point3D();
@@ -62,8 +62,8 @@ namespace SharpSenses.RealSense.Playground {
             //};
 
 
-            //var m = Movement.Right(cam.LeftHand, 18);
-            //m.Check = () => cam.LeftHand.GetAllFingers().Any(f => f.IsOpen);
+            //var m = Movement.Right(cam.LeftHand, 10);
+            ////m.Check = () => cam.LeftHand.GetAllFingers().Any(f => f.IsOpen);
             //m.Restarted += () => {
             //    Console.WriteLine("Restarted");
             //};

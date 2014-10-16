@@ -91,7 +91,7 @@ namespace SharpSenses.RealSense {
                 var face = faceData.QueryFaces().First();
                 PXCMRectI32 rect;
                 face.QueryDetection().QueryBoundingRect(out rect);
-                var point = new Point3D(rect.x - (rect.w/2), rect.h - (rect.h/2));
+                var point = new Point3D(rect.x - (rect.w), rect.y);
                 Face.Position = CreatePosition(point, new Point3D());
             }
             else {

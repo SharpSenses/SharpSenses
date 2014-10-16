@@ -59,7 +59,7 @@ namespace SharpSenses.Poses {
                     _token = new CancellationTokenSource();
                     Task.Run(async () => {
                         try {
-                            await Task.Delay(500, _token.Token);
+                            await Task.Delay(300, _token.Token);
                         }
                         catch {}
                         if (_active) {
