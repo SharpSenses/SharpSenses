@@ -13,7 +13,7 @@ An easier way to use Intel RealSense SDK. Custom poses, gestures and much more.
 ```
 	var cam = new Camera();
 	cam.RightHand.Closed += () => Console.WriteLine("Hand Closed");
-	cam.RightHand.Moved += p => Console.WriteLine("-> x:{0} y:{1}", m.Image.X, m.Image.Y);
+	cam.RightHand.Moved += p => Console.WriteLine("-> x:{0} y:{1}", p.Image.X, p.Image.Y);
 	cam.Start();
 ````
 
