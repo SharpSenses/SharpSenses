@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="CameraException.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="Finger.cs" />

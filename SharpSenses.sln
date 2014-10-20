@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.RealSense.Playg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.Tests", "SharpSenses.Tests\SharpSenses.Tests.csproj", "{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.Perceptual", "SharpSenses.Perceptual\SharpSenses.Perceptual.csproj", "{8B228CDF-4478-4891-9047-32EF1457E9CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

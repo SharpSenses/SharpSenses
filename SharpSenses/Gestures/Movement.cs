@@ -7,14 +7,13 @@ namespace SharpSenses.Gestures {
         private readonly Pose _pose;
         private int _count;
         private object _sync = new object();
-        public string Name { get; set; }
-        public MovementStatus Status { get; private set; }
         protected Point3D StartPosition { get; set; }
         protected Point3D LastPosition { get; set; }
+        public string Name { get; set; }
+        public MovementStatus Status { get; private set; }
         public Item Item { get; protected set; }
         public double Distance { get; protected set; }
         public bool AutoRestart { get; set; }
-        private int _wrongDirectionFaults;
         public int ToleranceForWrongDirection { get; set; }
         public Func<bool> Check { get; set; }
         public Pose Pose { get; set; }
@@ -71,7 +70,6 @@ namespace SharpSenses.Gestures {
                 Restart();
                 return;
             }
-            _wrongDirectionFaults = 0;
             if (IsMovementCompleted(point)) {
                 Status = MovementStatus.Completed;
                 OnCompleted();

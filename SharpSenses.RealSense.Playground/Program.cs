@@ -1,33 +1,34 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using SharpSenses.Gestures;
+using SharpSenses.Perceptual;
 using SharpSenses.Poses;
-using SharpSenses.Util;
 
 namespace SharpSenses.RealSense.Playground {
-    class Program {
-        static void Main(string[] args) {
-            var cam = new Camera();
-            cam.Start();
+    internal class Program {
 
-            cam.Gestures.SwipeLeft += sl => {
-                Console.WriteLine("Swipe Left");
+        private static ICamera _cam;
+
+        private static void Main(string[] args) {
+            bool realSense = false;
+
+            if (realSense) {
+                _cam = new RealSenseCamera();                
+            }
+            else {
+                _cam = new PerceptualCamera();
+            }
+            _cam.Start();
+
+            _cam.LeftHand.Moved += p => {
+                Console.Write("\r");
+                Console.Write("X: " + p.Image.X);
             };
-            cam.Gestures.SwipeRight += s => {
-                Console.WriteLine("Swipe Right");
-            };
-            cam.Gestures.SwipeUp += s => {
-                Console.WriteLine("Swipe Up");
-            };
-            cam.Gestures.SwipeDown += s => {
-                Console.WriteLine("Swipe Down");
-            };
-            cam.Poses.PeaceBegin += hand => {
-                Console.WriteLine("Peace, bro");
-            };
+
+            _cam.Gestures.SwipeLeft += sl => { Console.WriteLine("Swipe Left"); };
+            _cam.Gestures.SwipeRight += s => { Console.WriteLine("Swipe Right"); };
+            _cam.Gestures.SwipeUp += s => { Console.WriteLine("Swipe Up"); };
+            _cam.Gestures.SwipeDown += s => { Console.WriteLine("Swipe Down"); };
+            _cam.Poses.PeaceBegin += hand => { Console.WriteLine("Peace, bro"); };
 
             //cam.Face.Visible += () => {
             //    Console.WriteLine("Face visible!");
@@ -93,7 +94,7 @@ namespace SharpSenses.RealSense.Playground {
             //    Console.WriteLine("Gesture");
             //};
             //swipe.Activate();
-           
+
             //TrackCustomPoseWithBothHands(cam);
             //TrackMovement(cam);
             //TrackHandMovement(cam);
@@ -122,7 +123,7 @@ namespace SharpSenses.RealSense.Playground {
             //var step = new GestureStep(TimeSpan.FromHours(800), lh, rh);
             //step.StepCompleted += () => Console.WriteLine("HADOKEN HADOKEN HADOKEN HADOKEN ");
             //step.Activate();
-            
+
             //var gesture = new Gesture();
             //gesture.AddStep(step);
             //gesture.GestureDetected += () => {
@@ -135,10 +136,10 @@ namespace SharpSenses.RealSense.Playground {
             //cam.Poses.PeaceEnd += n => Console.WriteLine("Peace End" + n.Side);
 
             Console.ReadLine();
-            cam.Dispose();
+            _cam.Dispose();
         }
 
-        private static void TrackCustomPoseWithBothHands(Camera cam) {
+        private static void TrackCustomPoseWithBothHands(RealSenseCamera cam) {
             var bothHandsClosed = PoseBuilder.Combine(cam.LeftHand, State.Closed)
                 .With(cam.RightHand, State.Closed)
                 .With(cam.LeftHand, State.Visible)
@@ -160,7 +161,7 @@ namespace SharpSenses.RealSense.Playground {
             };
         }
 
-        private static void TrackVisibleAndOpen(Camera cam) {
+        private static void TrackVisibleAndOpen(RealSenseCamera cam) {
             cam.LeftHand.Opened += () => Console.WriteLine("Left Open");
             cam.LeftHand.Closed += () => Console.WriteLine("Left Closed");
             cam.LeftHand.Visible += () => Console.WriteLine("Left Visible");
@@ -174,7 +175,7 @@ namespace SharpSenses.RealSense.Playground {
             cam.RightHand.NotVisible += () => Console.WriteLine("Right Not Visible");
         }
 
-        private static void TrackHandMovement(Camera cam) {
+        private static void TrackHandMovement(RealSenseCamera cam) {
             int i = 0;
             cam.LeftHand.Moved += d => {
                 i++;
@@ -183,7 +184,8 @@ namespace SharpSenses.RealSense.Playground {
                         d.Image.X, d.Image.Y, d.World.X, d.World.Y, d.World.Z);
                 }
             };
-            cam.RightHand.Moved += d => Console.WriteLine("Right: X: {0} Y: {1} Z: {2}", d.Image.X, d.Image.Y, d.World.Z);
+            cam.RightHand.Moved +=
+                d => Console.WriteLine("Right: X: {0} Y: {1} Z: {2}", d.Image.X, d.Image.Y, d.World.Z);
         }
     }
 }

@@ -10,12 +10,20 @@ namespace SharpSenses.Tests {
         public IGestureSensor Gestures { get; set; }
         public IPoseSensor Poses { get; set; }
 
+        public int ResolutionWidth {
+            get { return 320; }
+        }
+
+        public int ResolutionHeight {
+            get { return 240; }
+        }
+
         public FakeCamera() {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
             Face = new Face();
             Gestures = new GestureSensor(this);
-            Poses = new PoseSensor(this);
+            Poses = new PoseSensor();
         }
 
         public void MoveLeftHandZ(double z) {

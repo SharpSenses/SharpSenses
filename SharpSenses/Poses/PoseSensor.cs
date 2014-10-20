@@ -12,11 +12,6 @@ namespace SharpSenses.Poses {
         public event Action BigFiveBegin;
         public event Action BigFiveEnd;
 
-        public PoseSensor(ICamera camera) {
-            PosePeace.Configue(camera.LeftHand, this);
-            PosePeace.Configue(camera.RightHand, this);
-        }
-
         public virtual void OnBigFiveEnd() {
             Action handler = BigFiveEnd;
             if (handler != null) handler();

@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{18023BE1-F6BE-48FD-A1A6-4403707D9DBE}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{8B228CDF-4478-4891-9047-32EF1457E9CE}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharpSenses.RealSense.Playground</RootNamespace>
-    <AssemblyName>SharpSenses.RealSense.Playground</AssemblyName>
+    <RootNamespace>SharpSenses.Perceptual</RootNamespace>
+    <AssemblyName>SharpSenses.Perceptual</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,10 +20,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,9 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libpxcclr.cs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\_libs\libpxcclr.cs.dll</HintPath>
+    <Reference Include="libpxcclr">
+      <HintPath>..\_libs\libpxcclr.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,21 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="PerceptualCamera.cs" />
+    <Compile Include="Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SharpSenses.Perceptual\SharpSenses.Perceptual.csproj">
-      <Project>{8B228CDF-4478-4891-9047-32EF1457E9CE}</Project>
-      <Name>SharpSenses.Perceptual</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SharpSenses.RealSense\SharpSenses.RealSense.csproj">
-      <Project>{054db117-f173-488b-94a1-43e1a4f61a66}</Project>
-      <Name>SharpSenses.RealSense</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SharpSenses\SharpSenses.csproj">
       <Project>{f4f42c71-bfa3-40d0-b070-b5fe1468bb6a}</Project>
       <Name>SharpSenses</Name>

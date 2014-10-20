@@ -3,35 +3,38 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
 namespace SharpSenses.RealSense {
-    public class Camera : ICamera {
+    public class RealSenseCamera : Camera {
         private pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
         private PXCMSession _session;
         private PXCMSenseManager _manager;
         private CancellationTokenSource _cancellationToken;
 
-        public Hand LeftHand { get; private set; }
-        public Hand RightHand { get; private set; }
-        public Face Face { get; private set; }
-        public IGestureSensor Gestures { get; set; }
-        public IPoseSensor Poses { get; set; }
+        public override int ResolutionWidth {
+            get { return 640; }
+        }
+
+        public override int ResolutionHeight {
+            get { return 480; }
+        }
+
         public int CyclePauseInMillis { get; set; }
 
-        public Camera() {
-            LeftHand = new Hand(Side.Left);
-            RightHand = new Hand(Side.Right);
-            Face = new Face();
-            Gestures = new GestureSensor(this);
-            Poses = new PoseSensor(this);
+        public RealSenseCamera() {
             _session = PXCMSession.CreateInstance();
             _manager = _session.CreateSenseManager();
+            ConfigurePoses();
             Debug.WriteLine("SDK Version {0}.{1}", _session.QueryVersion().major, _session.QueryVersion().minor);
         }
 
-        public void Start() {
+        private void ConfigurePoses() {
+            PosePeace.Configue(LeftHand, _poses);
+            PosePeace.Configue(RightHand, _poses);
+        }
+
+        public override void Start() {
             _cancellationToken = new CancellationTokenSource();
             _manager.EnableHand();
             _manager.EnableFace();
@@ -184,20 +187,7 @@ namespace SharpSenses.RealSense {
             return new Point3D(p.x, p.y, p.z);
         }
 
-        private Position CreatePosition(Point3D imagePosition, Point3D worldPosition) {
-            return new Position {
-                Image = new Point3D(imagePosition.X, imagePosition.Y),
-                World = new Point3D(ToRoundedCentimeters(worldPosition.X),
-                                    ToRoundedCentimeters(worldPosition.Y),
-                                    ToRoundedCentimeters(worldPosition.Z))
-            };
-        }
-
-        private double ToRoundedCentimeters(double value) {
-            return Math.Round(value * 100, 2);
-        }
-
-        public void Dispose() {
+        public override void Dispose() {
             _manager.Dispose();
             _session.Dispose();
         }
