@@ -1,19 +1,19 @@
 SharpSenses
 ==============
 
-An easier way to use Intel 3d Cameras. You can use it with both Perceptual (2013) and RealSense (2014) SDKs! Custom poses, gestures and much more.
+An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (2013) and **RealSense** (2014) SDKs! Custom poses, gestures and much more.
 
 *Warning*: This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.
 
 ## SharpSenses.Perceptual
 ---
-### Nuget: Instal-Package SharpSenses.Perceptual
----
+#### Nuget: Instal-Package SharpSenses.Perceptual
+
 
 ## SharpSenses.RealSense
 ---
 ### Nuget: Instal-Package SharpSenses.RealSense
----
+
 
 
 ## Sample:
