@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <package >
-  <metadata>
-    <id>sharpsenses</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
-    <projectUrl>https://github.com/andrecarlucci/SharpSenses</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes></releaseNotes>
-    <copyright>Copyright Andre Carlucci 2014</copyright>
-    <tags>realsense intel perceptual camera3d gestures</tags>
-	<references>
-      <reference file="libpxcclr.cs.dll" />
-      <reference file="sharpsenses.dll" />
-	    <reference file="sharpsenses.RealSense.dll" />
-  </references>
-  </metadata>
+	<metadata>
+		<id>sharpsenses.realsense</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+		<projectUrl>https://github.com/andrecarlucci/SharpSenses</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>$description$</description>
+		<copyright>Copyright Andre Carlucci 2014</copyright>
+		<tags>realsense intel perceptual camera3d gestures</tags>
+		<references>
+			<reference file="libpxcclr.cs.dll" />
+			<reference file="sharpsenses.RealSense.dll" />
+		</references>
+		<dependencies>
+		   <dependency id="sharpsenses" version="$version$" />
+		</dependencies>
+	</metadata>
   <files>
-        <file src="bin\Release\SharpSenses.dll" target="lib\net45" />
-        <file src="..\_libs\libpxcclr.cs.dll" target="lib\net45" />
-        <file src="..\_libs\libpxccpp2c.dll" target="content" />
-        <file src="install.ps1" target="tools" />
-    </files>
+	<file src="..\_libs\libpxcclr.cs.dll" target="lib\net45" />
+	<file src="..\_libs\libpxccpp2c.dll" target="content" />
+	<file src="install.ps1" target="tools" />
+</files>
 </package>

@@ -1,9 +1,44 @@
 ﻿using System;
+using System.Reflection;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
 namespace SharpSenses {
     public abstract class Camera : ICamera {
+        
+        public static ICamera Create(CameraKind cameraKind) {
+            return TryAssembly(cameraKind);
+        }
+
+        public static ICamera Create() {
+            var cam = TryAssembly(CameraKind.RealSense);
+            return cam ?? TryAssembly(CameraKind.Perceptual);
+        }
+
+        private static ICamera TryAssembly(CameraKind camraKind) {
+            string name = camraKind.ToString();
+            var realSense = LoadAssemblyOrNull(name);
+            if (realSense == null) return null;
+            try {
+                return (ICamera) Activator.CreateInstance(
+                    "SharpSenses." + name,
+                    "SharpSenses." + name + "." + name + "Camera",
+                    true, BindingFlags.Instance | BindingFlags.Public, null, null, null, null).Unwrap();
+            }
+            catch (Exception ex) {
+                throw new CameraException(ex.Message);
+            }
+        }
+
+        private static Assembly LoadAssemblyOrNull(string assemblyName) {
+            try {
+                return Assembly.Load("SharpSenses." + assemblyName);
+            }
+            catch {
+                return null;
+            }
+        }
+
         protected GestureSensor _gestures;
         protected PoseSensor _poses;
         public abstract int ResolutionWidth { get; }

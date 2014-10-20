@@ -11,12 +11,7 @@ namespace SharpSenses.RealSense.Playground {
         private static void Main(string[] args) {
             bool realSense = false;
 
-            if (realSense) {
-                _cam = new RealSenseCamera();                
-            }
-            else {
-                _cam = new PerceptualCamera();
-            }
+            _cam = Camera.Create();
             _cam.Start();
 
             _cam.LeftHand.Moved += p => {
@@ -24,11 +19,11 @@ namespace SharpSenses.RealSense.Playground {
                 Console.Write("X: " + p.Image.X);
             };
 
-            _cam.Gestures.SwipeLeft += sl => { Console.WriteLine("Swipe Left"); };
-            _cam.Gestures.SwipeRight += s => { Console.WriteLine("Swipe Right"); };
-            _cam.Gestures.SwipeUp += s => { Console.WriteLine("Swipe Up"); };
-            _cam.Gestures.SwipeDown += s => { Console.WriteLine("Swipe Down"); };
-            _cam.Poses.PeaceBegin += hand => { Console.WriteLine("Peace, bro"); };
+            _cam.Gestures.SwipeLeft += s => Console.WriteLine("Swipe Left");
+            _cam.Gestures.SwipeRight += s => Console.WriteLine("Swipe Right");
+            _cam.Gestures.SwipeUp += s => Console.WriteLine("Swipe Up");
+            _cam.Gestures.SwipeDown += s => Console.WriteLine("Swipe Down");
+            _cam.Poses.PeaceBegin += hand => Console.WriteLine("Peace, bro");
 
             //cam.Face.Visible += () => {
             //    Console.WriteLine("Face visible!");
@@ -139,11 +134,9 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Dispose();
         }
 
-        private static void TrackCustomPoseWithBothHands(RealSenseCamera cam) {
+        private static void TrackCustomPoseWithBothHands(ICamera cam) {
             var bothHandsClosed = PoseBuilder.Combine(cam.LeftHand, State.Closed)
                 .With(cam.RightHand, State.Closed)
-                .With(cam.LeftHand, State.Visible)
-                .With(cam.RightHand, State.Visible)
                 .Build("bothhandsclosed");
             bothHandsClosed.Begin += s => Console.WriteLine("BOTH Begin");
             bothHandsClosed.End += s => Console.WriteLine("BOTH End");
@@ -161,7 +154,7 @@ namespace SharpSenses.RealSense.Playground {
             };
         }
 
-        private static void TrackVisibleAndOpen(RealSenseCamera cam) {
+        private static void TrackVisibleAndOpen(ICamera cam) {
             cam.LeftHand.Opened += () => Console.WriteLine("Left Open");
             cam.LeftHand.Closed += () => Console.WriteLine("Left Closed");
             cam.LeftHand.Visible += () => Console.WriteLine("Left Visible");
@@ -175,7 +168,7 @@ namespace SharpSenses.RealSense.Playground {
             cam.RightHand.NotVisible += () => Console.WriteLine("Right Not Visible");
         }
 
-        private static void TrackHandMovement(RealSenseCamera cam) {
+        private static void TrackHandMovement(ICamera cam) {
             int i = 0;
             cam.LeftHand.Moved += d => {
                 i++;

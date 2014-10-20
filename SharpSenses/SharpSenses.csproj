@@ -40,8 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Camera.cs" />
     <Compile Include="CameraException.cs" />
+    <Compile Include="CameraKind.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="Finger.cs" />
     <Compile Include="FlexiblePart.cs" />
