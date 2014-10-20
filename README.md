@@ -14,7 +14,7 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
 
 ## Sample:
 ```
-	ICamera cam = new RealSenseCamera();
+	ICamera cam = Camera.Create(); //autodiscovers your sdk (perceptual or realsense)
 	cam.RightHand.Closed += () => Console.WriteLine("Hand Closed");
 	cam.RightHand.Moved += p => Console.WriteLine("-> x:{0} y:{1}", p.Image.X, p.Image.Y);
 	cam.Start();
