@@ -6,11 +6,11 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
 *Warning*: This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.
 
 ## SharpSenses.Perceptual
->  Nuget: Instal-Package SharpSenses.Perceptual
+>  Nuget: Install-Package SharpSenses.Perceptual
 
 
 ## SharpSenses.RealSense
-> Nuget: Instal-Package SharpSenses.RealSense
+> Nuget: Install-Package SharpSenses.RealSense
 
 ## Sample:
 ```
