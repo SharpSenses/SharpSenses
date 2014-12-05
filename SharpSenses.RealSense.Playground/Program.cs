@@ -13,6 +13,7 @@ namespace SharpSenses.RealSense.Playground {
 
             _cam = Camera.Create();
             _cam.Start();
+            _cam.LeftHand.Visible += () => Console.WriteLine("Hi");
 
             _cam.LeftHand.Moved += p => {
                 Console.Write("\r");
