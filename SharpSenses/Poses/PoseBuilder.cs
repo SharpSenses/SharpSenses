@@ -8,8 +8,7 @@ namespace SharpSenses.Poses {
     public class PoseBuilder  {
         private List<PoseStateTrigger> _stateItems = new List<PoseStateTrigger>();
         private List<ItemPositionTrigger> _positionItems = new List<ItemPositionTrigger>();
-
-        public PoseBuilder() { }
+        private int _poseThreshold = 500;
 
         public static PoseBuilder Create() {
             return new PoseBuilder();
@@ -25,8 +24,13 @@ namespace SharpSenses.Poses {
             return this;
         }
 
+        public PoseBuilder HoldPoseFor(int milliseconds) {
+            _poseThreshold = milliseconds;
+            return this;
+        }
+
         public Pose Build(string name = "custompose") {
-            var pose = new Pose(name);
+            var pose = new Pose(name, _poseThreshold);
             foreach (var itemState in _stateItems) {
                 var item = itemState.What;
                 var state = itemState.Trigger;
@@ -57,8 +61,9 @@ namespace SharpSenses.Poses {
                 var itemA = itemPosition.ItemA;
                 var itemB = itemPosition.ItemB;
                 int id = pose.AddFlag();
-                itemA.Moved += p => pose.Flag(id, Math.Abs(MathEx.CalcDistance(p.Image, itemB.Position.Image)) <= itemPosition.DistanceInCm);
-                itemB.Moved += p => pose.Flag(id, Math.Abs(MathEx.CalcDistance(p.Image, itemA.Position.Image)) <= itemPosition.DistanceInCm);
+                var trigger = itemPosition;
+                itemA.Moved += p => pose.Flag(id, IsCloseEnough(trigger));
+                itemB.Moved += p => pose.Flag(id, IsCloseEnough(trigger));
             }
 
             _positionItems.Clear();
@@ -66,10 +71,15 @@ namespace SharpSenses.Poses {
             return pose;
         }
 
+        private bool IsCloseEnough(ItemPositionTrigger trigger) {
+            double dist = Math.Abs(MathEx.CalcDistance(trigger.ItemA.Position.Image, trigger.ItemB.Position.Image));
+            bool itIs = trigger.DistanceInCm >= dist;
+            return itIs;
+        }
+
         private class ItemPositionTrigger {
             public Item ItemA { get; private set; }
             public Item ItemB { get; private set; }
-
             public int DistanceInCm { get; private set; }
 
             public ItemPositionTrigger(Item itemA, Item itemB, int distanceInCm = 10) {

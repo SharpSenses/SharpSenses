@@ -136,8 +136,9 @@ namespace SharpSenses.RealSense.Playground {
         }
 
         private static void TrackCustomPoseWithBothHands(ICamera cam) {
-            var bothHandsClosed = PoseBuilder.Combine(cam.LeftHand, State.Closed)
-                .With(cam.RightHand, State.Closed)
+            var bothHandsClosed = PoseBuilder.Create()
+                .ShouldBe(cam.LeftHand, State.Closed)
+                .ShouldBe(cam.RightHand, State.Closed)
                 .Build("bothhandsclosed");
             bothHandsClosed.Begin += s => Console.WriteLine("BOTH Begin");
             bothHandsClosed.End += s => Console.WriteLine("BOTH End");

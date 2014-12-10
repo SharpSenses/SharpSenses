@@ -13,10 +13,13 @@ namespace SharpSenses.Poses {
         public event Action<string> Begin;
         public event Action<string> End;
 
+        public int PoseThresholdInMilli { get; set; }
+
         public string Name { get; set; }
 
-        public Pose(string name = "pose") {
+        public Pose(string name = "pose", int poseThresholdInMilli = 500) {
             Name = name;
+            PoseThresholdInMilli = poseThresholdInMilli;
         }
 
         protected virtual void OnEnd() {
@@ -55,11 +58,15 @@ namespace SharpSenses.Poses {
                 }
                 _active = value;
                 if (_active) {
+                    if (PoseThresholdInMilli == 0) {
+                        OnBegin();
+                        return;
+                    }
                     _waiting = true;
                     _token = new CancellationTokenSource();
                     Task.Run(async () => {
                         try {
-                            await Task.Delay(500, _token.Token);
+                            await Task.Delay(PoseThresholdInMilli, _token.Token);
                         }
                         catch {}
                         if (_active) {

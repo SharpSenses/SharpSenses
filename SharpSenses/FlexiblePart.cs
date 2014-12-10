@@ -3,6 +3,9 @@ using System;
 namespace SharpSenses {
     public class FlexiblePart : Item {
         private int _faults = 0;
+
+        public static int DefaultTolerance = 0;
+
         public int Tolerance { get; set; }
 
         private bool _isOpen;
@@ -10,7 +13,7 @@ namespace SharpSenses {
         public event Action Closed;
 
         public FlexiblePart() {
-            Tolerance = 1;
+            Tolerance = DefaultTolerance;
         }
 
         public virtual string GetInfo() {
@@ -22,7 +25,7 @@ namespace SharpSenses {
             get { return _isOpen; }
             set {
                 if (_isOpen == value) return;
-                if (_faults <= Tolerance) {
+                if (_faults < Tolerance) {
                     _faults++;
                     return;
                 }
