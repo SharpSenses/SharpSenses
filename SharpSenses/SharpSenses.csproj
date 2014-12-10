@@ -55,6 +55,7 @@
     <Compile Include="Gestures\MovementRight.cs" />
     <Compile Include="Gestures\MovementStatus.cs" />
     <Compile Include="Gestures\MovementUp.cs" />
+    <Compile Include="Month.cs" />
     <Compile Include="Poses\Pose.cs" />
     <Compile Include="Gestures\Direction.cs" />
     <Compile Include="Gestures\Gesture.cs" />

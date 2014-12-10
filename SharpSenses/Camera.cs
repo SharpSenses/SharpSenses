@@ -25,6 +25,9 @@ namespace SharpSenses {
                     "SharpSenses." + name + "." + name + "Camera",
                     true, BindingFlags.Instance | BindingFlags.Public, null, null, null, null).Unwrap();
             }
+            catch(BadImageFormatException bex) {
+                throw new CameraException("SharpSenses only works with x64 applications :(");
+            }
             catch (Exception ex) {
                 throw new CameraException(ex.Message);
             }

@@ -1,27 +1,33 @@
 using System;
 using System.Collections.Generic;
 using SharpSenses.Gestures;
+using SharpSenses.Util;
 
 namespace SharpSenses.Poses {
 
     public class PoseBuilder  {
-        private List<PoseTrigger> _items = new List<PoseTrigger>();
+        private List<PoseStateTrigger> _stateItems = new List<PoseStateTrigger>();
+        private List<ItemPositionTrigger> _positionItems = new List<ItemPositionTrigger>();
 
-        private PoseBuilder() { }
+        public PoseBuilder() { }
 
-        public static PoseBuilder Combine(FlexiblePart what, State trigger) {
-            var builder = new PoseBuilder();
-            return builder.With(what, trigger);
+        public static PoseBuilder Create() {
+            return new PoseBuilder();
         }
 
-        public PoseBuilder With(FlexiblePart what, State trigger) {
-            _items.Add(new PoseTrigger(what, trigger));
+        public PoseBuilder ShouldTouch(Item itemA, Item itemB) {
+            _positionItems.Add(new ItemPositionTrigger(itemA, itemB));
+            return this;
+        }
+
+        public PoseBuilder ShouldBe(FlexiblePart what, State trigger) {
+            _stateItems.Add(new PoseStateTrigger(what, trigger));
             return this;
         }
 
         public Pose Build(string name = "custompose") {
             var pose = new Pose(name);
-            foreach (var itemState in _items) {
+            foreach (var itemState in _stateItems) {
                 var item = itemState.What;
                 var state = itemState.Trigger;
                 int id = pose.AddFlag();
@@ -46,15 +52,38 @@ namespace SharpSenses.Poses {
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            _items.Clear();
+
+            foreach(var itemPosition in _positionItems) {
+                var itemA = itemPosition.ItemA;
+                var itemB = itemPosition.ItemB;
+                int id = pose.AddFlag();
+                itemA.Moved += p => pose.Flag(id, Math.Abs(MathEx.CalcDistance(p.Image, itemB.Position.Image)) <= itemPosition.DistanceInCm);
+                itemB.Moved += p => pose.Flag(id, Math.Abs(MathEx.CalcDistance(p.Image, itemA.Position.Image)) <= itemPosition.DistanceInCm);
+            }
+
+            _positionItems.Clear();
+            _stateItems.Clear();
             return pose;
         }
 
-        private class PoseTrigger {
+        private class ItemPositionTrigger {
+            public Item ItemA { get; private set; }
+            public Item ItemB { get; private set; }
+
+            public int DistanceInCm { get; private set; }
+
+            public ItemPositionTrigger(Item itemA, Item itemB, int distanceInCm = 10) {
+                ItemA = itemA;
+                ItemB = itemB;
+                DistanceInCm = distanceInCm;
+            }
+        }
+
+        private class PoseStateTrigger {
             public FlexiblePart What { get; private set; }
             public State Trigger { get; private set; }
 
-            public PoseTrigger(FlexiblePart what, State trigger) {
+            public PoseStateTrigger(FlexiblePart what, State trigger) {
                 What = what;
                 Trigger = trigger;
             }

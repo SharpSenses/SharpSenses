@@ -9,11 +9,12 @@ namespace SharpSenses.Poses {
             pose.End += s => poseSensor.OnPosePeaceEnd(hand);
         }
         private static Pose Build(Hand hand) {
-            return PoseBuilder.Combine(hand.Index, State.Opened)
-                .With(hand.Middle, State.Opened)
-                .With(hand.Pinky, State.Closed)
-                .With(hand.Ring, State.Closed)
-                .With(hand.Thumb, State.Closed)
+            return new PoseBuilder()
+                .ShouldBe(hand.Index, State.Opened)
+                .ShouldBe(hand.Middle, State.Opened)
+                .ShouldBe(hand.Pinky, State.Closed)
+                .ShouldBe(hand.Ring, State.Closed)
+                .ShouldBe(hand.Thumb, State.Closed)
                 .Build("Peace");
         }
     }

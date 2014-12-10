@@ -89,16 +89,32 @@ namespace SharpSenses.RealSense {
         }
 
         private void TrackFace(PXCMFaceData faceData) {
-            if (faceData.QueryNumberOfDetectedFaces() > 0) {
-                Face.IsVisible = true;
-                var face = faceData.QueryFaces().First();
-                PXCMRectI32 rect;
-                face.QueryDetection().QueryBoundingRect(out rect);
-                var point = new Point3D(rect.x - (rect.w), rect.y);
-                Face.Position = CreatePosition(point, new Point3D());
-            }
-            else {
+            if (faceData.QueryNumberOfDetectedFaces() == 0) {
                 Face.IsVisible = false;
+                return;
+            }
+            Face.IsVisible = true;
+            var face = faceData.QueryFaces().First();
+            PXCMRectI32 rect;
+            face.QueryDetection().QueryBoundingRect(out rect);
+            var point = new Point3D(rect.x + rect.w /2, rect.y + rect.h /2);
+            Face.Position = CreatePosition(point, new Point3D());
+
+            PXCMFaceData.LandmarksData landmarksData = face.QueryLandmarks();
+            if (landmarksData == null) {
+                return;
+            }
+            PXCMFaceData.LandmarkPoint[] facePoints;
+            landmarksData.QueryPoints(out facePoints);
+            if(facePoints == null) {
+                return;
+            }
+            foreach (var item in facePoints) {
+                switch(item.source.alias) {
+                    case PXCMFaceData.LandmarkType.LANDMARK_UPPER_LIP_CENTER:
+                        Face.Month.Position = CreatePosition(ToPoint3D(item.image), ToPoint3D(item.world));
+                        break;
+                }
             }
         }
 
@@ -123,14 +139,13 @@ namespace SharpSenses.RealSense {
                 return;
             }
             hand.IsVisible = true;
-            //SetHandOpenness(hand, handInfo);
+            SetHandOpenness(hand, handInfo);
             SetHandPosition(hand, handInfo);
             TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, PXCMHandData.FingerType.FINGER_INDEX);
             TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, PXCMHandData.FingerType.FINGER_MIDDLE);
             TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP, PXCMHandData.FingerType.FINGER_RING);
             TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, PXCMHandData.FingerType.FINGER_PINKY);
             TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, PXCMHandData.FingerType.FINGER_THUMB);
-            SetHandOpenness(hand);
         }
 
         private void SetHandPosition(Hand hand, PXCMHandData.IHand handInfo) {
@@ -148,7 +163,6 @@ namespace SharpSenses.RealSense {
         }
 
         private static void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
-            //allways returns 0 for me :(
             int openness = handInfo.QueryOpenness();
             if (openness > 75) {
                 hand.IsOpen = true;

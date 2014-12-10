@@ -44,10 +44,8 @@ namespace SharpSenses {
             set {
                 value = RemoveNoise(value);
                 if (DidNotChange(value)) {
-                    Debug.WriteLine("Same");
                     return;
                 }
-                Debug.WriteLine("NEW-----------");
                 _position = value;
                 OnMove(value);
             }
