@@ -48,6 +48,7 @@
     <Compile Include="CameraKind.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="Finger.cs" />
+    <Compile Include="FingerKind.cs" />
     <Compile Include="FlexiblePart.cs" />
     <Compile Include="Gestures\GestureStep.cs" />
     <Compile Include="Gestures\MovementDown.cs" />

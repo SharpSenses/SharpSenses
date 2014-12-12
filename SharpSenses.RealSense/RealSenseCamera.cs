@@ -48,8 +48,8 @@ namespace SharpSenses.RealSense {
                         Debug.WriteLine("Gestures: " + name);
                     }
                     //handConfig.EnableAllGestures();
+                    //handConfig.SubscribeGesture(OnGesture);                    
                     handConfig.EnableTrackedJoints(true);
-                    //handConfig.SubscribeGesture(OnGesture);
                     handConfig.ApplyChanges();
                 }
             }
