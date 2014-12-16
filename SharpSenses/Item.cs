@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
-using SharpSenses.Util;
 
 namespace SharpSenses {
-    public class Item {
+    public class Item : ObservableObject {
 
         public static int DefaultNoiseThreshold = 0;
 
@@ -22,6 +20,7 @@ namespace SharpSenses {
                     _position = new Position();
                     OnNotVisible();
                 }
+                RaisePropertyChanged(() => IsVisible);
             }
         }
 
@@ -48,6 +47,7 @@ namespace SharpSenses {
                 }
                 _position = value;
                 OnMove(value);
+                RaisePropertyChanged(() => Position);
             }
         }
 
@@ -86,10 +86,6 @@ namespace SharpSenses {
 
         private bool DidNotChange(Position nextPosition) {
             return nextPosition.Image.Equals(_position.Image);
-        }
-
-        private bool IsNoise(Position value) {
-            return MathEx.CalcDistance(_position.Image, value.Image) <= DefaultNoiseThreshold;
         }
 
         protected virtual void OnMove(Position moveRecord) {

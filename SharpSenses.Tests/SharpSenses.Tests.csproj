@@ -43,8 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FakeCamera.cs" />
+    <Compile Include="FlexiblePartTests.cs" />
     <Compile Include="GestureStepsTests.cs" />
     <Compile Include="GestureTests.cs" />
+    <Compile Include="ItemTests.cs" />
     <Compile Include="MovementTests.cs" />
     <Compile Include="PoseBuilderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

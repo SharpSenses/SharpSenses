@@ -37,6 +37,7 @@ namespace SharpSenses {
                 else {
                     OnClosed();
                 }
+                RaisePropertyChanged(() => IsOpen);
             }
         }
 
