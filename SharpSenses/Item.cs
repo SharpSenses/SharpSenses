@@ -24,16 +24,17 @@ namespace SharpSenses {
             }
         }
 
-        public event Action Visible;
-        public event Action NotVisible;
+        public event EventHandler Visible;
+        public event EventHandler NotVisible;
+        public event EventHandler<PositionEventArgs> Moved;
 
         protected virtual void OnNotVisible() {
-            Action handler = NotVisible;
-            if (handler != null) handler();
+            var handler = NotVisible;
+            if (handler != null) handler(this, new EventArgs());
         }
         protected virtual void OnVisible() {
-            Action handler = Visible;
-            if (handler != null) handler();
+            var handler = Visible;
+            if (handler != null) handler(this, new EventArgs());
         }
 
         private Position _position;
@@ -45,8 +46,9 @@ namespace SharpSenses {
                 if (DidNotChange(value)) {
                     return;
                 }
+                var oldPosition = _position;
                 _position = value;
-                OnMove(value);
+                OnMove(oldPosition, value);
                 RaisePropertyChanged(() => Position);
             }
         }
@@ -88,12 +90,19 @@ namespace SharpSenses {
             return nextPosition.Image.Equals(_position.Image);
         }
 
-        protected virtual void OnMove(Position moveRecord) {
-            Action<Position> handler = Moved;
-            if (handler != null) handler(moveRecord);
+        protected virtual void OnMove(Position oldPosition, Position newPosition) {
+            var handler = Moved;
+            if (handler != null) handler(this, new PositionEventArgs(oldPosition, newPosition));
         }
+    }
 
-        public event Action<Position> Moved;
+    public class PositionEventArgs : EventArgs {
+        public Position OldPosition { get; set; }
+        public Position NewPosition { get; set; }
         
+        public PositionEventArgs(Position oldPosition, Position newPosition) {
+            OldPosition = oldPosition;
+            NewPosition = newPosition;
+        }
     }
 }

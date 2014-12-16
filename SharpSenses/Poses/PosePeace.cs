@@ -1,12 +1,11 @@
-using System.Runtime.CompilerServices;
 using SharpSenses.Gestures;
 
 namespace SharpSenses.Poses {
     public static class PosePeace {
         public static void Configue(Hand hand, PoseSensor poseSensor) {
             var pose = Build(hand);
-            pose.Begin += s => poseSensor.OnPosePeaceBegin(hand);
-            pose.End += s => poseSensor.OnPosePeaceEnd(hand);
+            pose.Begin += (s,a) => poseSensor.OnPosePeaceBegin(hand);
+            pose.End += (s, a) => poseSensor.OnPosePeaceEnd(hand);
         }
         private static Pose Build(Hand hand) {
             return new PoseBuilder()

@@ -146,10 +146,8 @@ namespace SharpSenses.Perceptual {
                     IfThisElseThat(gesture.active, () => _poses.OnPosePeaceBegin(hand), () => _poses.OnPosePeaceEnd(hand));
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_POSE_THUMB_DOWN:
-                    IfThisElseThat(gesture.active, _poses.OnPoseThumbsDownBegin, _poses.OnPoseThumbsDownEnd);
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_POSE_THUMB_UP:
-                    IfThisElseThat(gesture.active, _poses.OnPoseThumbsUpBegin, _poses.OnPoseThumbsUpEnd);
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_HAND_CIRCLE:
                     break;

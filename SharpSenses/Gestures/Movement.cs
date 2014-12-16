@@ -34,20 +34,12 @@ namespace SharpSenses.Gestures {
                 Deactivate();
                 Status = MovementStatus.Idle;
                 Item.Moved += ItemOnMoved;
-                Item.NotVisible += Restart;                
+                Item.NotVisible += ItemOnNotVisible;
             }
         }
 
-        public void Deactivate() {
-            lock (_sync) {
-                Status = MovementStatus.Idle;
-                Item.Moved -= ItemOnMoved;
-                Item.NotVisible -= Restart;                
-            }
-        }
-
-        private void ItemOnMoved(Position position) {
-            var point = position.World;
+        private void ItemOnMoved(object sender, PositionEventArgs positionEventArgs) {
+            var point = positionEventArgs.NewPosition.World;
             if (Status == MovementStatus.Completed) {
                 if (AutoRestart && !IsGoingRightDirection(point)) {
                     Status = MovementStatus.Idle;
@@ -77,6 +69,18 @@ namespace SharpSenses.Gestures {
             }
             LastPosition = point;
             OnProgress(GetProgress(point));
+        }
+
+        private void ItemOnNotVisible(object sender, EventArgs eventArgs) {
+            Restart();
+        }
+
+        public void Deactivate() {
+            lock (_sync) {
+                Status = MovementStatus.Idle;
+                Item.Moved -= ItemOnMoved;
+                Item.NotVisible -= ItemOnNotVisible;                
+            }
         }
 
         public void Restart() {

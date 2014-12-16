@@ -9,8 +9,8 @@ namespace SharpSenses {
         public int Tolerance { get; set; }
 
         private bool _isOpen;
-        public event Action Opened;
-        public event Action Closed;
+        public event EventHandler Opened;
+        public event EventHandler Closed;
 
         public FlexiblePart() {
             Tolerance = DefaultTolerance;
@@ -42,13 +42,13 @@ namespace SharpSenses {
         }
 
         protected virtual void OnClosed() {
-            Action handler = Closed;
-            if (handler != null) handler();
+            var handler = Closed;
+            if (handler != null) handler(this, new EventArgs());
         }
 
         protected virtual void OnOpened() {
-            Action handler = Opened;
-            if (handler != null) handler();
+            var handler = Opened;
+            if (handler != null) handler(this, new EventArgs());
         }
     }
 }

@@ -21,8 +21,8 @@ namespace SharpSenses {
             Pinky = new Finger(FingerKind.Pinky);
             Side = side;
             var fingers = GetAllFingers();
-            fingers.ForEach(f => f.Opened += () => OnFingerOpened(f));
-            fingers.ForEach(f => f.Closed += () => OnFingerClosed(f));
+            fingers.ForEach(f => f.Opened += (s, a) => OnFingerOpened(f));
+            fingers.ForEach(f => f.Closed += (s, a) => OnFingerClosed(f));
         }
 
 

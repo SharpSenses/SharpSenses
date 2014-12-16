@@ -2,7 +2,7 @@ using System;
 
 namespace SharpSenses.Poses {
     public interface IPoseSensor {
-        event Action<Hand> PeaceBegin;
-        event Action<Hand> PeaceEnd;
+        event EventHandler<HandPoseEventArgs> PeaceBegin;
+        event EventHandler<HandPoseEventArgs> PeaceEnd;
     }
 }

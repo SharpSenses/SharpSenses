@@ -37,20 +37,20 @@ namespace SharpSenses.Poses {
                 int id = pose.AddFlag();
                 switch (state) {
                     case State.Opened:
-                        item.Opened += () => pose.Flag(id, true);
-                        item.Closed += () => pose.Flag(id, false);
+                        item.Opened += (s, a) => pose.Flag(id, true);
+                        item.Closed += (s, a) => pose.Flag(id, false);
                         break;
                     case State.Closed:
-                        item.Closed += () => pose.Flag(id, true);
-                        item.Opened += () => pose.Flag(id, false);
+                        item.Closed += (s, a) => pose.Flag(id, true);
+                        item.Opened += (s, a) => pose.Flag(id, false);
                         break;
                     case State.Visible:
-                        item.Visible += () => pose.Flag(id, true);
-                        item.NotVisible += () => pose.Flag(id, false);
+                        item.Visible += (s, a) => pose.Flag(id, true);
+                        item.NotVisible += (s, a) => pose.Flag(id, false);
                         break;
                     case State.NotVisible:
-                        item.NotVisible += () => pose.Flag(id, true);
-                        item.Visible += () => pose.Flag(id, false);
+                        item.NotVisible += (s, a) => pose.Flag(id, true);
+                        item.Visible += (s, a) => pose.Flag(id, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -62,8 +62,8 @@ namespace SharpSenses.Poses {
                 var itemB = itemPosition.ItemB;
                 int id = pose.AddFlag();
                 var trigger = itemPosition;
-                itemA.Moved += p => pose.Flag(id, IsCloseEnough(trigger));
-                itemB.Moved += p => pose.Flag(id, IsCloseEnough(trigger));
+                itemA.Moved += (s, a) => pose.Flag(id, IsCloseEnough(trigger));
+                itemB.Moved += (s, a) => pose.Flag(id, IsCloseEnough(trigger));
             }
 
             _positionItems.Clear();

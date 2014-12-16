@@ -9,8 +9,8 @@ namespace SharpSenses.Poses {
         private volatile bool _active;
         private Dictionary<int, bool> _flags = new Dictionary<int, bool>();
 
-        public event Action<string> Begin;
-        public event Action<string> End;
+        public event EventHandler<PoseEventArgs> Begin;
+        public event EventHandler<PoseEventArgs> End;
 
         public int PoseThresholdInMilli { get; set; }
 
@@ -22,13 +22,13 @@ namespace SharpSenses.Poses {
         }
 
         protected virtual void OnEnd() {
-            Action<string> handler = End;
-            if (handler != null) handler(Name);
+            var handler = End;
+            if (handler != null) handler(this, new PoseEventArgs(Name));
         }
 
         protected virtual void OnBegin() {
-            Action<string> handler = Begin;
-            if (handler != null) handler(Name);
+            var handler = Begin;
+            if (handler != null) handler(this, new PoseEventArgs(Name));
         }
 
         internal int AddFlag() {
@@ -85,6 +85,13 @@ namespace SharpSenses.Poses {
                     //Debug.WriteLine("Custom pose end: " + Name);
                     OnEnd();
                 }
+            }
+        }
+
+        public class PoseEventArgs : EventArgs {
+            public string PoseName { get; set; }
+            public PoseEventArgs(string poseName) {
+                PoseName = poseName;
             }
         }
     }
