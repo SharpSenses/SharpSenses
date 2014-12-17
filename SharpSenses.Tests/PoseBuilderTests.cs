@@ -13,12 +13,12 @@ namespace SharpSenses.Tests {
 
         [Test]
         public void Should_create_proximity_pose() {
-            var pose = new PoseBuilder().ShouldTouch(_cam.Face.Month, _cam.LeftHand.Index)
+            var pose = new PoseBuilder().ShouldTouch(_cam.Face.Mouth, _cam.LeftHand.Index)
                 .HoldPoseFor(0)
                 .Build();
             bool ok = false;
             pose.Begin += (s, a) => { ok = true; };
-            _cam.Face.Month.Position = new Position {
+            _cam.Face.Mouth.Position = new Position {
                 Image = new Point3D(10, 10)
             };
             _cam.LeftHand.Index.Position = new Position {
@@ -30,12 +30,12 @@ namespace SharpSenses.Tests {
         [Test]
         public void Should_create_combined_poses() {
             var pose = new PoseBuilder().ShouldBe(_cam.LeftHand.Index, State.Opened)
-                .ShouldTouch(_cam.Face.Month, _cam.LeftHand.Index)
+                .ShouldTouch(_cam.Face.Mouth, _cam.LeftHand.Index)
                 .HoldPoseFor(0)
                 .Build();
             bool ok = false;
             pose.Begin += (s, a) => { ok = true; };
-            _cam.Face.Month.Position = new Position {
+            _cam.Face.Mouth.Position = new Position {
                 Image = new Point3D(10, 10)
             };
             _cam.LeftHand.Index.Position = new Position {

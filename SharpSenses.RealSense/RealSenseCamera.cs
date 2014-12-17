@@ -112,7 +112,7 @@ namespace SharpSenses.RealSense {
             foreach (var item in facePoints) {
                 switch(item.source.alias) {
                     case PXCMFaceData.LandmarkType.LANDMARK_UPPER_LIP_CENTER:
-                        Face.Month.Position = CreatePosition(ToPoint3D(item.image), ToPoint3D(item.world));
+                        Face.Mouth.Position = CreatePosition(ToPoint3D(item.image), ToPoint3D(item.world));
                         break;
                 }
             }

@@ -58,7 +58,7 @@
     <Compile Include="Gestures\MovementRight.cs" />
     <Compile Include="Gestures\MovementStatus.cs" />
     <Compile Include="Gestures\MovementUp.cs" />
-    <Compile Include="Month.cs" />
+    <Compile Include="Mouth.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Poses\HandPoseEventArgs.cs" />
     <Compile Include="Poses\Pose.cs" />
