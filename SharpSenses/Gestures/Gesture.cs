@@ -4,17 +4,20 @@ using System.Threading.Tasks;
 
 namespace SharpSenses.Gestures {
     public class Gesture {
+
+        public static int DetayBetweenDetectionInMilli = 500;
+
         private object _sync = new object();
-        public event Action GestureDetected;
-        public event Action<int> NextStep;
-        public event Action<double> StepProgress;
+        public event EventHandler<GestureEventArgs> GestureDetected;
+        public event EventHandler<GestureStepEventArgs> NextStep;
+        public event EventHandler<GestureStepEventArgs> StepProgress;
 
         public string Name { get; set; }
 
         protected int CurrentStep;
         protected List<GestureStep> GestureSteps = new List<GestureStep>();
 
-        public Gesture() {}
+        public Gesture() { }
 
         public Gesture(string name) {
             Name = name;
@@ -46,7 +49,7 @@ namespace SharpSenses.Gestures {
         private void ChangeStep() {
             lock (_sync) {
                 GestureSteps.ForEach(x => x.Deactivate());
-                GestureSteps[CurrentStep].Activate();                
+                GestureSteps[CurrentStep].Activate();
             }
         }
 
@@ -67,7 +70,7 @@ namespace SharpSenses.Gestures {
         private void PauseAndRestart() {
             Deactivate();
             Task.Run(async () => {
-                await Task.Delay(800);
+                await Task.Delay(DetayBetweenDetectionInMilli);
                 Activate();
             });
         }
@@ -76,20 +79,20 @@ namespace SharpSenses.Gestures {
             return CurrentStep >= GestureSteps.Count;
         }
 
-        protected virtual void OnNextStep(int obj) {
-            Action<int> handler = NextStep;
-            if (handler != null) handler(obj);
+        protected virtual void OnNextStep(int step) {
+            var handler = NextStep;
+            if (handler != null) handler(this, new GestureStepEventArgs(Name, step));
         }
 
 
         protected virtual void OnGestureDetected() {
-            Action handler = GestureDetected;
-            if (handler != null) handler();
+            var handler = GestureDetected;
+            if (handler != null) handler(this, new GestureEventArgs(Name));
         }
 
         protected virtual void OnStepProgress(double progress) {
-            Action<double> handler = StepProgress;
-            if (handler != null) handler(progress);
+            var handler = StepProgress;
+            if (handler != null) handler(this, new GestureStepEventArgs(Name, CurrentStep, progress));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using SharpSenses.Gestures;
 
 namespace SharpSenses.Perceptual {
     public class PerceptualCamera : Camera {
@@ -154,16 +155,16 @@ namespace SharpSenses.Perceptual {
                 case PXCMGesture.Gesture.Label.LABEL_HAND_WAVE:
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_NAV_SWIPE_DOWN:
-                    _gestures.OnGestureSwipeDown(hand);
+                    _gestures.OnSlideDown(new GestureEventArgs(hand.Side + "_Down"));
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_NAV_SWIPE_UP:
-                    _gestures.OnGestureSwipeUp(hand);
+                    _gestures.OnSlideUp(new GestureEventArgs(hand.Side + "_Up"));
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_NAV_SWIPE_RIGHT:
-                    _gestures.OnGestureSwipeRight(hand);
+                    _gestures.OnSlideRight(new GestureEventArgs(hand.Side + "_Right"));
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_NAV_SWIPE_LEFT:
-                    _gestures.OnGestureSwipeLeft(hand);
+                    _gestures.OnSlideLeft(new GestureEventArgs(hand.Side + "_Left"));
                     break;
                 case PXCMGesture.Gesture.Label.LABEL_SET_CUSTOMIZED:
                     break;

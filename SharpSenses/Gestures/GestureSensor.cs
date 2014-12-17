@@ -2,60 +2,83 @@
 
 namespace SharpSenses.Gestures {
     public class GestureSensor : IGestureSensor {
+        public event EventHandler<GestureEventArgs> SlideLeft;
+        public event EventHandler<GestureEventArgs> SlideRight;
+        public event EventHandler<GestureEventArgs> SlideUp;
+        public event EventHandler<GestureEventArgs> SlideDown;
+        public event EventHandler<GestureEventArgs> MoveForward;
 
-        public event Action<Hand> SwipeLeft;
-        public event Action<Hand> SwipeRight;
-        public event Action<Hand> SwipeUp;
-        public event Action<Hand> SwipeDown;
-        public event Action<Hand> MoveForward;
+        //public GestureSensor(ICamera camera) {
+        //    CreateSlideGesture(camera.LeftHand, Direction.Left, SlideLeft);
+        //    CreateSlideGesture(camera.RightHand, Direction.Left, SlideLeft);
 
-        public GestureSensor(ICamera camera) {
-            CreateSwipeGesture(camera.LeftHand, Direction.Left).GestureDetected += () => OnGestureSwipeLeft(camera.LeftHand);
-            CreateSwipeGesture(camera.RightHand, Direction.Left).GestureDetected += () => OnGestureSwipeLeft(camera.RightHand);
+        //    CreateSlideGesture(camera.LeftHand, Direction.Right, SlideRight);
+        //    CreateSlideGesture(camera.RightHand, Direction.Right, SlideRight);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Right).GestureDetected += () => OnGestureSwipeRight(camera.LeftHand);
-            CreateSwipeGesture(camera.RightHand, Direction.Right).GestureDetected += () => OnGestureSwipeRight(camera.RightHand);
+        //    CreateSlideGesture(camera.LeftHand, Direction.Up, SlideUp);
+        //    CreateSlideGesture(camera.RightHand, Direction.Up, SlideUp);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Up).GestureDetected += () => OnGestureSwipeUp(camera.LeftHand);
-            CreateSwipeGesture(camera.RightHand, Direction.Up).GestureDetected += () => OnGestureSwipeUp(camera.RightHand);
+        //    CreateSlideGesture(camera.LeftHand, Direction.Down, SlideDown);
+        //    CreateSlideGesture(camera.RightHand, Direction.Down, SlideDown);
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Down).GestureDetected += () => OnGestureSwipeDown(camera.LeftHand);
-            CreateSwipeGesture(camera.RightHand, Direction.Down).GestureDetected += () => OnGestureSwipeDown(camera.RightHand);
+        //    CreateSlideGesture(camera.LeftHand, Direction.Forward, MoveForward);
+        //    CreateSlideGesture(camera.RightHand, Direction.Forward, MoveForward);
+        //}
 
-            CreateSwipeGesture(camera.LeftHand, Direction.Forward).GestureDetected += () => OnMoveForward(camera.LeftHand);
-            CreateSwipeGesture(camera.RightHand, Direction.Forward).GestureDetected += () => OnMoveForward(camera.RightHand);
-            
+        
+        public virtual void OnSlideLeft(GestureEventArgs e) {
+            var handler = SlideLeft;
+            if (handler != null) handler(this, e);
         }
 
-        private Gesture CreateSwipeGesture(Hand hand, Direction direction) {
-            var swipe = new Gesture("hand"+hand.Side + "_" + direction);
+        public virtual void OnSlideRight(GestureEventArgs e) {
+            var handler = SlideRight;
+            if (handler != null) handler(this, e);
+        }
+
+        public virtual void OnSlideUp(GestureEventArgs e) {
+            var handler = SlideUp;
+            if (handler != null) handler(this, e);
+        }
+
+        public virtual void OnSlideDown(GestureEventArgs e) {
+            var handler = SlideDown;
+            if (handler != null) handler(this, e);
+        }
+
+        public virtual void OnMoveForward(GestureEventArgs e) {
+            var handler = MoveForward;
+            if (handler != null) handler(this, e);
+        }
+    }
+
+    public static class GestureSlide {
+
+        private static GestureSensor _gestureSensor;
+
+        public static void Configue(ICamera camera, GestureSensor gestureSensor) {
+            _gestureSensor = gestureSensor;
+            CreateSlideGesture(camera.LeftHand, Direction.Left, g => _gestureSensor.OnSlideLeft(g));
+            CreateSlideGesture(camera.RightHand, Direction.Left, g => _gestureSensor.OnSlideLeft(g));
+
+            CreateSlideGesture(camera.LeftHand, Direction.Right, g => _gestureSensor.OnSlideRight(g));
+            CreateSlideGesture(camera.RightHand, Direction.Right, g => _gestureSensor.OnSlideRight(g));
+
+            CreateSlideGesture(camera.LeftHand, Direction.Up, g => _gestureSensor.OnSlideUp(g));
+            CreateSlideGesture(camera.RightHand, Direction.Up, g => _gestureSensor.OnSlideUp(g));
+
+            CreateSlideGesture(camera.LeftHand, Direction.Down, g => _gestureSensor.OnSlideDown(g));
+            CreateSlideGesture(camera.RightHand, Direction.Down, g => _gestureSensor.OnSlideDown(g));
+
+            CreateSlideGesture(camera.LeftHand, Direction.Forward, g => _gestureSensor.OnMoveForward(g));
+            CreateSlideGesture(camera.RightHand, Direction.Forward, g => _gestureSensor.OnMoveForward(g));
+        }
+   
+        private static void CreateSlideGesture(Hand hand, Direction direction, Action<GestureEventArgs> handler) {
+            var swipe = new Gesture("hand" + hand.Side + "_" + direction);
             swipe.AddStep(1000, Movement.CreateMovement(direction, hand, 11));
             swipe.Activate();
-            return swipe;
-        }
-
-        public void OnGestureSwipeRight(Hand hand) {
-            Action<Hand> handler = SwipeRight;
-            if (handler != null) handler(hand);
-        }
-
-        public void OnGestureSwipeLeft(Hand hand) {
-            Action<Hand> handler = SwipeLeft;
-            if (handler != null) handler(hand);
-        }
-
-        public virtual void OnGestureSwipeUp(Hand hand) {
-            Action<Hand> handler = SwipeUp;
-            if (handler != null) handler(hand);
-        }
-        public virtual void OnGestureSwipeDown(Hand hand) {
-            Action<Hand> handler = SwipeDown;
-            if (handler != null) handler(hand);
-        }
-
-        protected virtual void OnMoveForward(Hand hand) {
-            Action<Hand> handler = MoveForward;
-            if (handler != null) handler(hand);
+            swipe.GestureDetected += (s, a) => handler.Invoke(a);
         }
     }
 }

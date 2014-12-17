@@ -18,8 +18,8 @@ namespace SharpSenses.Tests {
         public void Should_Report_Progress() {
             double progress = 0;
             _movement.Progress += d => progress = d;
-            _camera.MoveLeftHandZ(1);
             _camera.MoveLeftHandZ(2);
+            _camera.MoveLeftHandZ(1);
             Assert.IsTrue(progress > 0);
         }
 
@@ -27,9 +27,9 @@ namespace SharpSenses.Tests {
         public void Should_Restart_when_wrong_direction() {
             bool restarted = false;
             _movement.Restarted += () => restarted = true;
-            _camera.MoveLeftHandZ(1);
             _camera.MoveLeftHandZ(2);
             _camera.MoveLeftHandZ(1);
+            _camera.MoveLeftHandZ(2);
             Assert.AreEqual(MovementStatus.Idle, _movement.Status);
             Assert.IsTrue(restarted);
         }

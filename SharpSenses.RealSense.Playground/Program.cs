@@ -15,13 +15,14 @@ namespace SharpSenses.RealSense.Playground {
 
             _cam.LeftHand.Moved += (s, a) => {
                 Console.Write("\r");
-                Console.Write("X: " + a.NewPosition.Image.X);
+                Console.Write("Z: " + a.NewPosition.World.Z);
             };
 
-            _cam.Gestures.SwipeLeft += s => Console.WriteLine("Swipe Left");
-            _cam.Gestures.SwipeRight += s => Console.WriteLine("Swipe Right");
-            _cam.Gestures.SwipeUp += s => Console.WriteLine("Swipe Up");
-            _cam.Gestures.SwipeDown += s => Console.WriteLine("Swipe Down");
+            _cam.Gestures.SlideLeft += (s, a) => Console.WriteLine("Swipe Left");
+            _cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");
+            _cam.Gestures.SlideUp += (s, a) => Console.WriteLine("Swipe Up");
+            _cam.Gestures.SlideDown += (s, a) => Console.WriteLine("Swipe Down");
+            _cam.Gestures.MoveForward += (s, a) => Console.WriteLine("Move Forward");
 
             Console.ReadLine();
             _cam.Dispose();

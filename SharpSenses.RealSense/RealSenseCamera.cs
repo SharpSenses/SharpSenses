@@ -202,8 +202,14 @@ namespace SharpSenses.RealSense {
         }
 
         public override void Dispose() {
-            _manager.Dispose();
-            _session.Dispose();
+            try {
+                _manager.Dispose();
+            }
+            catch { }
+            try {
+                _session.Dispose();                
+            }
+            catch { }
         }
     }
 }

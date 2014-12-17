@@ -21,8 +21,8 @@ namespace SharpSenses.Tests {
             var b = new Gesture();
             b.AddStep(50000, Movement.Forward(_cam.LeftHand, 10), Movement.Forward(_cam.RightHand, 10));
             b.AddStep(50000, Movement.Left(_cam.LeftHand, 10), Movement.Right(_cam.RightHand, 10));
-            b.NextStep += i => {
-                step = i;
+            b.NextStep += (s,a) => {
+                step = a.Step;
             };
             b.Activate();
 
@@ -40,7 +40,7 @@ namespace SharpSenses.Tests {
             var b = new Gesture();
             b.AddStep(50000, Movement.Forward(_cam.LeftHand, 10), Movement.Forward(_cam.RightHand, 10));
             b.AddStep(50000, Movement.Left(_cam.LeftHand, 10), Movement.Right(_cam.RightHand, 10));
-            b.GestureDetected += () => {
+            b.GestureDetected += (s, a) => {
                 detected = true;
             };
             b.Activate();
@@ -63,7 +63,7 @@ namespace SharpSenses.Tests {
             var detected = true;
             var b = new Gesture();
             b.AddStep(50000, Movement.Left(_cam.LeftHand, 10));
-            b.GestureDetected += () => {
+            b.GestureDetected += (s, a) => {
                 detected = true;
             };
             b.Activate();

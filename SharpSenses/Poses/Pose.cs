@@ -20,14 +20,13 @@ namespace SharpSenses.Poses {
             Name = name;
             PoseThresholdInMilli = poseThresholdInMilli;
         }
-
-        protected virtual void OnEnd() {
-            var handler = End;
+        protected virtual void OnBegin() {
+            var handler = Begin;
             if (handler != null) handler(this, new PoseEventArgs(Name));
         }
 
-        protected virtual void OnBegin() {
-            var handler = Begin;
+        protected virtual void OnEnd() {
+            var handler = End;
             if (handler != null) handler(this, new PoseEventArgs(Name));
         }
 

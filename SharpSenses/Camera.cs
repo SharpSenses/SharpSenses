@@ -65,7 +65,7 @@ namespace SharpSenses {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
             Face = new Face();
-            _gestures = new GestureSensor(this);
+            _gestures = new GestureSensor();
             _poses = new PoseSensor();
         }
 

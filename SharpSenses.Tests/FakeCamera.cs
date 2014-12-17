@@ -22,7 +22,7 @@ namespace SharpSenses.Tests {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
             Face = new Face();
-            Gestures = new GestureSensor(this);
+            Gestures = new GestureSensor();
             Poses = new PoseSensor();
         }
 

@@ -50,7 +50,9 @@
     <Compile Include="Finger.cs" />
     <Compile Include="FingerKind.cs" />
     <Compile Include="FlexiblePart.cs" />
+    <Compile Include="Gestures\GestureEventArgs.cs" />
     <Compile Include="Gestures\GestureStep.cs" />
+    <Compile Include="Gestures\GestureStepEventArgs.cs" />
     <Compile Include="Gestures\MovementDown.cs" />
     <Compile Include="Gestures\MovementLeft.cs" />
     <Compile Include="Gestures\MovementRight.cs" />
