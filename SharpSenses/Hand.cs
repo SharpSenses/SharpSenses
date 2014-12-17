@@ -10,8 +10,8 @@ namespace SharpSenses {
         public Finger Pinky { get; private set; }
         public Side Side { get; set; }
 
-        public event Action<Finger> FingerOpened;
-        public event Action<Finger> FingerClosed;
+        public event EventHandler FingerOpened;
+        public event EventHandler FingerClosed;
 
         public Hand(Side side) {
             Thumb = new Finger(FingerKind.Thumb);
@@ -24,7 +24,6 @@ namespace SharpSenses {
             fingers.ForEach(f => f.Opened += (s, a) => OnFingerOpened(f));
             fingers.ForEach(f => f.Closed += (s, a) => OnFingerClosed(f));
         }
-
 
         public List<Finger> GetAllFingers() {
             return new List<Finger> {
@@ -47,16 +46,12 @@ namespace SharpSenses {
 
         protected virtual void OnFingerOpened(Finger finger) {
             var handler = FingerOpened;
-            if (handler != null) handler(finger);
+            if (handler != null) handler(finger, new EventArgs());
         }
 
         protected virtual void OnFingerClosed(Finger finger) {
             var handler = FingerClosed;
-            if (handler != null) handler(finger);
+            if (handler != null) handler(finger, new EventArgs());
         }
-    }
-
-    public enum Side {
-        Left, Right
     }
 }

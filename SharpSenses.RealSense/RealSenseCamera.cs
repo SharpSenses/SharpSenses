@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
 namespace SharpSenses.RealSense {
@@ -26,7 +27,12 @@ namespace SharpSenses.RealSense {
             _session = PXCMSession.CreateInstance();
             _manager = _session.CreateSenseManager();
             ConfigurePoses();
+            ConfigureGestures();
             Debug.WriteLine("SDK Version {0}.{1}", _session.QueryVersion().major, _session.QueryVersion().minor);
+        }
+
+        private void ConfigureGestures() {
+            GestureSlide.Configue(this, _gestures);
         }
 
         private void ConfigurePoses() {
@@ -63,6 +69,17 @@ namespace SharpSenses.RealSense {
         }
 
         private void Loop(object notUsed) {
+            try {
+                TryLoop();                
+            }
+            catch (Exception ex) {
+                Debug.WriteLine("Loop error: " + ex);
+                throw;
+            }
+        }
+
+        private void TryLoop() {
+            Debug.WriteLine("Loop started");
             var handModule = _manager.QueryHand();
             var faceModule = _manager.QueryFace();
             var handData = handModule.CreateOutput();
@@ -154,22 +171,9 @@ namespace SharpSenses.RealSense {
             hand.Position = CreatePosition(imagePosition, worldPosition);
         }
 
-        private void SetHandOpenness(Hand hand) {
-            if (hand.IsOpen) {
-                hand.IsOpen = hand.GetAllFingers().Any(f => f.IsOpen);
-                return;
-            }
-            hand.IsOpen = hand.GetAllFingers().All(f => f.IsOpen);
-        }
-
-        private static void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
+        private void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
             int openness = handInfo.QueryOpenness();
-            if (openness > 75) {
-                hand.IsOpen = true;
-            }
-            else if (openness < 35) {
-                hand.IsOpen = false;
-            }
+            SetOpenness(hand, openness);
         }
 
         private void TrackFinger(Finger finger, PXCMHandData.IHand handInfo, PXCMHandData.JointType jointKind, PXCMHandData.FingerType fingerType) {
@@ -184,7 +188,16 @@ namespace SharpSenses.RealSense {
             if (handInfo.QueryFingerData(fingerType, out fingerData) != NoError) {
                 return;
             }
-            finger.IsOpen = fingerData.foldedness == 100;
+            SetOpenness(finger, fingerData.foldedness);
+        }
+
+        private void SetOpenness(FlexiblePart part, int scaleZeroToHundred) {
+            if (scaleZeroToHundred > 75) {
+                part.IsOpen = true;
+            }
+            else if (scaleZeroToHundred < 35) {
+                part.IsOpen = false;
+            }
         }
 
         private void SetJointPosition(Finger finger, PXCMHandData.JointData jointData) {
@@ -202,6 +215,7 @@ namespace SharpSenses.RealSense {
         }
 
         public override void Dispose() {
+            _cancellationToken.Cancel();
             try {
                 _manager.Dispose();
             }

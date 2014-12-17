@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SharpSenses.Gestures;
 using SharpSenses.Util;
 
@@ -15,7 +16,12 @@ namespace SharpSenses.Poses {
         }
 
         public PoseBuilder ShouldTouch(Item itemA, Item itemB) {
-            _positionItems.Add(new ItemPositionTrigger(itemA, itemB));
+            ShouldBeNear(itemA, itemB, 15);
+            return this;
+        }
+
+        public PoseBuilder ShouldBeNear(Item itemA, Item itemB, int distanceInCm) {
+            _positionItems.Add(new ItemPositionTrigger(itemA, itemB, distanceInCm));
             return this;
         }
 
@@ -73,6 +79,7 @@ namespace SharpSenses.Poses {
 
         private bool IsCloseEnough(ItemPositionTrigger trigger) {
             double dist = Math.Abs(MathEx.CalcDistance(trigger.ItemA.Position.Image, trigger.ItemB.Position.Image));
+            Debug.WriteLine("Dist: -> " + dist);
             bool itIs = trigger.DistanceInCm >= dist;
             return itIs;
         }

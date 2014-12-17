@@ -13,11 +13,15 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Start();
             _cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi");
 
-            _cam.LeftHand.Index.Moved += (s, a) => {
-                Console.Write("\r");
-                Console.Write("FingerX: {0} | Mouth : {1}", _cam.Face.Mouth.Position.Image.X);
+            _cam.LeftHand.FingerOpened += (sender, eventArgs) => {
+                var finger = (Finger) sender;
+                Console.WriteLine("Finger Open: " + finger.Kind);
             };
 
+            _cam.LeftHand.Index.Moved += (s, a) => {
+                Console.Write("\r");
+                Console.Write("FingerX: {0} | Mouth : {1}", a.NewPosition.Image.X,  _cam.Face.Mouth.Position.Image.X);
+            };
 
             _cam.Gestures.SlideLeft += (s, a) => Console.WriteLine("Swipe Left");
             _cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");

@@ -80,6 +80,7 @@
     <Compile Include="Point3d.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Side.cs" />
     <Compile Include="Util\MathEx.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
