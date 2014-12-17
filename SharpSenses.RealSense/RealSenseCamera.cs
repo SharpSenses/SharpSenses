@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -158,11 +159,11 @@ namespace SharpSenses.RealSense {
             hand.IsVisible = true;
             SetHandOpenness(hand, handInfo);
             SetHandPosition(hand, handInfo);
-            TrackFinger(hand.Index, handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, PXCMHandData.FingerType.FINGER_INDEX);
-            TrackFinger(hand.Middle, handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, PXCMHandData.FingerType.FINGER_MIDDLE);
-            TrackFinger(hand.Ring, handInfo, PXCMHandData.JointType.JOINT_RING_TIP, PXCMHandData.FingerType.FINGER_RING);
-            TrackFinger(hand.Pinky, handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, PXCMHandData.FingerType.FINGER_PINKY);
-            TrackFinger(hand.Thumb, handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, PXCMHandData.FingerType.FINGER_THUMB);
+            TrackIndex(hand.Index, handInfo);
+            TrackMiddle(hand.Middle, handInfo);
+            TrackRing(hand.Ring, handInfo);
+            TrackPinky(hand.Pinky, handInfo);
+            TrackThumb(hand.Thumb, handInfo);
         }
 
         private void SetHandPosition(Hand hand, PXCMHandData.IHand handInfo) {
@@ -176,19 +177,61 @@ namespace SharpSenses.RealSense {
             SetOpenness(hand, openness);
         }
 
-        private void TrackFinger(Finger finger, PXCMHandData.IHand handInfo, PXCMHandData.JointType jointKind, PXCMHandData.FingerType fingerType) {
-            PXCMHandData.JointData jointData;
-            if (handInfo.QueryTrackedJoint(jointKind, out jointData) != NoError) {
-                finger.IsVisible = false;
-                return;
-            }
-            finger.IsVisible = true;
-            SetJointPosition(finger, jointData);
+        private void TrackIndex(Finger finger, PXCMHandData.IHand handInfo) {
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_BASE, finger.BaseJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_JT1, finger.FirstJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_JT2, finger.SecondJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, finger);
+            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_INDEX, handInfo);
+        }
+
+        private void TrackMiddle(Finger finger, PXCMHandData.IHand handInfo) {
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_BASE, finger.BaseJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_JT1, finger.FirstJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_JT2, finger.SecondJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, finger);
+            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_MIDDLE, handInfo);
+        }
+
+        private void TrackRing(Finger finger, PXCMHandData.IHand handInfo) {
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_BASE, finger.BaseJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_JT1, finger.FirstJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_JT2, finger.SecondJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_TIP, finger);
+            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_RING, handInfo);
+        }
+
+        private void TrackPinky(Finger finger, PXCMHandData.IHand handInfo) {
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_BASE, finger.BaseJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_JT1, finger.FirstJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_JT2, finger.SecondJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, finger);
+            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_PINKY, handInfo);
+        }
+
+        private void TrackThumb(Finger finger, PXCMHandData.IHand handInfo) {
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_BASE, finger.BaseJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_JT1, finger.FirstJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_JT2, finger.SecondJoint);
+            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, finger);
+            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_THUMB, handInfo);
+        }
+
+        private void SetFingerOpenness(Finger finger, PXCMHandData.FingerType fingerType, PXCMHandData.IHand handInfo) {
             PXCMHandData.FingerData fingerData;
             if (handInfo.QueryFingerData(fingerType, out fingerData) != NoError) {
                 return;
             }
-            SetOpenness(finger, fingerData.foldedness);
+            SetOpenness(finger, fingerData.foldedness);            
+        }
+
+        private void SetJointdata(PXCMHandData.IHand handInfo, PXCMHandData.JointType jointType, Item joint) {
+            PXCMHandData.JointData jointData;
+            if (handInfo.QueryTrackedJoint(jointType, out jointData) != NoError) {
+                joint.IsVisible = false;
+                return;
+            }
+            SetVisibleJointPosition(joint, jointData);
         }
 
         private void SetOpenness(FlexiblePart part, int scaleZeroToHundred) {
@@ -200,10 +243,11 @@ namespace SharpSenses.RealSense {
             }
         }
 
-        private void SetJointPosition(Finger finger, PXCMHandData.JointData jointData) {
+        private void SetVisibleJointPosition(Item item, PXCMHandData.JointData jointData) {
             var imagePosition = ToPoint3D(jointData.positionImage);
             var worldPosition = ToPoint3D(jointData.positionWorld);
-            finger.Position = CreatePosition(imagePosition, worldPosition);
+            item.IsVisible = true;
+            item.Position = CreatePosition(imagePosition, worldPosition);
         }
 
         private Point3D ToPoint3D(PXCMPointF32 p) {
