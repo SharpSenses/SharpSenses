@@ -13,7 +13,7 @@ namespace SharpSenses.Tests {
 
         [Test]
         public void Should_create_proximity_pose() {
-            var pose = new PoseBuilder().ShouldTouch(_cam.Face.Mouth, _cam.LeftHand.Index)
+            var pose = new PoseBuilder().ShouldBeNear(_cam.Face.Mouth, _cam.LeftHand.Index, 20)
                 .HoldPoseFor(0)
                 .Build();
             bool ok = false;
@@ -30,7 +30,7 @@ namespace SharpSenses.Tests {
         [Test]
         public void Should_create_combined_poses() {
             var pose = new PoseBuilder().ShouldBe(_cam.LeftHand.Index, State.Opened)
-                .ShouldTouch(_cam.Face.Mouth, _cam.LeftHand.Index)
+                .ShouldBeNear(_cam.Face.Mouth, _cam.LeftHand.Index)
                 .HoldPoseFor(0)
                 .Build();
             bool ok = false;

@@ -15,13 +15,8 @@ namespace SharpSenses.Poses {
             return new PoseBuilder();
         }
 
-        public PoseBuilder ShouldTouch(Item itemA, Item itemB) {
-            ShouldBeNear(itemA, itemB, 15);
-            return this;
-        }
-
-        public PoseBuilder ShouldBeNear(Item itemA, Item itemB, int distanceInCm) {
-            _positionItems.Add(new ItemPositionTrigger(itemA, itemB, distanceInCm));
+        public PoseBuilder ShouldBeNear(Item itemA, Item itemB, int distanceInPx = 30) {
+            _positionItems.Add(new ItemPositionTrigger(itemA, itemB, distanceInPx));
             return this;
         }
 
@@ -80,19 +75,19 @@ namespace SharpSenses.Poses {
         private bool IsCloseEnough(ItemPositionTrigger trigger) {
             double dist = Math.Abs(MathEx.CalcDistance(trigger.ItemA.Position.Image, trigger.ItemB.Position.Image));
             Debug.WriteLine("Dist: -> " + dist);
-            bool itIs = trigger.DistanceInCm >= dist;
+            bool itIs = trigger.DistanceInPx >= dist;
             return itIs;
         }
 
         private class ItemPositionTrigger {
             public Item ItemA { get; private set; }
             public Item ItemB { get; private set; }
-            public int DistanceInCm { get; private set; }
+            public int DistanceInPx { get; private set; }
 
-            public ItemPositionTrigger(Item itemA, Item itemB, int distanceInCm = 10) {
+            public ItemPositionTrigger(Item itemA, Item itemB, int distanceInPx = 10) {
                 ItemA = itemA;
                 ItemB = itemB;
-                DistanceInCm = distanceInCm;
+                DistanceInPx = distanceInPx;
             }
         }
 
