@@ -66,7 +66,6 @@ namespace SharpSenses.Poses {
                 itemA.Moved += (s, a) => pose.Flag(id, IsCloseEnough(trigger));
                 itemB.Moved += (s, a) => pose.Flag(id, IsCloseEnough(trigger));
             }
-
             _positionItems.Clear();
             _stateItems.Clear();
             return pose;
@@ -74,7 +73,7 @@ namespace SharpSenses.Poses {
 
         private bool IsCloseEnough(ItemPositionTrigger trigger) {
             double dist = Math.Abs(MathEx.CalcDistance(trigger.ItemA.Position.Image, trigger.ItemB.Position.Image));
-            Debug.WriteLine("Dist: -> " + dist);
+            //Debug.WriteLine("Dist: -> " + dist);
             bool itIs = trigger.DistanceInPx >= dist;
             return itIs;
         }

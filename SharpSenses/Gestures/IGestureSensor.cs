@@ -7,5 +7,6 @@ namespace SharpSenses.Gestures {
         event EventHandler<GestureEventArgs> SlideUp;
         event EventHandler<GestureEventArgs> SlideDown;
         event EventHandler<GestureEventArgs> MoveForward;
+        event EventHandler<GestureEventArgs> Wave;
     }
 }

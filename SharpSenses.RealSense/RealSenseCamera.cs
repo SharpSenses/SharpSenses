@@ -54,8 +54,8 @@ namespace SharpSenses.RealSense {
                         handConfig.QueryGestureNameByIndex(i, out name);
                         Debug.WriteLine("Gestures: " + name);
                     }
-                    //handConfig.EnableAllGestures();
-                    //handConfig.SubscribeGesture(OnGesture);                    
+                    handConfig.EnableAllGestures();
+                    handConfig.SubscribeGesture(OnGesture);                    
                     handConfig.EnableTrackedJoints(true);
                     handConfig.ApplyChanges();
                 }
@@ -148,6 +148,11 @@ namespace SharpSenses.RealSense {
             }
             _last = g;
             Debug.WriteLine(g);
+            switch (gesturedata.name) {
+                case "wave":
+                    _gestures.OnWave(new GestureEventArgs("wave"));
+                    return;
+            }
         }
 
         private void TrackHandAndFingers(Hand hand, PXCMHandData data, PXCMHandData.AccessOrderType label) {
