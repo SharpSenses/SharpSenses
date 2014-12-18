@@ -25,7 +25,7 @@ namespace SharpSenses.Gestures {
    
         private static void CreateSlideGesture(Hand hand, Direction direction, Action<GestureEventArgs> handler) {
             var swipe = new Gesture("hand" + hand.Side + "_" + direction);
-            swipe.AddStep(1000, Movement.CreateMovement(direction, hand, 11));
+            swipe.AddStep(300, Movement.CreateMovement(direction, hand, 12));
             swipe.Activate();
             swipe.GestureDetected += (s, a) => handler.Invoke(a);
         }
