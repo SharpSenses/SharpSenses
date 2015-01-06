@@ -45,6 +45,7 @@ namespace SharpSenses.RealSense {
             _cancellationToken = new CancellationTokenSource();
             _manager.EnableHand();
             _manager.EnableFace();
+            _manager.EnableEmotion();
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
                     //handConfig.EnableAllAlerts();
@@ -60,6 +61,7 @@ namespace SharpSenses.RealSense {
                     handConfig.ApplyChanges();
                 }
             }
+
             var status = _manager.Init();
             if (status != NoError) {
                 throw new CameraException(status.ToString());
@@ -94,6 +96,7 @@ namespace SharpSenses.RealSense {
 
                 faceData.Update();
                 TrackFace(faceData);
+                TrackEmotions();
 
                 _manager.ReleaseFrame();
                 if (CyclePauseInMillis > 0) {
@@ -104,6 +107,32 @@ namespace SharpSenses.RealSense {
             faceData.Dispose();
             handModule.Dispose();
             faceModule.Dispose();
+        }
+
+        private void TrackEmotions() {
+            if (!Face.IsVisible) {
+                return;
+            }
+            var emotionInfo = _manager.QueryEmotion();
+            if (emotionInfo == null) {
+                return;
+            }
+            PXCMEmotion.EmotionData[] allEmotions;
+            emotionInfo.QueryAllEmotionData(0, out allEmotions);
+            emotionInfo.Dispose();
+            if (allEmotions == null) {
+                return;
+            }
+            var emotions =
+                allEmotions.Where(e => (int)e.eid > 0 && (int)e.eid <= 64 && e.intensity > 0.4).ToList();
+            if (emotions.Any()) {
+                var emotion = emotions.OrderByDescending(e => e.evidence).First();
+                Face.FacialExpression = (FacialExpression)emotion.eid;
+            }
+            else {
+                Face.FacialExpression = FacialExpression.None;
+            }
+            emotionInfo.Dispose();
         }
 
         private void TrackFace(PXCMFaceData faceData) {

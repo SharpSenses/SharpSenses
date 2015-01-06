@@ -14,10 +14,14 @@ namespace SharpSenses.RealSense.Playground {
             _cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi l");
             _cam.RightHand.Visible += (s,a) => Console.WriteLine("Hi r");
 
+
             //_cam.LeftHand.FingerOpened += (sender, eventArgs) => {
             //    var finger = (Finger) sender;
             //    Console.WriteLine("Finger Open: " + finger.Kind);
             //};
+
+            _cam.Face.FacialExpresssionChanged += (s, e) => Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
+
 
             Action moved = () => {
                 Console.Write("\r");
@@ -29,19 +33,19 @@ namespace SharpSenses.RealSense.Playground {
                     );
             };
 
-            _cam.LeftHand.Index.Moved += (s, a) => moved();
-            _cam.RightHand.Index.Moved += (s, a) => moved();
+            //_cam.LeftHand.Index.Moved += (s, a) => moved();
+            //_cam.RightHand.Index.Moved += (s, a) => moved();
 
-            _cam.Gestures.SlideLeft += (s, a) => Console.WriteLine("Swipe Left");
-            _cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");
-            _cam.Gestures.SlideUp += (s, a) => Console.WriteLine("Swipe Up");
-            _cam.Gestures.SlideDown += (s, a) => Console.WriteLine("Swipe Down");
-            _cam.Gestures.MoveForward += (s, a) => Console.WriteLine("Move Forward");
+            //_cam.Gestures.SlideLeft += (s, a) => Console.WriteLine("Swipe Left");
+            //_cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");
+            //_cam.Gestures.SlideUp += (s, a) => Console.WriteLine("Swipe Up");
+            //_cam.Gestures.SlideDown += (s, a) => Console.WriteLine("Swipe Down");
+            //_cam.Gestures.MoveForward += (s, a) => Console.WriteLine("Move Forward");
 
-            var pose = PoseBuilder.Create().ShouldBeNear(_cam.LeftHand, _cam.RightHand,100).Build();
-            pose.Begin += (s, a) => {
-                Console.WriteLine("Super pose!");
-            };
+            //var pose = PoseBuilder.Create().ShouldBeNear(_cam.LeftHand, _cam.RightHand,100).Build();
+            //pose.Begin += (s, a) => {
+            //    Console.WriteLine("Super pose!");
+            //};
 
             Console.ReadLine();
             _cam.Dispose();
