@@ -53,7 +53,7 @@ namespace SharpSenses {
             }
         }
 
-        public Position RemoveNoise(Position nextPosition) {
+        private Position RemoveNoise(Position nextPosition) {
             if (NoiseThreshold == 0) {
                 return nextPosition;
             }
