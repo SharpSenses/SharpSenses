@@ -14,6 +14,9 @@ namespace SharpSenses.RealSense.Playground {
             _cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi l");
             _cam.RightHand.Visible += (s,a) => Console.WriteLine("Hi r");
 
+            _cam.Face.PersonRecognized += (s, a) => {
+                Console.WriteLine("Hello " + a.UserId); 
+            };
 
             //_cam.LeftHand.FingerOpened += (sender, eventArgs) => {
             //    var finger = (Finger) sender;

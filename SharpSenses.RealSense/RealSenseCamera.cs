@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
+using SharpSenses.Storage;
 
 namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera {
@@ -13,6 +15,8 @@ namespace SharpSenses.RealSense {
         private PXCMSession _session;
         private PXCMSenseManager _manager;
         private CancellationTokenSource _cancellationToken;
+        private const string StorageName = "SharpSensesDb";
+        private const string StorageFileName = "SharpSensesDb.bin";
 
         public override int ResolutionWidth {
             get { return 640; }
@@ -43,9 +47,31 @@ namespace SharpSenses.RealSense {
 
         public override void Start() {
             _cancellationToken = new CancellationTokenSource();
-            _manager.EnableHand();
-            _manager.EnableFace();
             _manager.EnableEmotion();
+            _manager.EnableFace();
+
+            using (var faceModule = _manager.QueryFace()) {
+                using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) { 
+                    moduleConfiguration.detection.maxTrackedFaces = 1;
+                    
+                    var desc = new PXCMFaceConfiguration.RecognitionConfiguration.RecognitionStorageDesc();
+                    desc.maxUsers = 10;
+                    desc.isPersistent = true;
+                    var recognitionConfiguration = moduleConfiguration.QueryRecognition();
+                    recognitionConfiguration.CreateStorage(StorageName, out desc);
+                    recognitionConfiguration.UseStorage(StorageName);
+                    recognitionConfiguration.SetRegistrationMode(PXCMFaceConfiguration.RecognitionConfiguration.RecognitionRegistrationMode.REGISTRATION_MODE_CONTINUOUS);
+
+                    if (File.Exists(StorageFileName)) {
+                        var bytes = File.ReadAllBytes(StorageFileName);
+                        recognitionConfiguration.SetDatabaseBuffer(bytes);
+                    }
+                    recognitionConfiguration.Enable();
+                    moduleConfiguration.ApplyChanges();
+                }
+            }
+            
+            _manager.EnableHand();
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
                     //handConfig.EnableAllAlerts();
@@ -56,11 +82,12 @@ namespace SharpSenses.RealSense {
                         Debug.WriteLine("Gestures: " + name);
                     }
                     handConfig.EnableAllGestures();
-                    handConfig.SubscribeGesture(OnGesture);                    
+                    handConfig.SubscribeGesture(OnGesture);
                     handConfig.EnableTrackedJoints(true);
                     handConfig.ApplyChanges();
                 }
             }
+            Debug.WriteLine("Initializing Camera...");
 
             var status = _manager.Init();
             if (status != NoError) {
@@ -84,8 +111,8 @@ namespace SharpSenses.RealSense {
         private void TryLoop() {
             Debug.WriteLine("Loop started");
             var handModule = _manager.QueryHand();
-            var faceModule = _manager.QueryFace();
             var handData = handModule.CreateOutput();
+            var faceModule = _manager.QueryFace();
             var faceData = faceModule.CreateOutput();
 
             while (!_cancellationToken.IsCancellationRequested) {
@@ -163,10 +190,33 @@ namespace SharpSenses.RealSense {
                         break;
                 }
             }
+            var rdata = face.QueryRecognition();
+            var userId = rdata.QueryUserID();
+            Debug.WriteLine(userId + " " + rdata.IsRegistered());
+            if (_firstTime) {
+                rdata.RegisterUser();
+                _firstTime = false;
+            }
+            //if (userId < 0 && !rdata.IsRegistered()) {
+            //    rdata.RegisterUser();
+            //    SaveDatabase(rdata);
+            //    return;
+            //}
+            Face.UserId = userId;
+        }
+
+        private bool _firstTime = true;
+
+        private void SaveDatabase(PXCMFaceData.RecognitionData rdata) {
+            //Todo: waiting for intel bugfix on QueryRecognitionModule
+            //var rmd = rdata.QueryRecognitionModule();
+            //var buffer = new Byte[rmd.QueryDatabaseSize()];
+            //rmd.QueryDatabaseBuffer(buffer);
+            //File.WriteAllBytes(StorageFileName, buffer);
         }
 
         private string _last = "";
-
+        
         private void OnGesture(PXCMHandData.GestureData gesturedata) {
             string g = String.Format("Gesture: {0}-{1}-{2}",
                 gesturedata.name,

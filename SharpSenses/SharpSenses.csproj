@@ -81,6 +81,7 @@
     <Compile Include="Gestures\MovementUp.cs" />
     <Compile Include="Mouth.cs" />
     <Compile Include="ObservableObject.cs" />
+    <Compile Include="PersonRecognizedEventArgs.cs" />
     <Compile Include="Poses\HandPoseEventArgs.cs" />
     <Compile Include="Poses\Pose.cs" />
     <Compile Include="Gestures\Direction.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Side.cs" />
+    <Compile Include="Storage\UserIdRepository.cs" />
     <Compile Include="Util\MathEx.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
