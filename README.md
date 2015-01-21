@@ -17,7 +17,9 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
     ICamera cam = Camera.Create(); //autodiscovers your sdk (perceptual or realsense)
     cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi left hand!");
     cam.RightHand.Closed += (s,a) => Console.WriteLine("Hand Closed");
-    cam.RightHand.Moved += (s,a) => Console.WriteLine("-> x:{0} y:{1}", a.Position.Image.X, a.Position.Image.Y);
+    cam.RightHand.Moved += (s,a) => {
+        Console.WriteLine("-> x:{0} y:{1}", a.Position.Image.X, a.Position.Image.Y);
+    }
     cam.Start();
 ````
 ##Gestures
@@ -59,7 +61,6 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
     cam.Face.FacialExpresssionChanged += (s, e) => {
         Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
     }
-	
 ```
 
 ##Face Recognition
@@ -74,7 +75,6 @@ You can always get a notification when a new or pre-recognized face is recognize
     _cam.Face.PersonRecognized += (s, a) => {
         Console.WriteLine("Hello " + a.UserId); 
     };
-        
 ```
 
 Don't forget that you have to have the Intel RealSense SDK (and the 3d camera, of course) for this library to work!
