@@ -79,9 +79,10 @@
     <Compile Include="Gestures\MovementRight.cs" />
     <Compile Include="Gestures\MovementStatus.cs" />
     <Compile Include="Gestures\MovementUp.cs" />
+    <Compile Include="IFaceRecognizer.cs" />
     <Compile Include="Mouth.cs" />
     <Compile Include="ObservableObject.cs" />
-    <Compile Include="PersonRecognizedEventArgs.cs" />
+    <Compile Include="FaceRecognizedEventArgs.cs" />
     <Compile Include="Poses\HandPoseEventArgs.cs" />
     <Compile Include="Poses\Pose.cs" />
     <Compile Include="Gestures\Direction.cs" />

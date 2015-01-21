@@ -203,5 +203,9 @@ namespace SharpSenses.Perceptual {
         public override void Dispose() {
             _pipeline.Dispose();
         }
+
+        protected override IFaceRecognizer GetFaceRecognizer() {
+            return null;
+        }
     }
 }

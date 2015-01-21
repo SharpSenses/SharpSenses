@@ -21,7 +21,7 @@ namespace SharpSenses.Tests {
         public FakeCamera() {
             LeftHand = new Hand(Side.Left);
             RightHand = new Hand(Side.Right);
-            Face = new Face();
+            Face = new Face(null);
             Gestures = new GestureSensor();
             Poses = new PoseSensor();
         }

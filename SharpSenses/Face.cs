@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace SharpSenses {
     public class Face : Item {
+        private readonly IFaceRecognizer _faceRecognizer;
         private int _userId;
         private FacialExpression _facialExpression;
-        private bool _savingProcessRunning;
         public Mouth Mouth { get; private set; }
+
+        public event EventHandler<FaceRecognizedEventArgs> PersonRecognized;
+        public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
 
         public int UserId {
             get { return _userId; }
@@ -34,17 +36,18 @@ namespace SharpSenses {
                 OnFacialExpresssionChanged(old, value);
             }
         }
-
-        public event EventHandler<PersonRecognizedEventArgs> PersonRecognized;
-
-        public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
-
-        public Face() {
+        
+        public Face(IFaceRecognizer faceRecognizer) {
+            _faceRecognizer = faceRecognizer;
             Mouth = new Mouth();
         }
 
-        public void SavePerson() {
-            _savingProcessRunning = true;
+        public bool RecognizeFace() {
+            if (_faceRecognizer == null) {
+                return false;
+            }
+            _faceRecognizer.Recognize();
+            return true;
         }
 
         protected virtual void OnFacialExpresssionChanged(FacialExpression old, FacialExpression @new) {
@@ -53,9 +56,8 @@ namespace SharpSenses {
         }
 
         protected virtual void OnPersonRecognized() {
-            _savingProcessRunning = false;
             var handler = PersonRecognized;
-            if (handler != null) handler(this, new PersonRecognizedEventArgs { UserId = UserId});
+            if (handler != null) handler(this, new FaceRecognizedEventArgs(UserId));
         }
     }
 }

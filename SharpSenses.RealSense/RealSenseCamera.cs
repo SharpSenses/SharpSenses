@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,16 +6,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
-using SharpSenses.Storage;
 
 namespace SharpSenses.RealSense {
-    public class RealSenseCamera : Camera {
+    public class RealSenseCamera : Camera, IFaceRecognizer {
         private pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
         private PXCMSession _session;
         private PXCMSenseManager _manager;
         private CancellationTokenSource _cancellationToken;
         private const string StorageName = "SharpSensesDb";
         private const string StorageFileName = "SharpSensesDb.bin";
+        private RecognitionState _recognitionState = RecognitionState.Idle;
+
+        private enum RecognitionState {
+            Idle,
+            Requested,
+            Working,
+            Done
+        }
 
         public override int ResolutionWidth {
             get { return 640; }
@@ -120,7 +126,6 @@ namespace SharpSenses.RealSense {
                 handData.Update();
                 TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
                 TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
-
                 faceData.Update();
                 TrackFace(faceData);
                 TrackEmotions();
@@ -192,31 +197,38 @@ namespace SharpSenses.RealSense {
             }
             var rdata = face.QueryRecognition();
             var userId = rdata.QueryUserID();
-            Debug.WriteLine(userId + " " + rdata.IsRegistered());
-            if (_firstTime) {
-                rdata.RegisterUser();
-                _firstTime = false;
+            
+            switch (_recognitionState) {
+                case RecognitionState.Idle:
+                    break;
+                case RecognitionState.Requested:
+                    rdata.RegisterUser();
+                    _recognitionState = RecognitionState.Working;
+                    break;
+                case RecognitionState.Working:
+                    if (userId > 0) {
+                        _recognitionState = RecognitionState.Done;
+                        Face.UserId = userId;
+                    }
+                    break;
+                case RecognitionState.Done:
+                    SaveDatabase(faceData);
+                    _recognitionState = RecognitionState.Idle;                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            //if (userId < 0 && !rdata.IsRegistered()) {
-            //    rdata.RegisterUser();
-            //    SaveDatabase(rdata);
-            //    return;
-            //}
-            Face.UserId = userId;
         }
 
-        private bool _firstTime = true;
-
-        private void SaveDatabase(PXCMFaceData.RecognitionData rdata) {
-            //Todo: waiting for intel bugfix on QueryRecognitionModule
-            //var rmd = rdata.QueryRecognitionModule();
-            //var buffer = new Byte[rmd.QueryDatabaseSize()];
-            //rmd.QueryDatabaseBuffer(buffer);
-            //File.WriteAllBytes(StorageFileName, buffer);
+        private void SaveDatabase(PXCMFaceData faceData) {
+            var rmd = faceData.QueryRecognitionModule();
+            var buffer = new Byte[rmd.QueryDatabaseSize()];
+            rmd.QueryDatabaseBuffer(buffer);
+            File.WriteAllBytes(StorageFileName, buffer);
         }
 
         private string _last = "";
-        
+    
         private void OnGesture(PXCMHandData.GestureData gesturedata) {
             string g = String.Format("Gesture: {0}-{1}-{2}",
                 gesturedata.name,
@@ -352,6 +364,15 @@ namespace SharpSenses.RealSense {
                 _session.Dispose();                
             }
             catch { }
+        }
+
+        protected override IFaceRecognizer GetFaceRecognizer() {
+            return this;
+        }
+
+
+        public void Recognize() {
+            _recognitionState = RecognitionState.Requested;
         }
     }
 }

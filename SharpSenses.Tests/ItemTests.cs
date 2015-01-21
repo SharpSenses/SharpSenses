@@ -5,7 +5,7 @@ namespace SharpSenses.Tests {
 
         [Test]
         public void Should_notify_is_visible_change() {
-            var face = new Face();
+            var face = new Face(null);
             var prop = "";
             object sender = null;
             face.PropertyChanged += (s, args) => {
