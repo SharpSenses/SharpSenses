@@ -208,7 +208,6 @@ namespace SharpSenses.RealSense {
                 case RecognitionState.Working:
                     if (userId > 0) {
                         _recognitionState = RecognitionState.Done;
-                        Face.UserId = userId;
                     }
                     break;
                 case RecognitionState.Done:
@@ -218,6 +217,7 @@ namespace SharpSenses.RealSense {
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            Face.UserId = userId;
         }
 
         private void SaveDatabase(PXCMFaceData faceData) {
