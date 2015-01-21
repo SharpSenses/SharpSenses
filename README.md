@@ -59,4 +59,18 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
 	cam.Face.FacialExpresssionChanged += (s, e) => Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
 ```
 
+##Face Recognition
+
+Anytime you want to recognite a new face, call:
+```
+	cam.Face.RecognizeFace();
+```
+
+You can always get a notification when a new or pre-recognized face is recognized: 
+```
+	_cam.Face.PersonRecognized += (s, a) => {
+		Console.WriteLine("Hello " + a.UserId); 
+        };
+```
+
 Don't forget that you have to have the Intel RealSense SDK (and the 3d camera, of course) for this library to work!
