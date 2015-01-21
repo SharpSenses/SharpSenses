@@ -15,17 +15,19 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
 ## Sample:
 ```
 	ICamera cam = Camera.Create(); //autodiscovers your sdk (perceptual or realsense)
-	cam.RightHand.Closed += () => Console.WriteLine("Hand Closed");
-	cam.RightHand.Moved += p => Console.WriteLine("-> x:{0} y:{1}", p.Image.X, p.Image.Y);
+	cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi left hand!");
+	cam.RightHand.Closed += (s,a) => Console.WriteLine("Hand Closed");
+	cam.RightHand.Moved += (s,a) => Console.WriteLine("-> x:{0} y:{1}", a.Position.Image.X, a.Position.Image.Y);
 	cam.Start();
 ````
 ##Gestures
 
 ```
-	cam.Gestures.SwipeLeft += s => Console.WriteLine("Swipe Left");
-    cam.Gestures.SwipeRight += s => Console.WriteLine("Swipe Right");
-    cam.Gestures.SwipeUp += s => Console.WriteLine("Swipe Up");
-    cam.Gestures.SwipeDown += s => Console.WriteLine("Swipe Down");
+	cam.Gestures.SlideLeft += (s, a) => Console.WriteLine("Swipe Left");
+        cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");
+        cam.Gestures.SlideUp += (s, a) => Console.WriteLine("Swipe Up");
+        cam.Gestures.SlideDown += (s, a) => Console.WriteLine("Swipe Down");
+        cam.Gestures.MoveForward += (s, a) => Console.WriteLine("Move Forward");
 ```
 
 ##Poses
@@ -36,13 +38,25 @@ An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (20
 
 ##Custom Poses
 ```
-            var bothHandsClosed = PoseBuilder
-                .Combine(cam.LeftHand, State.Closed)
-                .With(cam.RightHand, State.Closed)
-                .Build("bothhandsclosed");
-            bothHandsClosed.Begin += s => Console.WriteLine("BOTH Begin");
-            bothHandsClosed.End += s => Console.WriteLine("BOTH End");
+	var pose = PoseBuilder.Create().ShouldBeNear(_cam.LeftHand, _cam.RightHand, 100).Build();
+		pose.Begin += (s, a) => {
+		Console.WriteLine("Super pose!");
+	};
+	pose.Begin += (s, a) => DoSomething();
 ```
 
+##Facial Expressions
+
+- Anger
+- Contempt
+- Disgust
+- Fear
+- Joy 
+- Sadness
+- Surprise
+
+```
+	cam.Face.FacialExpresssionChanged += (s, e) => Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
+```
 
 Don't forget that you have to have the Intel RealSense SDK (and the 3d camera, of course) for this library to work!
