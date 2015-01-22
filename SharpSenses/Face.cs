@@ -7,7 +7,7 @@ namespace SharpSenses {
         private FacialExpression _facialExpression;
         public Mouth Mouth { get; private set; }
 
-        public event EventHandler<FaceRecognizedEventArgs> PersonRecognized;
+        public event EventHandler<FaceRecognizedEventArgs> FaceRecognized;
         public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
 
         public int UserId {
@@ -56,7 +56,7 @@ namespace SharpSenses {
         }
 
         protected virtual void OnPersonRecognized() {
-            var handler = PersonRecognized;
+            var handler = FaceRecognized;
             if (handler != null) handler(this, new FaceRecognizedEventArgs(UserId));
         }
     }

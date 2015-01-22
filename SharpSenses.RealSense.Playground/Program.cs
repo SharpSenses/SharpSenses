@@ -15,7 +15,7 @@ namespace SharpSenses.RealSense.Playground {
             _cam.RightHand.Visible += (s,a) => Console.WriteLine("Hi r");
 
             _cam.Face.RecognizeFace();
-            _cam.Face.PersonRecognized += (s, a) => {
+            _cam.Face.FaceRecognized += (s, a) => {
                 Console.WriteLine("Hello " + a.UserId); 
             };
 
