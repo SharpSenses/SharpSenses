@@ -5,6 +5,15 @@ using SharpSenses.Poses;
 
 namespace SharpSenses {
     public abstract class Camera : ICamera {
+        private Face _face;
+        
+        protected GestureSensor _gestures;
+        protected PoseSensor _poses;
+        
+        public abstract int ResolutionWidth { get; }
+        public abstract int ResolutionHeight { get; }
+        public Hand LeftHand { get; private set; }
+        public Hand RightHand { get; private set; }
         
         public static ICamera Create(CameraKind cameraKind) {
             return TryAssembly(cameraKind);
@@ -42,13 +51,7 @@ namespace SharpSenses {
             }
         }
 
-        protected GestureSensor _gestures;
-        protected PoseSensor _poses;
-        private Face _face;
-        public abstract int ResolutionWidth { get; }
-        public abstract int ResolutionHeight { get; }
-        public Hand LeftHand { get; private set; }
-        public Hand RightHand { get; private set; }
+        
 
         public Face Face {
             get {

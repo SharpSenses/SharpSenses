@@ -72,6 +72,10 @@
     <Compile Include="FlexiblePart.cs" />
     <Compile Include="Gestures\GestureEventArgs.cs" />
     <Compile Include="Gestures\GestureSlide.cs" />
+    <Compile Include="Gestures\GestureSlideDown.cs" />
+    <Compile Include="Gestures\GestureSlideLeft.cs" />
+    <Compile Include="Gestures\GestureSlideRight.cs" />
+    <Compile Include="Gestures\GestureSlideUp.cs" />
     <Compile Include="Gestures\GestureStep.cs" />
     <Compile Include="Gestures\GestureStepEventArgs.cs" />
     <Compile Include="Gestures\MovementDown.cs" />

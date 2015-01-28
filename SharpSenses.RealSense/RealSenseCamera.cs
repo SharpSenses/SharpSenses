@@ -43,7 +43,7 @@ namespace SharpSenses.RealSense {
         }
 
         private void ConfigureGestures() {
-            GestureSlide.Configue(this, _gestures);
+            GestureSlide.Configure(this, _gestures);
         }
 
         private void ConfigurePoses() {
@@ -218,6 +218,7 @@ namespace SharpSenses.RealSense {
                     throw new ArgumentOutOfRangeException();
             }
             Face.UserId = userId;
+            //Debug.WriteLine("UserId: " + userId);
         }
 
         private void SaveDatabase(PXCMFaceData faceData) {
@@ -238,7 +239,7 @@ namespace SharpSenses.RealSense {
                 return;
             }
             _last = g;
-            Debug.WriteLine(g);
+            //Debug.WriteLine(g);
             switch (gesturedata.name) {
                 case "wave":
                     _gestures.OnWave(new GestureEventArgs("wave"));

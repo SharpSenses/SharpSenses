@@ -25,7 +25,7 @@ namespace SharpSenses.Gestures {
             Item = item;
             Distance = distance;
             AutoRestart = true;
-            ToleranceForWrongDirection = 8;
+            ToleranceForWrongDirection = 10;
         }
 
         public void Activate() {
