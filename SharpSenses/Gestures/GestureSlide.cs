@@ -8,8 +8,8 @@ namespace SharpSenses.Gestures {
         private double _endLimit;
         private double _startedSecundaryValue;
 
-        public static int WrongDirectionTolerance = 5;
-        public static int SecundaryDirectionTolerance = 30;
+        public static int WrongDirectionTolerance = 3;
+        public static int SecundaryDirectionTolerance = 10;
         public static double BeginLimitModifier = 1.3;
         public static double EndLimitModifier = 0.7;
 
@@ -24,22 +24,23 @@ namespace SharpSenses.Gestures {
             var l = camera.LeftHand;
             var r = camera.RightHand;
 
-            //new GestureSlideLeft(l, middleWidth).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideLeft(new GestureEventArgs("Left Hand Slide Left"));
-            //new GestureSlideLeft(r, middleWidth).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideLeft(new GestureEventArgs("Right Hand Slide Left"));
+            new GestureSlideLeft(l, middleWidth).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideLeft(new GestureEventArgs("Left Hand Slide Left"));
             new GestureSlideRight(l, middleWidth).SlideDetected += (s, a) =>
                 gestureSensor.OnSlideRight(new GestureEventArgs("Left Hand Slide Right"));
-            //new GestureSlideRight(r, middleWidth).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideRight(new GestureEventArgs("Right Hand Slide Right"));
-            //new GestureSlideUp(r, middleHeight).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideUp(new GestureEventArgs("Left Hand Slide Up"));
-            //new GestureSlideUp(r, middleHeight).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideUp(new GestureEventArgs("Right Hand Slide Up"));
-            //new GestureSlideDown(r, middleHeight).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideDown(new GestureEventArgs("Left Hand Slide Down"));
-            //new GestureSlideDown(r, middleHeight).SlideDetected += (s, a) =>
-            //    gestureSensor.OnSlideDown(new GestureEventArgs("Right Hand Slide Down"));
+            new GestureSlideUp(l, middleHeight).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideUp(new GestureEventArgs("Left Hand Slide Up"));
+            new GestureSlideDown(l, middleHeight).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideDown(new GestureEventArgs("Left Hand Slide Down"));
+            
+            new GestureSlideLeft(r, middleWidth).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideLeft(new GestureEventArgs("Right Hand Slide Left"));
+            new GestureSlideRight(r, middleWidth).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideRight(new GestureEventArgs("Right Hand Slide Right"));
+            new GestureSlideUp(r, middleHeight).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideUp(new GestureEventArgs("Right Hand Slide Up"));
+            new GestureSlideDown(r, middleHeight).SlideDetected += (s, a) =>
+                gestureSensor.OnSlideDown(new GestureEventArgs("Right Hand Slide Down"));
         }
 
         protected GestureSlide(Hand hand, int middle) {
@@ -66,7 +67,6 @@ namespace SharpSenses.Gestures {
             if (dif > SecundaryDirectionTolerance ||
                 IsWrongDirection(currentPrimaryValue, lastPrimaryValue)) {
                 GestureHappening = false;
-                Debug.WriteLine("Error: Current: {0} Last{1}", currentPrimaryValue, lastPrimaryValue);
                 _last = current;
                 return;
             }

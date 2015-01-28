@@ -3,15 +3,15 @@ namespace SharpSenses.Gestures {
         public GestureSlideDown(Hand hand, int middle) : base(hand, middle) { }
 
         protected override bool IsWrongDirection(double currentPrimaryValue, double lastPrimaryValue) {
-            return currentPrimaryValue >= lastPrimaryValue;
+            return currentPrimaryValue - WrongDirectionTolerance <= lastPrimaryValue;
         }
 
         protected override bool IsInEndArea(double currentPrimaryValue, double endLimit) {
-            return currentPrimaryValue < endLimit;
+            return currentPrimaryValue >= endLimit;
         }
 
         protected override bool IsInStartArea(double currentPrimaryValue, double beginLimit) {
-            return currentPrimaryValue > beginLimit;
+            return currentPrimaryValue <= beginLimit;
         }
 
         protected override double GetLastPrimaryValue(Position lastPosition) {

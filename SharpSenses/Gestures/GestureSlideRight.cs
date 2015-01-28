@@ -24,8 +24,7 @@ namespace SharpSenses.Gestures {
         }
 
         protected override  double GetCurrentPrimaryValue(Position position) {
-            var positionX = position.Image.X;
-            return positionX;
+            return position.Image.X;
         }
     }
 }

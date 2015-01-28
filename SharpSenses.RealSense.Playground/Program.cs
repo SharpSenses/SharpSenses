@@ -20,10 +20,10 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Gestures.SlideUp += (s, a) => Console.WriteLine(a.GestureName);
             _cam.Gestures.SlideDown += (s, a) => Console.WriteLine(a.GestureName);
 
-            int xmoved = 0;
-            _cam.LeftHand.Moved += (s, a) => {
-                Console.WriteLine(++xmoved);
-            };
+            //int xmoved = 0;
+            //_cam.LeftHand.Moved += (s, a) => {
+            //    Console.WriteLine(++xmoved);
+            //};
 
             //_cam.RightHand.Moved += (s,a) => Console.WriteLine("-> " + a.NewPosition.Image.X);
 
