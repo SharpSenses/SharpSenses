@@ -11,6 +11,7 @@ namespace SharpSenses {
         Face Face { get; }
         IGestureSensor Gestures { get; }
         IPoseSensor Poses { get; }
+        ISpeech Speech { get; }
         void Start();
     }
 }

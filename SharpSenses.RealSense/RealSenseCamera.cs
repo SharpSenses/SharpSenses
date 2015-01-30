@@ -10,12 +10,13 @@ using SharpSenses.Poses;
 namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera, IFaceRecognizer {
         private pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
-        private PXCMSession _session;
         private PXCMSenseManager _manager;
+        private ISpeech _speech;
         private CancellationTokenSource _cancellationToken;
         private const string StorageName = "SharpSensesDb";
         private const string StorageFileName = "SharpSensesDb.bin";
         private RecognitionState _recognitionState = RecognitionState.Idle;
+        public PXCMSession Session { get; private set; }
 
         private enum RecognitionState {
             Idle,
@@ -32,14 +33,19 @@ namespace SharpSenses.RealSense {
             get { return 480; }
         }
 
+        public override ISpeech Speech {
+            get { return _speech; }
+        }
+
         public int CyclePauseInMillis { get; set; }
 
         public RealSenseCamera() {
-            _session = PXCMSession.CreateInstance();
-            _manager = _session.CreateSenseManager();
+            Session = PXCMSession.CreateInstance();
+            _manager = Session.CreateSenseManager();
             ConfigurePoses();
             ConfigureGestures();
-            Debug.WriteLine("SDK Version {0}.{1}", _session.QueryVersion().major, _session.QueryVersion().minor);
+            _speech = new Speech(this);
+            Debug.WriteLine("SDK Version {0}.{1}", Session.QueryVersion().major, Session.QueryVersion().minor);
         }
 
         private void ConfigureGestures() {
@@ -355,25 +361,19 @@ namespace SharpSenses.RealSense {
             return new Point3D(p.x, p.y, p.z);
         }
 
-        public override void Dispose() {
-            _cancellationToken.Cancel();
-            try {
-                _manager.Dispose();
-            }
-            catch { }
-            try {
-                _session.Dispose();                
-            }
-            catch { }
-        }
-
         protected override IFaceRecognizer GetFaceRecognizer() {
             return this;
         }
 
 
-        public void Recognize() {
+        public void RecognizeFace() {
             _recognitionState = RecognitionState.Requested;
+        }
+
+        public override void Dispose() {
+            _cancellationToken.Cancel();
+            _manager.SilentlyDispose();
+            Session.SilentlyDispose();
         }
     }
 }

@@ -10,15 +10,20 @@ namespace SharpSenses.RealSense.Playground {
 
         private static void Main(string[] args) {
             _cam = Camera.Create();
-            _cam.Start();
-            _cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi  l");
-            _cam.LeftHand.NotVisible += (s,a) => Console.WriteLine("Bye l");
-            _cam.RightHand.Visible += (s,a) => Console.WriteLine("Hi r");
+            //_cam.Start();
 
-            _cam.Gestures.SlideRight += (s, a) => Console.WriteLine(a.GestureName);
-            _cam.Gestures.SlideLeft += (s, a) => Console.WriteLine(a.GestureName);
-            _cam.Gestures.SlideUp += (s, a) => Console.WriteLine(a.GestureName);
-            _cam.Gestures.SlideDown += (s, a) => Console.WriteLine(a.GestureName);
+            _cam.Speech.Say("Hello world!");
+            _cam.Speech.Say("Hello world!");
+            _cam.Speech.Say("Hello world!");
+
+            //_cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi  l");
+            //_cam.LeftHand.NotVisible += (s,a) => Console.WriteLine("Bye l");
+            //_cam.RightHand.Visible += (s,a) => Console.WriteLine("Hi r");
+
+            //_cam.Gestures.SlideRight += (s, a) => Console.WriteLine(a.GestureName);
+            //_cam.Gestures.SlideLeft += (s, a) => Console.WriteLine(a.GestureName);
+            //_cam.Gestures.SlideUp += (s, a) => Console.WriteLine(a.GestureName);
+            //_cam.Gestures.SlideDown += (s, a) => Console.WriteLine(a.GestureName);
 
             //int xmoved = 0;
             //_cam.LeftHand.Moved += (s, a) => {

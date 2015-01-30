@@ -46,7 +46,7 @@ namespace SharpSenses {
             if (_faceRecognizer == null) {
                 return false;
             }
-            _faceRecognizer.Recognize();
+            _faceRecognizer.RecognizeFace();
             return true;
         }
 

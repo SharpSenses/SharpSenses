@@ -51,8 +51,6 @@ namespace SharpSenses {
             }
         }
 
-        
-
         public Face Face {
             get {
                 return _face ?? (_face = new Face(GetFaceRecognizer()));
@@ -67,6 +65,7 @@ namespace SharpSenses {
             get { return _poses; }
         }
 
+        public abstract ISpeech Speech { get; }
         public abstract void Start();
         public abstract void Dispose();
 

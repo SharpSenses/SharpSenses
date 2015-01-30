@@ -10,6 +10,10 @@ namespace SharpSenses.Tests {
         public IGestureSensor Gestures { get; set; }
         public IPoseSensor Poses { get; set; }
 
+        public ISpeech Speech {
+            get { return null; }
+        }
+
         public int ResolutionWidth {
             get { return 320; }
         }
