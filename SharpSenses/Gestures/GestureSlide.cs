@@ -3,16 +3,13 @@ using System.Diagnostics;
 
 namespace SharpSenses.Gestures {
     public abstract class GestureSlide {
+        protected int Middle { get; private set; }
         private Position _last;
-        private double _beginLimit;
-        private double _endLimit;
         private double _startedSecundaryValue;
 
+        public static int GestureLength = 15;
+        public static int SecundaryDirectionTolerance = 20;
         public static int WrongDirectionTolerance = 3;
-        public static int SecundaryDirectionTolerance = 10;
-        public static double BeginLimitModifier = 1.3;
-        public static double EndLimitModifier = 0.7;
-
 
         public bool GestureHappening { get; private set; }
 
@@ -24,6 +21,17 @@ namespace SharpSenses.Gestures {
             var l = camera.LeftHand;
             var r = camera.RightHand;
 
+            int i = 0;
+            r.Moved += (s, a) => {
+                i++;
+                if (i%2 == 0) {
+                    Debug.WriteLine(a.NewPosition);
+                }
+                else {
+                    Debug.WriteLine(".");
+                }
+            };
+
             new GestureSlideLeft(l, middleWidth).SlideDetected += (s, a) =>
                 gestureSensor.OnSlideLeft(new GestureEventArgs("Left Hand Slide Left"));
             new GestureSlideRight(l, middleWidth).SlideDetected += (s, a) =>
@@ -32,7 +40,7 @@ namespace SharpSenses.Gestures {
                 gestureSensor.OnSlideUp(new GestureEventArgs("Left Hand Slide Up"));
             new GestureSlideDown(l, middleHeight).SlideDetected += (s, a) =>
                 gestureSensor.OnSlideDown(new GestureEventArgs("Left Hand Slide Down"));
-            
+
             new GestureSlideLeft(r, middleWidth).SlideDetected += (s, a) =>
                 gestureSensor.OnSlideLeft(new GestureEventArgs("Right Hand Slide Left"));
             new GestureSlideRight(r, middleWidth).SlideDetected += (s, a) =>
@@ -44,8 +52,7 @@ namespace SharpSenses.Gestures {
         }
 
         protected GestureSlide(Hand hand, int middle) {
-            _beginLimit = middle * BeginLimitModifier;
-            _endLimit = middle * EndLimitModifier;
+            Middle = middle;
             hand.Moved += HandOnMoved;
         }
 
@@ -55,7 +62,7 @@ namespace SharpSenses.Gestures {
             var currentPrimaryValue = GetCurrentPrimaryValue(current);
             var currentSecundaryValue = GetCurrentSecundaryValue(current);
             if (!GestureHappening) {
-                if (IsInStartArea(currentPrimaryValue, _beginLimit)) {
+                if (IsInStartArea(currentPrimaryValue, GetBeginLimit())) {
                     _startedSecundaryValue = currentSecundaryValue;
                     GestureHappening = true;
                 }
@@ -63,22 +70,21 @@ namespace SharpSenses.Gestures {
                 return;
             }
             var dif = Math.Abs(currentSecundaryValue - _startedSecundaryValue);
-            Debug.WriteLine("Start: BeginLimit: {0} Current: {1} Dif Secundary: {2}", _beginLimit, current, dif);
             if (dif > SecundaryDirectionTolerance ||
-                IsWrongDirection(currentPrimaryValue, lastPrimaryValue)) {
+                !IsRightDirection(currentPrimaryValue, lastPrimaryValue)) {
                 GestureHappening = false;
                 _last = current;
-                return;
             }
-            if (IsInEndArea(currentPrimaryValue, _endLimit)) {
+            if (IsInEndArea(currentPrimaryValue, GetEndLimit())) {
                 OnSlideDetected();
                 GestureHappening = false;
-                Debug.WriteLine("Good job!");
             }
             _last = current;
         }
 
-        protected abstract bool IsWrongDirection(double currentPrimaryValue, double lastPrimaryValue);
+        protected abstract double GetBeginLimit();
+        protected abstract double GetEndLimit();
+        protected abstract bool IsRightDirection(double currentPrimaryValue, double lastPrimaryValue);
         protected abstract bool IsInEndArea(double currentPrimaryValue, double endLimit);
         protected abstract bool IsInStartArea(double currentPrimaryValue, double beginLimit);
         protected abstract double GetLastPrimaryValue(Position lastPosition);

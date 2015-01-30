@@ -8,23 +8,22 @@ using NUnit.Framework;
 using SharpSenses.Gestures;
 
 namespace SharpSenses.Tests {
-    public class GestureSlideTests {
+    public class GestureSlideDownTests {
 
-        private GestureSlideRight _sensor;
+        private GestureSlideDown _sensor;
         private Hand _hand;
         private const int Middle = 100;
-        private const int BeginLimit = 130;
-        private const int EndLimit = 70;
+        private const int BeginLimit = 70;
+        private const int EndLimit = 130;
         private bool _gestureFired;
 
         [SetUp]
         public void SetUp() {
             GestureSlide.WrongDirectionTolerance = 0;
-            GestureSlide.BeginLimitModifier = 1.3;
-            GestureSlide.EndLimitModifier = 0.7;
+            GestureSlide.GestureLength = 30;
             _gestureFired = false;
             _hand = new Hand(Side.Left);
-            _sensor = new GestureSlideRight(_hand, Middle);
+            _sensor = new GestureSlideDown(_hand, Middle);
             _sensor.SlideDetected += (sender, args) => {
                 _gestureFired = true;
             };
@@ -33,7 +32,7 @@ namespace SharpSenses.Tests {
         [Test]
         [TestCase(Middle)]
         [TestCase(EndLimit)]
-        [TestCase(BeginLimit-1)]
+        [TestCase(BeginLimit+1)]
         public void Is_out_begin_area(int position) {
             SetHandPositionWidth(position);
             Assert.IsFalse(_sensor.GestureHappening);
@@ -41,7 +40,7 @@ namespace SharpSenses.Tests {
 
         [Test]
         [TestCase(BeginLimit)]
-        [TestCase(BeginLimit+1)]
+        [TestCase(BeginLimit-1)]
         public void Enters_begin_area(int position) {
             SetHandPositionWidth(Middle);
             SetHandPositionWidth(position);
@@ -53,7 +52,6 @@ namespace SharpSenses.Tests {
             SetHandPositionWidth(Middle);
             SetHandPositionWidth(BeginLimit);
             SetHandPositionWidth(BeginLimit-10);
-            SetHandPositionWidth(BeginLimit);
             Assert.IsFalse(_sensor.GestureHappening);
         }
 
@@ -61,8 +59,8 @@ namespace SharpSenses.Tests {
         public void Enters_begin_area_and_goes_right_direction() {
             SetHandPositionWidth(Middle);
             SetHandPositionWidth(BeginLimit);
-            SetHandPositionWidth(BeginLimit - 10);
-            SetHandPositionWidth(BeginLimit - 10);
+            SetHandPositionWidth(BeginLimit + 10);
+            SetHandPositionWidth(BeginLimit + 10);
             Assert.IsTrue(_sensor.GestureHappening);
         }
 
@@ -70,7 +68,8 @@ namespace SharpSenses.Tests {
         public void Respects_wrong_direction_tolerance() {
             GestureSlide.WrongDirectionTolerance = 1;
             SetHandPositionWidth(Middle);
-            SetHandPositionWidth(BeginLimit+1);
+            SetHandPositionWidth(BeginLimit);
+            SetHandPositionWidth(BeginLimit-1);
             Assert.IsTrue(_sensor.GestureHappening);
         }
 
@@ -94,7 +93,7 @@ namespace SharpSenses.Tests {
         }
 
         private void SetHandPositionWidth(int value) {
-            var p = new Position {Image = new Point3D(value)};
+            var p = new Position {Image = new Point3D(0, value)};
             _hand.Position = p;
         }
     }

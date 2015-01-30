@@ -2,8 +2,16 @@ namespace SharpSenses.Gestures {
     public class GestureSlideUp : GestureSlide {
         public GestureSlideUp(Hand hand, int middle) : base(hand, middle) { }
 
-        protected override bool IsWrongDirection(double currentPrimaryValue, double lastPrimaryValue) {
-            return currentPrimaryValue + WrongDirectionTolerance >= lastPrimaryValue;
+        protected override double GetBeginLimit() {
+            return Middle + GestureLength;
+        }
+
+        protected override double GetEndLimit() {
+            return Middle - GestureLength;
+        }
+
+        protected override bool IsRightDirection(double currentPrimaryValue, double lastPrimaryValue) {
+            return currentPrimaryValue - WrongDirectionTolerance <= lastPrimaryValue;
         }
 
         protected override bool IsInEndArea(double currentPrimaryValue, double endLimit) {

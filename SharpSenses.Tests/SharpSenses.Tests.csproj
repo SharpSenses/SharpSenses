@@ -44,7 +44,10 @@
   <ItemGroup>
     <Compile Include="FakeCamera.cs" />
     <Compile Include="FlexiblePartTests.cs" />
-    <Compile Include="GestureSlideTests.cs" />
+    <Compile Include="GestureSlideUpTests.cs" />
+    <Compile Include="GestureSlideDownTests.cs" />
+    <Compile Include="GestureSlideLeftTests.cs" />
+    <Compile Include="GestureSlideRightTests.cs" />
     <Compile Include="GestureStepsTests.cs" />
     <Compile Include="GestureTests.cs" />
     <Compile Include="ItemTests.cs" />
