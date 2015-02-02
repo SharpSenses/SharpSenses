@@ -84,4 +84,14 @@ Oh yeah, we speak!
 	cam.Speech.Say("Isn't that cool?");
 ```
 
+##Voice/Speech Recognition 
+
+I can hear you, man!
+```
+	cam.Speech.SpeechRecognized += (s, a) => {
+        	Console.WriteLine("-> " + a.Sentence);
+        };
+        cam.Speech.EnableRecognition();
+```
+
 Don't forget that you have to have the Intel RealSense SDK (and the 3d camera, of course) for this library to work!
