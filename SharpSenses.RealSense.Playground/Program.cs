@@ -12,9 +12,22 @@ namespace SharpSenses.RealSense.Playground {
             _cam = Camera.Create();
             //_cam.Start();
 
-            _cam.Speech.Say("Hello world!");
-            _cam.Speech.Say("Hello world!");
-            _cam.Speech.Say("Hello world!");
+            //_cam.Speech.Say("Hello world!");
+            //_cam.Speech.Say("Hello world!");
+            //_cam.Speech.Say("Hello world!");
+
+            _cam.Speech.SpeechRecognized += (sender, eventArgs) => {
+                Console.WriteLine("-> " + eventArgs.Sentence);
+            };
+
+            _cam.Speech.EnableRecognition();
+            Console.WriteLine("Started");
+            Console.ReadLine();
+            Console.WriteLine("Stopped");
+            Console.ReadLine();
+            _cam.Speech.EnableRecognition();
+            Console.WriteLine("Started");
+
 
             //_cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi  l");
             //_cam.LeftHand.NotVisible += (s,a) => Console.WriteLine("Bye l");

@@ -371,7 +371,9 @@ namespace SharpSenses.RealSense {
         }
 
         public override void Dispose() {
-            _cancellationToken.Cancel();
+            if (_cancellationToken != null) {
+                _cancellationToken.Cancel();                
+            }
             _manager.SilentlyDispose();
             Session.SilentlyDispose();
         }
