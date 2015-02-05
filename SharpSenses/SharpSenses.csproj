@@ -64,6 +64,8 @@
     <Compile Include="Camera.cs" />
     <Compile Include="CameraException.cs" />
     <Compile Include="CameraKind.cs" />
+    <Compile Include="DirectionEventArgs.cs" />
+    <Compile Include="Eye.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="FacialExpression.cs" />
     <Compile Include="FacialExpressionEventArgs.cs" />

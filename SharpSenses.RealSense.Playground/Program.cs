@@ -10,7 +10,7 @@ namespace SharpSenses.RealSense.Playground {
 
         private static void Main(string[] args) {
             _cam = Camera.Create();
-            //_cam.Start();
+            _cam.Start();
 
             _cam.Speech.CurrentLanguage = SupportedLanguage.EnUS;
             _cam.Speech.Say("Hello world!");
@@ -19,6 +19,26 @@ namespace SharpSenses.RealSense.Playground {
 
             _cam.Speech.SpeechRecognized += (sender, eventArgs) => {
                 Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
+            };
+
+            _cam.Face.EyesDirectionChanged += (s, a) => {
+                if (a.NewDirection == Direction.None) return;
+                Console.WriteLine("-> " + a.NewDirection);
+            };
+
+            _cam.Face.LeftEye.Opened += (s, a) => {
+                Console.WriteLine("-> LeftEye opened");
+            };
+            _cam.Face.LeftEye.Closed += (s, a) => {
+                Console.WriteLine("-> LeftEye Closed");
+            };
+
+            _cam.Face.LeftEye.Blink += (s, a) => {
+                Console.WriteLine("-> LeftEye Blink");
+            };
+
+            _cam.Face.LeftEye.DoubleBlink += (s, a) => {
+                Console.WriteLine("-> LeftEye DoubleBlink");
             };
 
             _cam.Speech.EnableRecognition();

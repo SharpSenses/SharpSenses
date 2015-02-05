@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Data.OleDb;
+using SharpSenses.Gestures;
 
 namespace SharpSenses {
     public class Face : Item {
         private readonly IFaceRecognizer _faceRecognizer;
         private int _userId;
         private FacialExpression _facialExpression;
+        private Direction _eyesDirection;
         public Mouth Mouth { get; private set; }
+        public Eye LeftEye { get; set; }
+        public Eye RightEye { get; set; }
 
         public event EventHandler<FaceRecognizedEventArgs> FaceRecognized;
         public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
+        public event EventHandler<DirectionEventArgs> EyesDirectionChanged;
 
         public int UserId {
             get { return _userId; }
@@ -36,10 +42,25 @@ namespace SharpSenses {
                 OnFacialExpresssionChanged(old, value);
             }
         }
-        
+
+        public Direction EyesDirection {
+            get { return _eyesDirection; }
+            set {
+                if (_eyesDirection == value) {
+                    return;
+                }
+                var old = _eyesDirection;
+                _eyesDirection = value;
+                RaisePropertyChanged(() => EyesDirection);
+                FireEyesDirectionChanged(old, value);
+            }
+        }
+
         public Face(IFaceRecognizer faceRecognizer) {
             _faceRecognizer = faceRecognizer;
             Mouth = new Mouth();
+            LeftEye = new Eye(Side.Left);
+            RightEye = new Eye(Side.Right);
         }
 
         public bool RecognizeFace() {
@@ -58,6 +79,11 @@ namespace SharpSenses {
         protected virtual void OnPersonRecognized() {
             var handler = FaceRecognized;
             if (handler != null) handler(this, new FaceRecognizedEventArgs(UserId));
+        }
+
+        protected virtual void FireEyesDirectionChanged(Direction old, Direction newDirection) {
+            var handler = EyesDirectionChanged;
+            if (handler != null) handler(this, new DirectionEventArgs(old, newDirection));
         }
     }
 }

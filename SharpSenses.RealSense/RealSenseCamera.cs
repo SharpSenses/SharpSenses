@@ -6,10 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
+using FaceExpression = PXCMFaceData.ExpressionsData.FaceExpression;
 
 namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera, IFaceRecognizer {
         public static pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
+        public static int ExpressionThreashod = 30;
         private PXCMSenseManager _manager;
         private ISpeech _speech;
         private CancellationTokenSource _cancellationToken;
@@ -65,7 +67,10 @@ namespace SharpSenses.RealSense {
             using (var faceModule = _manager.QueryFace()) {
                 using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) { 
                     moduleConfiguration.detection.maxTrackedFaces = 1;
-                    
+                    var expressionCofig = moduleConfiguration.QueryExpressions();
+                    expressionCofig.Enable();
+                    expressionCofig.EnableAllExpressions();
+
                     var desc = new PXCMFaceConfiguration.RecognitionConfiguration.RecognitionStorageDesc();
                     desc.maxUsers = 10;
                     desc.isPersistent = true;
@@ -133,7 +138,12 @@ namespace SharpSenses.RealSense {
                 TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
                 TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
                 faceData.Update();
-                TrackFace(faceData);
+                var face = FindFace(faceData);
+                if (face != null) {
+                    TrackFace(face);
+                    RecognizeFace(faceData, face);
+                    TrackExpressions(face);
+                }
                 TrackEmotions();
 
                 _manager.ReleaseFrame();
@@ -145,6 +155,15 @@ namespace SharpSenses.RealSense {
             faceData.Dispose();
             handModule.Dispose();
             faceModule.Dispose();
+        }
+
+        private PXCMFaceData.Face FindFace(PXCMFaceData faceData) {
+            if (faceData.QueryNumberOfDetectedFaces() == 0) {
+                Face.IsVisible = false;
+                return null;
+            }
+            Face.IsVisible = true;
+            return faceData.QueryFaces().First();
         }
 
         private void TrackEmotions() {
@@ -173,13 +192,39 @@ namespace SharpSenses.RealSense {
             emotionInfo.Dispose();
         }
 
-        private void TrackFace(PXCMFaceData faceData) {
-            if (faceData.QueryNumberOfDetectedFaces() == 0) {
-                Face.IsVisible = false;
+        private void TrackExpressions(PXCMFaceData.Face face) {
+            PXCMFaceData.ExpressionsData data = face.QueryExpressions();
+
+            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE,10);
+            Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT,10);
+            Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, 10);
+            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_UP, 0)) {
+                Face.EyesDirection = Direction.Up;
                 return;
             }
-            Face.IsVisible = true;
-            var face = faceData.QueryFaces().First();
+            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_DOWN, 40)) {
+                Face.EyesDirection = Direction.Down;
+                return;
+            }
+            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_TURN_LEFT, 35)) {
+                Face.EyesDirection = Direction.Left;
+                return;
+            }
+            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_TURN_RIGHT, 5)) {
+                Face.EyesDirection = Direction.Right;
+                return;
+            }
+            Face.EyesDirection = Direction.None;
+        }
+
+        private bool CheckFaceExpression(PXCMFaceData.ExpressionsData data, FaceExpression faceExpression, int threshold) {
+            PXCMFaceData.ExpressionsData.FaceExpressionResult score;
+            data.QueryExpression(faceExpression, out score);
+            if (score.intensity > 0) Debug.WriteLine(faceExpression + ":" +score.intensity);
+            return score.intensity > threshold;
+        }
+
+        private void TrackFace(PXCMFaceData.Face face) {
             PXCMRectI32 rect;
             face.QueryDetection().QueryBoundingRect(out rect);
             var point = new Point3D(rect.x + rect.w /2, rect.y + rect.h /2);
@@ -199,11 +244,20 @@ namespace SharpSenses.RealSense {
                     case PXCMFaceData.LandmarkType.LANDMARK_UPPER_LIP_CENTER:
                         Face.Mouth.Position = CreatePosition(ToPoint3D(item.image), ToPoint3D(item.world));
                         break;
+                    case PXCMFaceData.LandmarkType.LANDMARK_EYE_LEFT_CENTER:
+                        Face.LeftEye.Position = CreatePosition(ToPoint3D(item.image), ToPoint3D(item.world));
+                        break;
+                    case PXCMFaceData.LandmarkType.LANDMARK_EYE_RIGHT_CENTER:
+                        Face.RightEye.Position = CreatePosition(ToPoint3D(item.image), ToPoint3D(item.world));
+                        break;
                 }
             }
+        }
+
+        private void RecognizeFace(PXCMFaceData faceData, PXCMFaceData.Face face) {
             var rdata = face.QueryRecognition();
             var userId = rdata.QueryUserID();
-            
+
             switch (_recognitionState) {
                 case RecognitionState.Idle:
                     break;
@@ -218,13 +272,12 @@ namespace SharpSenses.RealSense {
                     break;
                 case RecognitionState.Done:
                     SaveDatabase(faceData);
-                    _recognitionState = RecognitionState.Idle;                    
+                    _recognitionState = RecognitionState.Idle;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
             Face.UserId = userId;
-            //Debug.WriteLine("UserId: " + userId);
         }
 
         private void SaveDatabase(PXCMFaceData faceData) {
