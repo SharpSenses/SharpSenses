@@ -9,7 +9,7 @@ using SharpSenses.Poses;
 
 namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera, IFaceRecognizer {
-        private pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
+        public static pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
         private PXCMSenseManager _manager;
         private ISpeech _speech;
         private CancellationTokenSource _cancellationToken;

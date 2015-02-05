@@ -111,6 +111,7 @@
     <Compile Include="Side.cs" />
     <Compile Include="SpeechRecognitionEventArgs.cs" />
     <Compile Include="Storage\UserIdRepository.cs" />
+    <Compile Include="SupportedLanguage.cs" />
     <Compile Include="Util\MathEx.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
