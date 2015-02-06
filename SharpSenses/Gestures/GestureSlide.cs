@@ -21,17 +21,6 @@ namespace SharpSenses.Gestures {
             var l = camera.LeftHand;
             var r = camera.RightHand;
 
-            int i = 0;
-            r.Moved += (s, a) => {
-                i++;
-                if (i%2 == 0) {
-                    Debug.WriteLine(a.NewPosition);
-                }
-                else {
-                    Debug.WriteLine(".");
-                }
-            };
-
             new GestureSlideLeft(l, middleWidth).SlideDetected += (s, a) =>
                 gestureSensor.OnSlideLeft(new GestureEventArgs("Left Hand Slide Left"));
             new GestureSlideRight(l, middleWidth).SlideDetected += (s, a) =>

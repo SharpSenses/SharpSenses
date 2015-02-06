@@ -1,4 +1,6 @@
-﻿namespace SharpSenses {
+﻿using System.Collections.Generic;
+
+namespace SharpSenses {
     public class Finger : FlexiblePart {
 
         public FingerKind Kind { get; private set; }
@@ -11,6 +13,14 @@
             BaseJoint = new Item();
             FirstJoint = new Item();
             SecondJoint = new Item();
+        }
+
+        public List<Item> GetAllJoints() {
+            return new List<Item> {
+                BaseJoint,
+                FirstJoint,
+                SecondJoint
+            };
         }
     }
 }
