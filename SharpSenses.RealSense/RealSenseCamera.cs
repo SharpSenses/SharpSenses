@@ -221,7 +221,7 @@ namespace SharpSenses.RealSense {
         private bool CheckFaceExpression(PXCMFaceData.ExpressionsData data, FaceExpression faceExpression, int threshold) {
             PXCMFaceData.ExpressionsData.FaceExpressionResult score;
             data.QueryExpression(faceExpression, out score);
-            if (score.intensity > 0) Debug.WriteLine(faceExpression + ":" +score.intensity);
+            //if (score.intensity > 0) Debug.WriteLine(faceExpression + ":" +score.intensity);
             return score.intensity > threshold;
         }
 
