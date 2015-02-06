@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SharpSenses {
-    public class Mouth : Item {
+    public class Mouth : FlexiblePart {
         private bool _isSmiling;
 
         public event EventHandler Smiled;

@@ -13,7 +13,7 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Start();
 
             _cam.Speech.CurrentLanguage = SupportedLanguage.EnUS;
-            _cam.Speech.Say("Hello world!");
+            //_cam.Speech.Say("Hello world!");
             //_cam.Speech.Say("Hello world!");
             //_cam.Speech.Say("Hello world!");
 
@@ -39,6 +39,18 @@ namespace SharpSenses.RealSense.Playground {
 
             _cam.Face.LeftEye.DoubleBlink += (s, a) => {
                 Console.WriteLine("-> LeftEye DoubleBlink");
+            };
+
+            _cam.Face.Mouth.Opened += (s, a) => {
+                Console.WriteLine("-> month opened");
+            };
+
+            _cam.Face.Mouth.Closed += (s, a) => {
+                Console.WriteLine("-> month closed");
+            };
+
+            _cam.Face.Mouth.Smiled += (s, a) => {
+                Console.WriteLine("-> month smiled");
             };
 
             _cam.Speech.EnableRecognition();

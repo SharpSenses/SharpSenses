@@ -195,9 +195,10 @@ namespace SharpSenses.RealSense {
         private void TrackExpressions(PXCMFaceData.Face face) {
             PXCMFaceData.ExpressionsData data = face.QueryExpressions();
 
-            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE,10);
-            Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT,10);
-            Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, 10);
+            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE,40);
+            Face.Mouth.IsOpen = CheckFaceExpression(data, FaceExpression.EXPRESSION_MOUTH_OPEN, 15);
+            Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT, 15);
+            Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, 15);
             if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_UP, 0)) {
                 Face.EyesDirection = Direction.Up;
                 return;
@@ -220,7 +221,7 @@ namespace SharpSenses.RealSense {
         private bool CheckFaceExpression(PXCMFaceData.ExpressionsData data, FaceExpression faceExpression, int threshold) {
             PXCMFaceData.ExpressionsData.FaceExpressionResult score;
             data.QueryExpression(faceExpression, out score);
-            //if (score.intensity > 0) Debug.WriteLine(faceExpression + ":" +score.intensity);
+            if (score.intensity > 0) Debug.WriteLine(faceExpression + ":" +score.intensity);
             return score.intensity > threshold;
         }
 
