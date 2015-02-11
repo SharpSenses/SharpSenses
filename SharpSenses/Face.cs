@@ -15,6 +15,7 @@ namespace SharpSenses {
         public event EventHandler<FaceRecognizedEventArgs> FaceRecognized;
         public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
         public event EventHandler<DirectionEventArgs> EyesDirectionChanged;
+        public event EventHandler<EventArgs> Yawned;
 
         public int UserId {
             get { return _userId; }
@@ -61,6 +62,24 @@ namespace SharpSenses {
             Mouth = new Mouth();
             LeftEye = new Eye(Side.Left);
             RightEye = new Eye(Side.Right);
+
+            Mouth.Opened += DetectYawn;
+            LeftEye.Closed += DetectYawn;
+            RightEye.Closed += DetectYawn;
+        }
+
+        private DateTime _startYawn;
+
+        private void DetectYawn(object sender, EventArgs e) {
+            var diff = (DateTime.Now - _startYawn).TotalMilliseconds;
+            if (diff > 2000 && diff < 8000) {
+                FireYawned();
+                _startYawn = DateTime.MinValue;
+                return;
+            }
+            if (Mouth.IsOpen && !LeftEye.IsOpen && !RightEye.IsOpen) {
+                _startYawn = DateTime.Now;
+            }   
         }
 
         public bool RecognizeFace() {
@@ -84,6 +103,13 @@ namespace SharpSenses {
         protected virtual void FireEyesDirectionChanged(Direction old, Direction newDirection) {
             var handler = EyesDirectionChanged;
             if (handler != null) handler(this, new DirectionEventArgs(old, newDirection));
+        }
+
+        protected virtual void FireYawned() {
+            var handler = Yawned;
+            if (handler != null) {
+                handler(this, EventArgs.Empty);
+            }
         }
     }
 }

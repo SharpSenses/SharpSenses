@@ -12,6 +12,11 @@ namespace SharpSenses.RealSense.Playground {
             _cam = Camera.Create();
             _cam.Start();
 
+            int yawned = 0;
+            _cam.Face.Yawned += (sender, eventArgs) => {
+                Console.WriteLine("-> YAWNED " + yawned++);
+            };
+
             _cam.Speech.CurrentLanguage = SupportedLanguage.EnUS;
             //_cam.Speech.Say("Hello world!");
             //_cam.Speech.Say("Hello world!");
