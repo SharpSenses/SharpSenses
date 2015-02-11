@@ -26,32 +26,32 @@ namespace SharpSenses.RealSense.Playground {
                 Console.WriteLine("-> " + a.NewDirection);
             };
 
-            _cam.Face.LeftEye.Opened += (s, a) => {
-                Console.WriteLine("-> LeftEye opened");
-            };
-            _cam.Face.LeftEye.Closed += (s, a) => {
-                Console.WriteLine("-> LeftEye Closed");
-            };
+            //_cam.Face.LeftEye.Opened += (s, a) => {
+            //    Console.WriteLine("-> LeftEye opened");
+            //};
+            //_cam.Face.LeftEye.Closed += (s, a) => {
+            //    Console.WriteLine("-> LeftEye Closed");
+            //};
 
-            _cam.Face.LeftEye.Blink += (s, a) => {
-                Console.WriteLine("-> LeftEye Blink");
-            };
+            //_cam.Face.LeftEye.Blink += (s, a) => {
+            //    Console.WriteLine("-> LeftEye Blink");
+            //};
 
-            _cam.Face.LeftEye.DoubleBlink += (s, a) => {
-                Console.WriteLine("-> LeftEye DoubleBlink");
-            };
+            //_cam.Face.LeftEye.DoubleBlink += (s, a) => {
+            //    Console.WriteLine("-> LeftEye DoubleBlink");
+            //};
 
-            _cam.Face.Mouth.Opened += (s, a) => {
-                Console.WriteLine("-> month opened");
-            };
+            //_cam.Face.Mouth.Opened += (s, a) => {
+            //    Console.WriteLine("-> month opened");
+            //};
 
-            _cam.Face.Mouth.Closed += (s, a) => {
-                Console.WriteLine("-> month closed");
-            };
+            //_cam.Face.Mouth.Closed += (s, a) => {
+            //    Console.WriteLine("-> month closed");
+            //};
 
-            _cam.Face.Mouth.Smiled += (s, a) => {
-                Console.WriteLine("-> month smiled");
-            };
+            //_cam.Face.Mouth.Smiled += (s, a) => {
+            //    Console.WriteLine("-> month smiled");
+            //};
 
             _cam.Speech.EnableRecognition();
             Console.WriteLine("Started");

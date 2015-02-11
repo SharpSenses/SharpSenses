@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace SharpSenses.RealSense {
         private RecognitionState _recognitionState = RecognitionState.Idle;
         public PXCMSession Session { get; private set; }
 
+        private Dictionary<Direction, double> _eyesThresholds;
         private enum RecognitionState {
             Idle,
             Requested,
@@ -47,6 +49,12 @@ namespace SharpSenses.RealSense {
             ConfigurePoses();
             ConfigureGestures();
             _speech = new Speech(this);
+            _eyesThresholds = new Dictionary<Direction, double> {
+                { Direction.Up, 10},
+                { Direction.Down, 10},
+                { Direction.Left, 10},
+                { Direction.Right, 10}
+            };
             Debug.WriteLine("SDK Version {0}.{1}", Session.QueryVersion().major, Session.QueryVersion().minor);
         }
 
@@ -194,36 +202,62 @@ namespace SharpSenses.RealSense {
 
         private void TrackExpressions(PXCMFaceData.Face face) {
             PXCMFaceData.ExpressionsData data = face.QueryExpressions();
-
-            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE,40);
+            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE, 40);
             Face.Mouth.IsOpen = CheckFaceExpression(data, FaceExpression.EXPRESSION_MOUTH_OPEN, 15);
             Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT, 15);
             Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, 15);
-            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_UP, 0)) {
-                Face.EyesDirection = Direction.Up;
-                return;
+            Face.EyesDirection = GetEyesDirection(data);
+        }
+
+        private DateTime _lastEyesDirectionDetection;
+
+        private Direction GetEyesDirection(PXCMFaceData.ExpressionsData data) {
+            if ((DateTime.Now - _lastEyesDirectionDetection).TotalMilliseconds < 500) {
+                return Face.EyesDirection;
             }
-            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_DOWN, 40)) {
-                Face.EyesDirection = Direction.Down;
-                return;
+            _lastEyesDirectionDetection = DateTime.Now;
+            var up = GetFaceExpressionIntensity(data, FaceExpression.EXPRESSION_EYES_UP);
+            var down = GetFaceExpressionIntensity(data, FaceExpression.EXPRESSION_EYES_DOWN);
+            var left = GetFaceExpressionIntensity(data, FaceExpression.EXPRESSION_EYES_TURN_LEFT);
+            var right = GetFaceExpressionIntensity(data, FaceExpression.EXPRESSION_EYES_TURN_RIGHT);
+
+            //Debug.WriteLine("U:{0}/{4} D:{1}/{5} L:{2}/{6} R:{3}/{7}", up, down, left, right,
+            //    _eyesThresholds[Direction.Up],
+            //    _eyesThresholds[Direction.Down],
+            //    _eyesThresholds[Direction.Left],
+            //    _eyesThresholds[Direction.Right]
+            //    );
+
+            if (up > _eyesThresholds[Direction.Up]) {
+                _eyesThresholds[Direction.Up] = up*0.9;
+                return Direction.Up;
             }
-            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_TURN_LEFT, 35)) {
-                Face.EyesDirection = Direction.Left;
-                return;
+            if (down > _eyesThresholds[Direction.Down]) {
+                _eyesThresholds[Direction.Down] = down * 0.9;
+                return Direction.Down;
             }
-            if (CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_TURN_RIGHT, 5)) {
-                Face.EyesDirection = Direction.Right;
-                return;
+            if (left > _eyesThresholds[Direction.Left]) {
+                _eyesThresholds[Direction.Left] = left * 0.9;
+                return Direction.Left;
             }
-            Face.EyesDirection = Direction.None;
+            if (right > _eyesThresholds[Direction.Right]) {
+                _eyesThresholds[Direction.Right] = right * 0.9;
+                return Direction.Right;
+            }
+            return Direction.None;
         }
 
         private bool CheckFaceExpression(PXCMFaceData.ExpressionsData data, FaceExpression faceExpression, int threshold) {
+            return GetFaceExpressionIntensity(data, faceExpression) > threshold;
+        }
+
+        private int GetFaceExpressionIntensity(PXCMFaceData.ExpressionsData data, FaceExpression faceExpression) {
             PXCMFaceData.ExpressionsData.FaceExpressionResult score;
             data.QueryExpression(faceExpression, out score);
             //if (score.intensity > 0) Debug.WriteLine(faceExpression + ":" +score.intensity);
-            return score.intensity > threshold;
+            return score.intensity;
         }
+
 
         private void TrackFace(PXCMFaceData.Face face) {
             PXCMRectI32 rect;
