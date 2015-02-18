@@ -25,9 +25,7 @@ namespace SharpSenses {
                 }
                 _userId = value;
                 RaisePropertyChanged(() => UserId);
-                if (_userId > 0) {
-                    OnPersonRecognized();                    
-                }
+                OnPersonRecognized();
             }
         }
 

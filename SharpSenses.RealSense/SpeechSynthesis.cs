@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace SharpSenses.RealSense {
     public class SpeechSynthesis : IDisposable {
-        private readonly RealSenseCamera _camera;
+        private PXCMSession _session;
         private PXCMSpeechSynthesis _synthesisModule;
         private Dictionary<SupportedLanguage, PXCMSpeechSynthesis.ProfileInfo> _synthesisProfiles;
 
-        public SpeechSynthesis(RealSenseCamera camera) {
-            _camera = camera;
+        public SpeechSynthesis() {
+            _session = PXCMSession.CreateInstance();
             _synthesisProfiles = new Dictionary<SupportedLanguage, PXCMSpeechSynthesis.ProfileInfo>();
         }
 
@@ -39,7 +39,7 @@ namespace SharpSenses.RealSense {
             if (_synthesisModule != null) {
                 return;
             }
-            _camera.Session.CreateImpl(out _synthesisModule);
+            _session.CreateImpl(out _synthesisModule);
             for (int i = 0;; i++) {
                 PXCMSpeechSynthesis.ProfileInfo profile;
                 if (_synthesisModule.QueryProfile(i, out profile) != RealSenseCamera.NoError) {
@@ -55,6 +55,7 @@ namespace SharpSenses.RealSense {
 
         public void Dispose() {
             _synthesisModule.SilentlyDispose();
+            _session.SilentlyDispose();
         }
     }
 }

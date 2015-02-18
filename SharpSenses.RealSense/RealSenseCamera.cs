@@ -17,7 +17,7 @@ namespace SharpSenses.RealSense {
         private ISpeech _speech;
         private CancellationTokenSource _cancellationToken;
         private const string StorageName = "SharpSensesDb";
-        private const string StorageFileName = "SharpSensesDb.bin";
+        private static string StorageFileName = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "SharpSensesDb.bin";
         private RecognitionState _recognitionState = RecognitionState.Idle;
         public PXCMSession Session { get; private set; }
 
@@ -48,7 +48,7 @@ namespace SharpSenses.RealSense {
             _manager = Session.CreateSenseManager();
             ConfigurePoses();
             ConfigureGestures();
-            _speech = new Speech(this);
+            _speech = new Speech();
             _eyesThresholds = new Dictionary<Direction, double> {
                 { Direction.Up, 10},
                 { Direction.Down, 10},
@@ -73,7 +73,7 @@ namespace SharpSenses.RealSense {
             _manager.EnableFace();
 
             using (var faceModule = _manager.QueryFace()) {
-                using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) { 
+                using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) {
                     moduleConfiguration.detection.maxTrackedFaces = 1;
                     var expressionCofig = moduleConfiguration.QueryExpressions();
                     expressionCofig.Enable();
@@ -202,6 +202,9 @@ namespace SharpSenses.RealSense {
 
         private void TrackExpressions(PXCMFaceData.Face face) {
             PXCMFaceData.ExpressionsData data = face.QueryExpressions();
+            if (data == null) {
+                return;
+            }
             Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE, 40);
             Face.Mouth.IsOpen = CheckFaceExpression(data, FaceExpression.EXPRESSION_MOUTH_OPEN, 15);
             Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT, 15);

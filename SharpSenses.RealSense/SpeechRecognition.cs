@@ -2,27 +2,35 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace SharpSenses.RealSense {
     public class SpeechRecognition : IDisposable {
-        private readonly RealSenseCamera _camera;
+        private PXCMSession _session;
         private PXCMSpeechRecognition _speechRecognition;
         private PXCMSpeechRecognition.Handler _speechRecognitionHandler;
         private Dictionary<SupportedLanguage, PXCMSpeechRecognition.ProfileInfo> _recognitionProfiles;
+        private SupportedLanguage _language;
 
         public event EventHandler<SpeechRecognitionEventArgs> SpeechRecognized;
 
-        public SpeechRecognition(RealSenseCamera camera) {
-            _camera = camera;
+        public SpeechRecognition() {
             _recognitionProfiles = new Dictionary<SupportedLanguage, PXCMSpeechRecognition.ProfileInfo>();
             _speechRecognitionHandler = new PXCMSpeechRecognition.Handler {
-                onRecognition = OnRecognition
+                onRecognition = OnRecognition,
+                onAlert = OnAlert
             };
         }
 
+        private void OnAlert(PXCMSpeechRecognition.AlertData data) {
+            Debug.WriteLine("SpeechRecognition alert: " + data.label);
+        }
+
         public void EnableRecognition(SupportedLanguage language) {
+            _language = language;
+            _session = PXCMSession.CreateInstance();
             var audioSource = FindAudioSource();
-            _camera.Session.CreateImpl(out _speechRecognition);
+            _session.CreateImpl(out _speechRecognition);
             for (int i = 0; ; i++) {
                 PXCMSpeechRecognition.ProfileInfo profile;
                 if (_speechRecognition.QueryProfile(i, out profile) != RealSenseCamera.NoError) {
@@ -46,21 +54,21 @@ namespace SharpSenses.RealSense {
         }
 
         private PXCMAudioSource FindAudioSource() {
-            PXCMAudioSource audioSource = _camera.Session.CreateAudioSource();
+            PXCMAudioSource audioSource = _session.CreateAudioSource();
             audioSource.ScanDevices();
             int devicesCount = audioSource.QueryDeviceNum();
             var deviceIndex = 0;
             PXCMAudioSource.DeviceInfo deviceInfo;
             for (int i = 0; i < devicesCount; i++) {
                 audioSource.QueryDeviceInfo(i, out deviceInfo);
-                if (deviceInfo.name.Contains("Creative 3D")) {
+                if (deviceInfo.name.Contains("Array")) {
                     deviceIndex = i;
                     break;
                 }
             }
             audioSource.QueryDeviceInfo(deviceIndex, out deviceInfo);
             audioSource.SetDevice(deviceInfo);
-            audioSource.SetVolume(0.2f);
+            audioSource.SetVolume(0.8f);
             return audioSource;
         }
 
@@ -82,6 +90,7 @@ namespace SharpSenses.RealSense {
 
         public void Dispose() {
             _speechRecognition.SilentlyDispose();
+            _session.SilentlyDispose();
         }
     }
 }

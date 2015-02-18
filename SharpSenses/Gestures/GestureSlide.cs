@@ -7,9 +7,9 @@ namespace SharpSenses.Gestures {
         private Position _last;
         private double _startedSecundaryValue;
 
-        public static int GestureLength = 15;
+        public static int GestureLength = 20;
         public static int SecundaryDirectionTolerance = 20;
-        public static int WrongDirectionTolerance = 3;
+        public static int WrongDirectionTolerance = 1;
 
         public bool GestureHappening { get; private set; }
 

@@ -6,9 +6,9 @@ namespace SharpSenses.RealSense {
         private SpeechSynthesis _speechSynthesis;
         private SpeechRecognition _speechRecognition;
 
-        public Speech(RealSenseCamera camera) {
-            _speechSynthesis = new SpeechSynthesis(camera);
-            _speechRecognition = new SpeechRecognition(camera);
+        public Speech() {
+            _speechSynthesis = new SpeechSynthesis();
+            _speechRecognition = new SpeechRecognition();
             _speechRecognition.SpeechRecognized += (s, a) => FireSpeechRecognized(a.Sentence);
         }
 

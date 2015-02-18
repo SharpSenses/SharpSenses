@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using SharpSenses.Gestures;
 using SharpSenses.Perceptual;
 using SharpSenses.Poses;
@@ -9,27 +10,76 @@ namespace SharpSenses.RealSense.Playground {
         private static ICamera _cam;
 
         private static void Main(string[] args) {
+            Item.DefaultNoiseThreshold = 100;
+            
             _cam = Camera.Create();
             _cam.Start();
 
-            int yawned = 0;
-            _cam.Face.Yawned += (sender, eventArgs) => {
-                Console.WriteLine("-> YAWNED " + yawned++);
+
+            _cam.RightHand.Visible += (sender, eventArgs) => {
+                Console.WriteLine("-> Visible ");
             };
 
-            _cam.Speech.CurrentLanguage = SupportedLanguage.EnUS;
+            _cam.RightHand.NotVisible += (sender, eventArgs) => {
+                Console.WriteLine("-> NotVisible ");
+            };
+
+            _cam.RightHand.Opened += (sender, eventArgs) => {
+                Console.WriteLine("-> Open");
+            };
+
+            _cam.RightHand.Closed += (sender, eventArgs) => {
+                Console.WriteLine("-> Closed");
+            };
+
+            _cam.RightHand.Moved += (sender, eventArgs) => {
+                Console.Write((char)13);
+                Console.Write("-> P: " + eventArgs.NewPosition.Image);
+            };
+
+            //Process.Start("WINWORD.EXE");
+            //Process.Start("EXCEL.EXE");
+            //Process.Start("POWERPNT.EXE");
+            //Process.Start("POWERPNT.EXE");
+            //Process.Start("http://google.com/search?q=" + t);
+
+            //int yawned = 0;
+            //_cam.Face.Yawned += (sender, eventArgs) => {
+            //    Console.WriteLine("-> YAWNED " + yawned++);
+            //};
+
+            //_cam.Face.Visible += (sender, eventArgs) => {
+            //    Console.WriteLine("-> Face visible " + _cam.Face.UserId);
+            //};
+
+            //_cam.Face.NotVisible += (sender, eventArgs) => {
+            //    Console.WriteLine("-> Face not visible " + _cam.Face.UserId);
+            //};
+
+            //_cam.Face.FaceRecognized += (sender, eventArgs) => {
+            //    Console.WriteLine("User: " + eventArgs.UserId);
+            //};
+
+            //while (true) {
+            //    Console.ReadLine();
+            //    _cam.Face.RecognizeFace();
+            //    Console.WriteLine("Recognize!");
+            //}
+
+
+            //_cam.Speech.CurrentLanguage = SupportedLanguage.EnUS;
             //_cam.Speech.Say("Hello world!");
             //_cam.Speech.Say("Hello world!");
             //_cam.Speech.Say("Hello world!");
 
-            _cam.Speech.SpeechRecognized += (sender, eventArgs) => {
-                Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
-            };
+            //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
+            //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
+            //};
 
-            _cam.Face.EyesDirectionChanged += (s, a) => {
-                if (a.NewDirection == Direction.None) return;
-                Console.WriteLine("-> " + a.NewDirection);
-            };
+            //_cam.Face.EyesDirectionChanged += (s, a) => {
+            //    if (a.NewDirection == Direction.None) return;
+            //    Console.WriteLine("-> " + a.NewDirection);
+            //};
 
             //_cam.Face.LeftEye.Opened += (s, a) => {
             //    Console.WriteLine("-> LeftEye opened");
@@ -58,13 +108,13 @@ namespace SharpSenses.RealSense.Playground {
             //    Console.WriteLine("-> month smiled");
             //};
 
-            _cam.Speech.EnableRecognition();
-            Console.WriteLine("Started");
-            Console.ReadLine();
-            Console.WriteLine("Stopped");
-            Console.ReadLine();
-            _cam.Speech.EnableRecognition();
-            Console.WriteLine("Started");
+            //_cam.Speech.EnableRecognition();
+            //Console.WriteLine("Speech");
+            //Console.ReadLine();
+            //_cam.Start();
+            //Console.WriteLine("Cam Started");
+            //Console.ReadLine();
+            
 
 
             //_cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi  l");
