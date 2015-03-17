@@ -13,6 +13,9 @@ namespace SharpSenses.RealSense.Playground {
             Item.DefaultNoiseThreshold = 100;
             
             _cam = Camera.Create();
+            _cam.RightHand.Visible += (sender, eventArgs) => {
+                Console.WriteLine("-> Visible ");
+            };
             _cam.Start();
 
 
