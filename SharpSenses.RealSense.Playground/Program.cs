@@ -10,7 +10,7 @@ namespace SharpSenses.RealSense.Playground {
         private static ICamera _cam;
 
         private static void Main(string[] args) {
-            Item.DefaultNoiseThreshold = 100;
+            Item.DefaultNoiseThreshold = 0;
             
             _cam = Camera.Create();
             _cam.RightHand.Visible += (sender, eventArgs) => {
@@ -38,6 +38,16 @@ namespace SharpSenses.RealSense.Playground {
             _cam.RightHand.Moved += (sender, eventArgs) => {
                 Console.Write((char)13);
                 Console.Write("-> P: " + eventArgs.NewPosition.Image);
+            };
+
+            _cam.Gestures.SlideLeft += (sender, eventArgs) => {
+                Console.WriteLine("");
+                Console.WriteLine("<--------------------");
+            };
+
+            _cam.Gestures.SlideRight += (sender, eventArgs) => {
+                Console.WriteLine("");
+                Console.WriteLine("-------------------->");
             };
 
             //Process.Start("WINWORD.EXE");
