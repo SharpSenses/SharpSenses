@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using SharpSenses.Gestures;
-using SharpSenses.Perceptual;
 using SharpSenses.Poses;
 
 namespace SharpSenses.RealSense.Playground {
@@ -13,6 +12,11 @@ namespace SharpSenses.RealSense.Playground {
             Item.DefaultNoiseThreshold = 0;
             
             _cam = Camera.Create();
+
+            _cam.Face.LeftEye.Closed += (s, e) => {
+                Console.WriteLine("-> Olho esquerdo fechado ");
+            };
+
             _cam.RightHand.Visible += (sender, eventArgs) => {
                 Console.WriteLine("-> Visible ");
             };

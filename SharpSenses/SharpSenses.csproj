@@ -2,15 +2,19 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}</ProjectGuid>
+    <ProjectGuid>{CB662599-750C-4246-9BF7-CBF12A376084}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SharpSenses</RootNamespace>
     <AssemblyName>SharpSenses</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,50 +33,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Camera.cs" />
     <Compile Include="CameraException.cs" />
-    <Compile Include="CameraKind.cs" />
     <Compile Include="DirectionEventArgs.cs" />
     <Compile Include="Eye.cs" />
     <Compile Include="Face.cs" />
+    <Compile Include="FaceRecognizedEventArgs.cs" />
     <Compile Include="FacialExpression.cs" />
     <Compile Include="FacialExpressionEventArgs.cs" />
     <Compile Include="Finger.cs" />
     <Compile Include="FingerKind.cs" />
     <Compile Include="FlexiblePart.cs" />
+    <Compile Include="Gestures\Direction.cs" />
+    <Compile Include="Gestures\Gesture.cs" />
     <Compile Include="Gestures\GestureEventArgs.cs" />
+    <Compile Include="Gestures\GestureSensor.cs" />
     <Compile Include="Gestures\GestureSlide.cs" />
     <Compile Include="Gestures\GestureSlideDown.cs" />
     <Compile Include="Gestures\GestureSlideLeft.cs" />
@@ -80,43 +58,38 @@
     <Compile Include="Gestures\GestureSlideUp.cs" />
     <Compile Include="Gestures\GestureStep.cs" />
     <Compile Include="Gestures\GestureStepEventArgs.cs" />
+    <Compile Include="Gestures\IGestureSensor.cs" />
+    <Compile Include="Gestures\Movement.cs" />
+    <Compile Include="Gestures\MovementBackward.cs" />
     <Compile Include="Gestures\MovementDown.cs" />
+    <Compile Include="Gestures\MovementForward.cs" />
     <Compile Include="Gestures\MovementLeft.cs" />
     <Compile Include="Gestures\MovementRight.cs" />
     <Compile Include="Gestures\MovementStatus.cs" />
     <Compile Include="Gestures\MovementUp.cs" />
-    <Compile Include="IFaceRecognizer.cs" />
-    <Compile Include="ISpeech.cs" />
-    <Compile Include="Mouth.cs" />
-    <Compile Include="ObservableObject.cs" />
-    <Compile Include="FaceRecognizedEventArgs.cs" />
-    <Compile Include="Poses\HandPoseEventArgs.cs" />
-    <Compile Include="Poses\Pose.cs" />
-    <Compile Include="Gestures\Direction.cs" />
-    <Compile Include="Gestures\Gesture.cs" />
-    <Compile Include="Gestures\GestureSensor.cs" />
-    <Compile Include="Gestures\IGestureSensor.cs" />
-    <Compile Include="Poses\IPoseSensor.cs" />
-    <Compile Include="Gestures\Movement.cs" />
-    <Compile Include="Gestures\MovementBackward.cs" />
-    <Compile Include="Gestures\MovementForward.cs" />
-    <Compile Include="Poses\PoseBuilder.cs" />
-    <Compile Include="Poses\PosePeace.cs" />
-    <Compile Include="Poses\PoseSensor.cs" />
     <Compile Include="Gestures\State.cs" />
     <Compile Include="Hand.cs" />
     <Compile Include="ICamera.cs" />
+    <Compile Include="IFaceRecognizer.cs" />
+    <Compile Include="ISpeech.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="Mouth.cs" />
+    <Compile Include="ObservableObject.cs" />
     <Compile Include="Point3d.cs" />
+    <Compile Include="Poses\HandPoseEventArgs.cs" />
+    <Compile Include="Poses\IPoseSensor.cs" />
+    <Compile Include="Poses\Pose.cs" />
+    <Compile Include="Poses\PoseBuilder.cs" />
+    <Compile Include="Poses\PosePeace.cs" />
+    <Compile Include="Poses\PoseSensor.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="SpeechRecognitionEventArgs.cs" />
-    <Compile Include="Storage\UserIdRepository.cs" />
     <Compile Include="SupportedLanguage.cs" />
     <Compile Include="Util\MathEx.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

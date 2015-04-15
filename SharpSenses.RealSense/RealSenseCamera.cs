@@ -115,7 +115,7 @@ namespace SharpSenses.RealSense {
             Debug.WriteLine("Initializing Camera...");
 
             var status = _manager.Init();
-            if (status != NoError) {
+            if (status != NoError) { 
                 throw new CameraException(status.ToString());
             }
             Task.Factory.StartNew(Loop,
@@ -232,19 +232,19 @@ namespace SharpSenses.RealSense {
             //    );
 
             if (up > _eyesThresholds[Direction.Up]) {
-                _eyesThresholds[Direction.Up] = up*0.9;
+                _eyesThresholds[Direction.Up] = up*0.7;
                 return Direction.Up;
             }
             if (down > _eyesThresholds[Direction.Down]) {
-                _eyesThresholds[Direction.Down] = down * 0.9;
+                _eyesThresholds[Direction.Down] = down * 0.7;
                 return Direction.Down;
             }
             if (left > _eyesThresholds[Direction.Left]) {
-                _eyesThresholds[Direction.Left] = left * 0.9;
+                _eyesThresholds[Direction.Left] = left * 0.7;
                 return Direction.Left;
             }
             if (right > _eyesThresholds[Direction.Right]) {
-                _eyesThresholds[Direction.Right] = right * 0.9;
+                _eyesThresholds[Direction.Right] = right * 0.7;
                 return Direction.Right;
             }
             return Direction.None;

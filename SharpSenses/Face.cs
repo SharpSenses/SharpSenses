@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.OleDb;
 using SharpSenses.Gestures;
 
 namespace SharpSenses {

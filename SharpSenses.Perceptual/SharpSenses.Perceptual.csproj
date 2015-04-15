@@ -50,9 +50,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpSenses\SharpSenses.csproj">
+    <ProjectReference Include="..\SharpSenses1\SharpSenses1.csproj">
       <Project>{f4f42c71-bfa3-40d0-b070-b5fe1468bb6a}</Project>
-      <Name>SharpSenses</Name>
+      <Name>SharpSenses1</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

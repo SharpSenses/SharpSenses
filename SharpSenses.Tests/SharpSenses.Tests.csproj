@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpSenses\SharpSenses.csproj">
-      <Project>{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}</Project>
+      <Project>{cb662599-750c-4246-9bf7-cbf12a376084}</Project>
       <Name>SharpSenses</Name>
     </ProjectReference>
   </ItemGroup>

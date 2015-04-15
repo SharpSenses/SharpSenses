@@ -42,13 +42,17 @@ namespace SharpSenses.Gestures {
         public void Deactivate() {
             CurrentStep = 0;
             lock (_sync) {
-                GestureSteps.ForEach(x => x.Deactivate());
+                foreach (var gestureStep in GestureSteps) {
+                    gestureStep.Deactivate();
+                }
             }
         }
 
         private void ChangeStep() {
             lock (_sync) {
-                GestureSteps.ForEach(x => x.Deactivate());
+                foreach (var gestureStep in GestureSteps) {
+                    gestureStep.Deactivate();
+                }
                 GestureSteps[CurrentStep].Activate();
             }
         }

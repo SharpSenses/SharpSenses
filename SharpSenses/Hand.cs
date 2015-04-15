@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace SharpSenses {
@@ -21,8 +22,11 @@ namespace SharpSenses {
             Pinky = new Finger(FingerKind.Pinky);
             Side = side;
             var fingers = GetAllFingers();
-            fingers.ForEach(f => f.Opened += (s, a) => OnFingerOpened(f));
-            fingers.ForEach(f => f.Closed += (s, a) => OnFingerClosed(f));
+            foreach (var finger in fingers) {
+                var f = finger;
+                finger.Opened += (s, a) => OnFingerOpened(f);
+                finger.Closed += (s, a) => OnFingerClosed(f);
+            }
         }
 
         public List<Finger> GetAllFingers() {

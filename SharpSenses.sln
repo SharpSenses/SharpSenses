@@ -3,20 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses", "SharpSenses\SharpSenses.csproj", "{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.RealSense", "SharpSenses.RealSense\SharpSenses.RealSense.csproj", "{054DB117-F173-488B-94A1-43E1A4F61A66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.RealSense.Playground", "SharpSenses.RealSense.Playground\SharpSenses.RealSense.Playground.csproj", "{18023BE1-F6BE-48FD-A1A6-4403707D9DBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.Tests", "SharpSenses.Tests\SharpSenses.Tests.csproj", "{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.Perceptual", "SharpSenses.Perceptual\SharpSenses.Perceptual.csproj", "{8B228CDF-4478-4891-9047-32EF1457E9CE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Version", "Version", "{2B4C9E36-A154-4EA6-AC13-0CE4D0447F62}"
 	ProjectSection(SolutionItems) = preProject
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses", "SharpSenses\SharpSenses.csproj", "{CB662599-750C-4246-9BF7-CBF12A376084}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.RealSense.Playgroundx32", "SharpSenses.RealSense.Playgroundx32\SharpSenses.RealSense.Playgroundx32.csproj", "{8EE9EBE4-885A-4DBA-AC1D-26148333E833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +24,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4F42C71-BFA3-40D0-B070-B5FE1468BB6A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{054DB117-F173-488B-94A1-43E1A4F61A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{054DB117-F173-488B-94A1-43E1A4F61A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{054DB117-F173-488B-94A1-43E1A4F61A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,10 +36,14 @@ Global
 		{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB94FC0C-A66B-4BDB-8423-51F8E09B9B4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B228CDF-4478-4891-9047-32EF1457E9CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB662599-750C-4246-9BF7-CBF12A376084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB662599-750C-4246-9BF7-CBF12A376084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB662599-750C-4246-9BF7-CBF12A376084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB662599-750C-4246-9BF7-CBF12A376084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE9EBE4-885A-4DBA-AC1D-26148333E833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE9EBE4-885A-4DBA-AC1D-26148333E833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE9EBE4-885A-4DBA-AC1D-26148333E833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE9EBE4-885A-4DBA-AC1D-26148333E833}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

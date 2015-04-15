@@ -34,10 +34,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libpxcclr.cs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\_libs\libpxcclr.cs.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,16 +50,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpSenses.Perceptual\SharpSenses.Perceptual.csproj">
-      <Project>{8B228CDF-4478-4891-9047-32EF1457E9CE}</Project>
-      <Name>SharpSenses.Perceptual</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SharpSenses.RealSense\SharpSenses.RealSense.csproj">
       <Project>{054db117-f173-488b-94a1-43e1a4f61a66}</Project>
       <Name>SharpSenses.RealSense</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharpSenses\SharpSenses.csproj">
-      <Project>{f4f42c71-bfa3-40d0-b070-b5fe1468bb6a}</Project>
+      <Project>{cb662599-750c-4246-9bf7-cbf12a376084}</Project>
       <Name>SharpSenses</Name>
     </ProjectReference>
   </ItemGroup>

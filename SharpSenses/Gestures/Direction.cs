@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace SharpSenses.Gestures {
     public enum Direction {
@@ -25,10 +24,6 @@ namespace SharpSenses.Gestures {
                 return dif.X > 0 ? Direction.Left : Direction.Right;
             }
             return dif.Y > 0 ? Direction.Up : Direction.Down;
-        }
-
-        public static Direction GetDirection(Point before, Point after) {
-            return GetDirection(new Point3D(before.X, before.Y), new Point3D(after.X, after.Y));
         }
     }
 }

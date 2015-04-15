@@ -29,7 +29,9 @@ namespace SharpSenses.Gestures {
                 lock (_sync) {
                     if (DateTime.Now - _startTime > Window) {
                         _progress = 0;
-                        Movements.ForEach(m => m.Restart());
+                        foreach (var m in Movements) {
+                            m.Restart();
+                        }
                         _startTime = DateTime.Now;
                         return;
                     }
@@ -42,7 +44,9 @@ namespace SharpSenses.Gestures {
                     if (Movements.All(m => m.Status == MovementStatus.Completed)) {
                         OnStepCompleted();
                         _progress = 0;
-                        Movements.ForEach(m => m.Restart());
+                        foreach (var m in Movements) {
+                            m.Restart();
+                        }
                     }
                 }
             };
@@ -54,14 +58,18 @@ namespace SharpSenses.Gestures {
             lock (_sync) {
                 _progress = 0;
                 _startTime = DateTime.Now;
-                Movements.ForEach(m => m.Activate());
+                foreach (var m in Movements) {
+                    m.Activate();
+                }
             }
         }
 
         public void Deactivate() {
             lock (_sync) {
                 _progress = 0;
-                Movements.ForEach(x => x.Deactivate());                            
+                foreach (var m in Movements) {
+                    m.Deactivate();
+                }
             }
         }
 
