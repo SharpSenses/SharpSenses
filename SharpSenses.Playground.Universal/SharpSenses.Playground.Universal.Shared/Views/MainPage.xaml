@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="SharpSenses.Playground.Universal.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SharpSenses.Playground.Universal"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:interop="using:Windows.UI.Xaml.Interop"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Canvas x:Name="canvas">
+            <Rectangle Width="50" Height="50" Fill="Blue" 
+                       Canvas.Left="{Binding LeftHand.Position.Image.X, Converter={StaticResource LeftConverter}, ConverterParameter={Binding ElementName=canvas, Path=ActualWidth}}" />
+            <Rectangle Width="50" Height="50" Fill="Red" />
+        </Canvas>
+        <TextBlock x:Name="Conn" 
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Text="Connected"
+                   FontSize="56"
+                   />
+    </Grid>
+</Page>

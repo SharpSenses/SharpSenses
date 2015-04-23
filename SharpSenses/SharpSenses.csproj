@@ -37,6 +37,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseCamera.cs" />
     <Compile Include="CameraException.cs" />
     <Compile Include="DirectionEventArgs.cs" />
     <Compile Include="Eye.cs" />

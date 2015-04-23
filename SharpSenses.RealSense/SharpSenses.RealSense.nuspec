@@ -7,22 +7,20 @@
 		<authors>$author$</authors>
 		<owners>$author$</owners>
 		<licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
-		<projectUrl>https://github.com/andrecarlucci/SharpSenses</projectUrl>
+		<projectUrl>https://github.com/SharpSenses/SharpSenses</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
 		<copyright>Copyright Andre Carlucci 2014</copyright>
-		<tags>realsense intel perceptual camera3d gestures</tags>
+		<tags>realsense intel camera3d gestures</tags>
 		<references>
-			<reference file="libpxcclr.cs.dll" />
+			<reference file="sharpsenses.dll" />
 			<reference file="sharpsenses.RealSense.dll" />
 		</references>
 		<dependencies>
-		   <dependency id="sharpsenses" version="$version$" />
+		   <dependency id="libpxcclr.cs" version="1.0.0.0" />
 		</dependencies>
 	</metadata>
   <files>
-	<file src="..\_libs\libpxcclr.cs.dll" target="lib\net45" />
-	<file src="..\_libs\libpxccpp2c.dll" target="content" />
-	<file src="install.ps1" target="tools" />
+	<file src="bin\debug\sharpsenses.dll" target="lib\net45" />
 </files>
 </package>

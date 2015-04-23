@@ -1,0 +1,13 @@
+﻿<Application
+    x:Class="SharpSenses.Playground.Universal.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SharpSenses.Playground.Universal"
+    xmlns:converters="using:SharpSenses.Playground.Universal.Converters">
+
+    <Application.Resources>
+        <converters:TopConverter x:Name="TopConverter" />
+        <converters:LeftConverter x:Name="LeftConverter" />
+    </Application.Resources>
+
+</Application>
