@@ -1,20 +1,16 @@
 SharpSenses
 ==============
 
-An easier way to use **Intel 3d Cameras**. It works with both **Perceptual** (2013) and **RealSense** (2014) SDKs! Custom poses, gestures and much more.
+An easier way to use the **RealSense** (2014) SDK! Custom poses, gestures and much more.
 
 *Warning*: This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.
-
-## SharpSenses.Perceptual
->  Nuget: Install-Package SharpSenses.Perceptual
-
 
 ## SharpSenses.RealSense
 > Nuget: Install-Package SharpSenses.RealSense
 
 ## Sample:
 ```
-    ICamera cam = Camera.Create(); //autodiscovers your sdk (perceptual or realsense)
+    ICamera cam = Camera.Create();
     cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi left hand!");
     cam.RightHand.Closed += (s,a) => Console.WriteLine("Hand Closed");
     cam.RightHand.Moved += (s,a) => {
