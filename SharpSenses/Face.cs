@@ -1,5 +1,6 @@
 ﻿using System;
 using SharpSenses.Gestures;
+using SharpSenses.Poses;
 
 namespace SharpSenses {
     public class Face : Item {
@@ -14,7 +15,29 @@ namespace SharpSenses {
         public event EventHandler<FaceRecognizedEventArgs> FaceRecognized;
         public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
         public event EventHandler<DirectionEventArgs> EyesDirectionChanged;
+        public event EventHandler<EventArgs> WinkedLeft;
+        public event EventHandler<EventArgs> WinkedRight;
         public event EventHandler<EventArgs> Yawned;
+
+        public Face(IFaceRecognizer faceRecognizer) {
+            _faceRecognizer = faceRecognizer;
+            Mouth = new Mouth();
+            LeftEye = new Eye(Side.Left);
+            RightEye = new Eye(Side.Right);
+
+            Mouth.Opened += DetectYawn;
+            LeftEye.Closed += DetectYawn;
+            RightEye.Closed += DetectYawn;
+
+            var b = new PoseBuilder();
+            b.ShouldBe(LeftEye, State.Closed);
+            b.ShouldBe(RightEye, State.Opened);
+            b.HoldPoseFor(0);
+            Pose pose = b.Build("LeftWinked");
+            pose.Begin += (sender, args) => {
+                FireWinkedLeft();
+            };
+        }
 
         public int UserId {
             get { return _userId; }
@@ -52,17 +75,6 @@ namespace SharpSenses {
                 RaisePropertyChanged(() => EyesDirection);
                 FireEyesDirectionChanged(old, value);
             }
-        }
-
-        public Face(IFaceRecognizer faceRecognizer) {
-            _faceRecognizer = faceRecognizer;
-            Mouth = new Mouth();
-            LeftEye = new Eye(Side.Left);
-            RightEye = new Eye(Side.Right);
-
-            Mouth.Opened += DetectYawn;
-            LeftEye.Closed += DetectYawn;
-            RightEye.Closed += DetectYawn;
         }
 
         private DateTime _startYawn;
@@ -104,6 +116,20 @@ namespace SharpSenses {
 
         protected virtual void FireYawned() {
             var handler = Yawned;
+            if (handler != null) {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void FireWinkedLeft() {
+            var handler = WinkedLeft;
+            if (handler != null) {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void FireWinkedRight() {
+            var handler = WinkedRight;
             if (handler != null) {
                 handler(this, EventArgs.Empty);
             }
