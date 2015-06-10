@@ -16,11 +16,9 @@
 			<reference file="sharpsenses.dll" />
 			<reference file="sharpsenses.RealSense.dll" />
 		</references>
-		<dependencies>
-		   <dependency id="libpxcclr.cs" version="1.0.0.0" />
-		</dependencies>
+		
 	</metadata>
   <files>
-	<file src="bin\debug\sharpsenses.dll" target="lib\net45" />
+	<file src="bin\release\sharpsenses.dll" target="lib\net45" />
 </files>
 </package>
