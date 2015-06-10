@@ -65,7 +65,6 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Camera.cs" />
-    <Compile Include="CameraExtensions.cs" />
     <Compile Include="DisposableExtensions.cs" />
     <Compile Include="LanguageNotSupportedException.cs" />
     <Compile Include="RealSenseAssembliesLoader.cs" />

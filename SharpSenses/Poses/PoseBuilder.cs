@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using SharpSenses.Gestures;
 using SharpSenses.Util;
 
 namespace SharpSenses.Poses {
 
-    public class PoseBuilder  {
+    public class PoseBuilder {
+
+        public static int DefaultPoseThresholdInMillis = 0;
+
         private List<PoseStateTrigger> _stateItems = new List<PoseStateTrigger>();
         private List<ItemPositionTrigger> _positionItems = new List<ItemPositionTrigger>();
-        private int _poseThreshold = 500;
+        private int _poseThreshold = DefaultPoseThresholdInMillis;
 
         public static PoseBuilder Create() {
             return new PoseBuilder();
@@ -32,10 +34,44 @@ namespace SharpSenses.Poses {
 
         public Pose Build(string name = "custompose") {
             var pose = new Pose(name, _poseThreshold);
+            BindItemStateEvents(pose);
+            BindItemPositionEvents(pose);
+            SetInitialState(pose);
+             _stateItems.Clear();
+            _positionItems.Clear();
+            return pose;
+        }
+
+        private void SetInitialState(Pose pose) {
+            foreach (var itemState in _stateItems) {
+                var item = itemState.What;
+                var state = itemState.Trigger;
+                var id = itemState.Id;
+                switch (state) {
+                    case State.Opened:
+                        pose.Flag(id, item.IsOpen);
+                        break;
+                    case State.Closed:
+                        pose.Flag(id, !item.IsOpen);
+                        break;
+                    case State.Visible:
+                        pose.Flag(id, item.IsVisible);
+                        break;
+                    case State.NotVisible:
+                        pose.Flag(id, !item.IsVisible);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private void BindItemStateEvents(Pose pose) {
             foreach (var itemState in _stateItems) {
                 var item = itemState.What;
                 var state = itemState.Trigger;
                 int id = pose.AddFlag();
+                itemState.Id = id;
                 switch (state) {
                     case State.Opened:
                         item.Opened += (s, a) => pose.Flag(id, true);
@@ -57,8 +93,10 @@ namespace SharpSenses.Poses {
                         throw new ArgumentOutOfRangeException();
                 }
             }
+        }
 
-            foreach(var itemPosition in _positionItems) {
+        private void BindItemPositionEvents(Pose pose) {
+            foreach (var itemPosition in _positionItems) {
                 var itemA = itemPosition.ItemA;
                 var itemB = itemPosition.ItemB;
                 int id = pose.AddFlag();
@@ -66,9 +104,6 @@ namespace SharpSenses.Poses {
                 itemA.Moved += (s, a) => pose.Flag(id, IsCloseEnough(trigger));
                 itemB.Moved += (s, a) => pose.Flag(id, IsCloseEnough(trigger));
             }
-            _positionItems.Clear();
-            _stateItems.Clear();
-            return pose;
         }
 
         private bool IsCloseEnough(ItemPositionTrigger trigger) {
@@ -76,6 +111,17 @@ namespace SharpSenses.Poses {
             //Debug.WriteLine("Dist: -> " + dist);
             bool itIs = trigger.DistanceInPx >= dist;
             return itIs;
+        }
+
+        private class PoseStateTrigger {
+            public FlexiblePart What { get; private set; }
+            public State Trigger { get; private set; }
+            public int Id { get; set; }
+
+            public PoseStateTrigger(FlexiblePart what, State trigger) {
+                What = what;
+                Trigger = trigger;
+            }
         }
 
         private class ItemPositionTrigger {
@@ -87,16 +133,6 @@ namespace SharpSenses.Poses {
                 ItemA = itemA;
                 ItemB = itemB;
                 DistanceInPx = distanceInPx;
-            }
-        }
-
-        private class PoseStateTrigger {
-            public FlexiblePart What { get; private set; }
-            public State Trigger { get; private set; }
-
-            public PoseStateTrigger(FlexiblePart what, State trigger) {
-                What = what;
-                Trigger = trigger;
             }
         }
     }

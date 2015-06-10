@@ -207,8 +207,10 @@ namespace SharpSenses.RealSense {
             }
             Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE, 40);
             Face.Mouth.IsOpen = CheckFaceExpression(data, FaceExpression.EXPRESSION_MOUTH_OPEN, 15);
+
             Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT, 15);
             Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, 15);
+            
             Face.EyesDirection = GetEyesDirection(data);
         }
 

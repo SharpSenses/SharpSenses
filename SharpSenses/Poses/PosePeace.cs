@@ -14,6 +14,7 @@ namespace SharpSenses.Poses {
                 .ShouldBe(hand.Pinky, State.Closed)
                 .ShouldBe(hand.Ring, State.Closed)
                 .ShouldBe(hand.Thumb, State.Closed)
+                .HoldPoseFor(500)
                 .Build("Peace");
         }
     }

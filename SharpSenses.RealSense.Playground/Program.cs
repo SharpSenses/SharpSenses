@@ -13,46 +13,63 @@ namespace SharpSenses.RealSense.Playground {
             
             _cam = Camera.Create();
 
-            _cam.Face.LeftEye.Closed += (s, e) => {
-                Console.WriteLine("-> Olho esquerdo fechado ");
+            _cam.Face.LeftEye.Blink += (sender, eventArgs) => {
+                Console.WriteLine("Blink");
             };
+            _cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
+                Console.WriteLine("Double Blink");
+            };
+            _cam.Face.WinkedLeft += (sender, eventArgs) => {
+                Console.WriteLine("WinkedLeft");
+            };
+            _cam.Face.WinkedRight += (sender, eventArgs) => {
+                Console.WriteLine("WinkedRight");
+            };
+            //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
+            //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
+            //};
+            //_cam.Speech.EnableRecognition(SupportedLanguage.PtBR);
 
-            _cam.RightHand.Visible += (sender, eventArgs) => {
-                Console.WriteLine("-> Visible ");
-            };
+            //_cam.Face.LeftEye.Closed += (s, e) => {
+            //    Console.WriteLine("-> Olho esquerdo fechado ");
+            //};
+
+            //_cam.RightHand.Visible += (sender, eventArgs) => {
+            //    Console.WriteLine("-> Visible ");
+            //};
             _cam.Start();
 
 
-            _cam.RightHand.Visible += (sender, eventArgs) => {
-                Console.WriteLine("-> Visible ");
-            };
+            //_cam.RightHand.Visible += (sender, eventArgs) => {
+            //    Console.WriteLine("-> Visible ");
+            //};
 
-            _cam.RightHand.NotVisible += (sender, eventArgs) => {
-                Console.WriteLine("-> NotVisible ");
-            };
+            //_cam.RightHand.NotVisible += (sender, eventArgs) => {
+            //    Console.WriteLine("-> NotVisible ");
+            //};
 
-            _cam.RightHand.Opened += (sender, eventArgs) => {
-                Console.WriteLine("-> Open");
-            };
+            //_cam.RightHand.Opened += (sender, eventArgs) => {
+            //    Console.WriteLine("-> Open");
+            //};
 
-            _cam.RightHand.Closed += (sender, eventArgs) => {
-                Console.WriteLine("-> Closed");
-            };
+            //_cam.RightHand.Closed += (sender, eventArgs) => {
+            //    Console.WriteLine("-> Closed");
+            //};
 
-            _cam.RightHand.Moved += (sender, eventArgs) => {
-                Console.Write((char)13);
-                Console.Write("-> P: " + eventArgs.NewPosition.Image);
-            };
+            //_cam.RightHand.Moved += (sender, eventArgs) => {
+            //    Console.Write((char)13);
+            //    Console.Write("-> P: " + eventArgs.NewPosition.Image);
+            //};
 
-            _cam.Gestures.SlideLeft += (sender, eventArgs) => {
-                Console.WriteLine("");
-                Console.WriteLine("<--------------------");
-            };
+            //_cam.Gestures.SlideLeft += (sender, eventArgs) => {
+            //    Console.WriteLine("");
+            //    Console.WriteLine("<--------------------");
+            //};
 
-            _cam.Gestures.SlideRight += (sender, eventArgs) => {
-                Console.WriteLine("");
-                Console.WriteLine("-------------------->");
-            };
+            //_cam.Gestures.SlideRight += (sender, eventArgs) => {
+            //    Console.WriteLine("");
+            //    Console.WriteLine("-------------------->");
+            //};
 
             //Process.Start("WINWORD.EXE");
             //Process.Start("EXCEL.EXE");
