@@ -65,10 +65,13 @@ namespace SharpSenses.Tests {
             _part1.IsOpen = true;
             var called = false;
             var b = new PoseBuilder();
-            var pose = b.ShouldBe(_part1, State.Opened).HoldPoseFor(0).Build("p");
+            var pose = b.ShouldBe(_part1, State.Opened)
+                        .ShouldBe(_part2, State.Opened)
+                        .HoldPoseFor(0).Build("p");
             pose.Begin += (sender, args) => {
                 called = true;
             };
+            _part2.IsOpen = true;
             Assert.IsTrue(called);
         }
     }

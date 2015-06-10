@@ -12,18 +12,19 @@ namespace SharpSenses.RealSense.Playground {
             Item.DefaultNoiseThreshold = 0;
             
             _cam = Camera.Create();
-            
 
-            _cam.Face.Visible += (sender, eventArgs) => {
-                Console.WriteLine("Visible");
+            _cam.Face.LeftEye.Blink += (sender, eventArgs) => {
+                Console.WriteLine("Blink");
             };
-            _cam.Face.NotVisible += (sender, eventArgs) => {
-                Console.WriteLine("NotVisible");
+            _cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
+                Console.WriteLine("Double Blink");
             };
-            _cam.Face.Moved += (sender, eventArgs) => {
-                Console.WriteLine("-> " + eventArgs.NewPosition.Image.X);
+            _cam.Face.WinkedLeft += (sender, eventArgs) => {
+                Console.WriteLine("WinkedLeft");
             };
-
+            _cam.Face.WinkedRight += (sender, eventArgs) => {
+                Console.WriteLine("WinkedRight");
+            };
             //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
             //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
             //};

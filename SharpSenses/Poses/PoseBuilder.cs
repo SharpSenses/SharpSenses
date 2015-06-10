@@ -36,9 +36,34 @@ namespace SharpSenses.Poses {
             var pose = new Pose(name, _poseThreshold);
             BindItemStateEvents(pose);
             BindItemPositionEvents(pose);
-            _stateItems.Clear();
+            SetInitialState(pose);
+             _stateItems.Clear();
             _positionItems.Clear();
             return pose;
+        }
+
+        private void SetInitialState(Pose pose) {
+            foreach (var itemState in _stateItems) {
+                var item = itemState.What;
+                var state = itemState.Trigger;
+                var id = itemState.Id;
+                switch (state) {
+                    case State.Opened:
+                        pose.Flag(id, item.IsOpen);
+                        break;
+                    case State.Closed:
+                        pose.Flag(id, !item.IsOpen);
+                        break;
+                    case State.Visible:
+                        pose.Flag(id, item.IsVisible);
+                        break;
+                    case State.NotVisible:
+                        pose.Flag(id, !item.IsVisible);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
         }
 
         private void BindItemStateEvents(Pose pose) {
@@ -46,6 +71,7 @@ namespace SharpSenses.Poses {
                 var item = itemState.What;
                 var state = itemState.Trigger;
                 int id = pose.AddFlag();
+                itemState.Id = id;
                 switch (state) {
                     case State.Opened:
                         item.Opened += (s, a) => pose.Flag(id, true);
@@ -90,6 +116,7 @@ namespace SharpSenses.Poses {
         private class PoseStateTrigger {
             public FlexiblePart What { get; private set; }
             public State Trigger { get; private set; }
+            public int Id { get; set; }
 
             public PoseStateTrigger(FlexiblePart what, State trigger) {
                 What = what;

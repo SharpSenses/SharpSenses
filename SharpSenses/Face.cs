@@ -29,14 +29,24 @@ namespace SharpSenses {
             LeftEye.Closed += DetectYawn;
             RightEye.Closed += DetectYawn;
 
-            var b = new PoseBuilder();
-            b.ShouldBe(LeftEye, State.Closed);
-            b.ShouldBe(RightEye, State.Opened);
-            b.HoldPoseFor(0);
-            Pose pose = b.Build("LeftWinked");
-            pose.Begin += (sender, args) => {
-                FireWinkedLeft();
-            };
+            ConfigLeftWink();
+            ConfigRightWink();
+        }
+
+        private void ConfigLeftWink() {
+            Pose pose = PoseBuilder.Create()
+                .ShouldBe(LeftEye, State.Closed)
+                .ShouldBe(RightEye, State.Opened)
+                .HoldPoseFor(200).Build("LeftWinked");
+            pose.Begin += (sender, args) => { FireWinkedLeft(); };
+        }
+        private void ConfigRightWink() {
+            Pose pose = PoseBuilder.Create()
+                .ShouldBe(LeftEye, State.Opened)
+                .ShouldBe(RightEye, State.Closed)
+                .HoldPoseFor(200)
+                .Build("RightWinked");
+            pose.Begin += (sender, args) => { FireWinkedRight(); };
         }
 
         public int UserId {
