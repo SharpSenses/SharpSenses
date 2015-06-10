@@ -25,6 +25,14 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Face.WinkedRight += (sender, eventArgs) => {
                 Console.WriteLine("WinkedRight");
             };
+
+           
+
+
+            _cam.Poses.PeaceBegin += (sender, eventArgs) => {
+
+            };
+
             //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
             //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
             //};
@@ -130,17 +138,17 @@ namespace SharpSenses.RealSense.Playground {
             //    Console.WriteLine("-> LeftEye DoubleBlink");
             //};
 
-            //_cam.Face.Mouth.Opened += (s, a) => {
-            //    Console.WriteLine("-> month opened");
-            //};
+            _cam.Face.Mouth.Opened += (s, a) => {
+                Console.WriteLine("-> month opened");
+            };
 
-            //_cam.Face.Mouth.Closed += (s, a) => {
-            //    Console.WriteLine("-> month closed");
-            //};
+            _cam.Face.Mouth.Closed += (s, a) => {
+                Console.WriteLine("-> month closed");
+            };
 
-            //_cam.Face.Mouth.Smiled += (s, a) => {
-            //    Console.WriteLine("-> month smiled");
-            //};
+            _cam.Face.Mouth.Smiled += (s, a) => {
+                Console.WriteLine("-> month smiled");
+            };
 
             //_cam.Speech.EnableRecognition();
             //Console.WriteLine("Speech");
