@@ -3,7 +3,7 @@ SharpSenses
 
 An easier way to use the **RealSense** (2014) SDK! Custom poses, gestures and much more.
 
-*Warning*: This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.
+*Warning*: Make sure you have the RealSense SDK version 5.0.3.7777 installed before using SharpSenses. This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.
 
 ## SharpSenses.RealSense
 > Nuget: Install-Package SharpSenses.RealSense
@@ -30,8 +30,39 @@ An easier way to use the **RealSense** (2014) SDK! Custom poses, gestures and mu
 
 ##Poses
 ```
-    cam.Poses.PeaceBegin += hand => Console.WriteLine("Make love, not war");
-    cam.Poses.PeaceEnd += hand => Console.WriteLine("Bye!");
+    cam.Poses.PeaceBegin += (s, a) => Console.WriteLine("Make love, not war");
+    cam.Poses.PeaceEnd += (s, a) => Console.WriteLine("Bye!");
+```
+
+##Eyes
+```
+    cam.Face.LeftEye.Blink += (sender, eventArgs) => {
+        Console.WriteLine("Blink");
+    };
+    cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
+        Console.WriteLine("Double Blink");
+    };
+    cam.Face.WinkedLeft += (sender, eventArgs) => {
+        Console.WriteLine("WinkedLeft");
+    };
+    cam.Face.WinkedRight += (sender, eventArgs) => {
+        Console.WriteLine("WinkedRight");
+    };
+```
+
+##Mouth
+```
+    cam.Face.Mouth.Opened += (s, a) => {
+        Console.WriteLine("-> month opened");
+    };
+
+    cam.Face.Mouth.Closed += (s, a) => {
+        Console.WriteLine("-> month closed");
+    };
+
+    cam.Face.Mouth.Smiled += (s, a) => {
+        Console.WriteLine("-> month smiled");
+    };
 ```
 
 ##Custom Poses
@@ -90,4 +121,4 @@ I can hear you, man!
     cam.Speech.EnableRecognition();
 ```
 
-Don't forget that you have to have the Intel RealSense SDK (and the 3d camera, of course) for this library to work!
+Don't forget that you have to have the Intel RealSense SDK v5.0.3.7777 (and the 3d camera, of course) for this library to work!
