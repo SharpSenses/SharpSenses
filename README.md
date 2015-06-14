@@ -1,7 +1,10 @@
-SharpSenses
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SharpSenses/logos/master/sharp_senses.png" width="400px" alt="SharpSenses" />
+</p>
+
 ==============
 
-An easier way to use the **RealSense** (2014) SDK! Custom poses, gestures and much more.
+An easier way to use the **RealSense** SDK! Custom poses, gestures and much more.
 
 *Warning*: Make sure you have the RealSense SDK version 5.0.3.7777 installed before using SharpSenses. This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.
 
