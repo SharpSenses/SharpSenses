@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Gestures;
@@ -95,7 +96,6 @@ namespace SharpSenses.RealSense {
                     moduleConfiguration.ApplyChanges();
                 }
             }
-            
             _manager.EnableHand();
             using (var handModule = _manager.QueryHand()) {
                 using (var handConfig = handModule.CreateActiveConfiguration()) {
@@ -353,6 +353,8 @@ namespace SharpSenses.RealSense {
                 return;
             }
             hand.IsVisible = true;
+
+            SetHandOrientation(hand, handInfo);
             SetHandOpenness(hand, handInfo);
             SetHandPosition(hand, handInfo);
             TrackIndex(hand.Index, handInfo);
@@ -360,6 +362,20 @@ namespace SharpSenses.RealSense {
             TrackRing(hand.Ring, handInfo);
             TrackPinky(hand.Pinky, handInfo);
             TrackThumb(hand.Thumb, handInfo);
+        }
+
+        private void SetHandOrientation(Hand hand, PXCMHandData.IHand handInfo) {
+            var d4 = handInfo.QueryPalmOrientation();
+            PXCMRotation rotationHelper;
+            Session.CreateImpl(out rotationHelper);
+            rotationHelper.SetFromQuaternion(d4);
+            var rotationEuler = rotationHelper.QueryEulerAngles(PXCMRotation.EulerOrder.PITCH_YAW_ROLL);
+
+            var x = rotationEuler.x*180/Math.PI;
+            var y = rotationEuler.y*180/Math.PI;
+            var z = rotationEuler.z*180/Math.PI;
+            hand.Rotation = new Rotation(x,y,z);
+            rotationHelper.Dispose();
         }
 
         private void SetHandPosition(Hand hand, PXCMHandData.IHand handInfo) {

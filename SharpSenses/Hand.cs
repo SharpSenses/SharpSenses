@@ -3,14 +3,14 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace SharpSenses {
-    public class Hand : FlexiblePart {
+    public class Hand : RotationablePart {
         public Finger Thumb { get; private set; }
         public Finger Index { get; private set; }
         public Finger Middle { get; private set; }
         public Finger Ring { get; private set; }
         public Finger Pinky { get; private set; }
         public Side Side { get; set; }
-
+        
         public event EventHandler FingerOpened;
         public event EventHandler FingerClosed;
 

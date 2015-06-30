@@ -12,26 +12,26 @@ namespace SharpSenses.RealSense.Playground {
             Item.DefaultNoiseThreshold = 0;
             
             _cam = Camera.Create();
-
-            _cam.Face.LeftEye.Blink += (sender, eventArgs) => {
-                Console.WriteLine("Blink");
-            };
-            _cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
-                Console.WriteLine("Double Blink");
-            };
-            _cam.Face.WinkedLeft += (sender, eventArgs) => {
-                Console.WriteLine("WinkedLeft");
-            };
-            _cam.Face.WinkedRight += (sender, eventArgs) => {
-                Console.WriteLine("WinkedRight");
+            _cam.LeftHand.RotationChanged += (sender, eventArgs) => {
+                Console.Write("Roll: {0:0} Yaw: {1:0} Pitch {2:0}                  ", 
+                    _cam.LeftHand.Rotation.Roll,
+                    _cam.LeftHand.Rotation.Yaw,
+                    _cam.LeftHand.Rotation.Pitch);
+                Console.Write('\r');
             };
 
-           
-
-
-            _cam.Poses.PeaceBegin += (sender, eventArgs) => {
-
-            };
+            //_cam.Face.LeftEye.Blink += (sender, eventArgs) => {
+            //    Console.WriteLine("Blink");
+            //};
+            //_cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
+            //    Console.WriteLine("Double Blink");
+            //};
+            //_cam.Face.WinkedLeft += (sender, eventArgs) => {
+            //    Console.WriteLine("WinkedLeft");
+            //};
+            //_cam.Face.WinkedRight += (sender, eventArgs) => {
+            //    Console.WriteLine("WinkedRight");
+            //};
 
             //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
             //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
@@ -45,7 +45,7 @@ namespace SharpSenses.RealSense.Playground {
             //_cam.RightHand.Visible += (sender, eventArgs) => {
             //    Console.WriteLine("-> Visible ");
             //};
-            _cam.Start();
+            //_cam.Start();
 
 
             //_cam.RightHand.Visible += (sender, eventArgs) => {
@@ -138,17 +138,17 @@ namespace SharpSenses.RealSense.Playground {
             //    Console.WriteLine("-> LeftEye DoubleBlink");
             //};
 
-            _cam.Face.Mouth.Opened += (s, a) => {
-                Console.WriteLine("-> month opened");
-            };
+            //_cam.Face.Mouth.Opened += (s, a) => {
+            //    Console.WriteLine("-> month opened");
+            //};
 
-            _cam.Face.Mouth.Closed += (s, a) => {
-                Console.WriteLine("-> month closed");
-            };
+            //_cam.Face.Mouth.Closed += (s, a) => {
+            //    Console.WriteLine("-> month closed");
+            //};
 
-            _cam.Face.Mouth.Smiled += (s, a) => {
-                Console.WriteLine("-> month smiled");
-            };
+            //_cam.Face.Mouth.Smiled += (s, a) => {
+            //    Console.WriteLine("-> month smiled");
+            //};
 
             //_cam.Speech.EnableRecognition();
             //Console.WriteLine("Speech");
@@ -211,6 +211,7 @@ namespace SharpSenses.RealSense.Playground {
             //pose.Begin += (s, a) => {
             //    Console.WriteLine("Super pose!");
             //};
+            _cam.Start();
 
             Console.ReadLine();
             _cam.Dispose();
