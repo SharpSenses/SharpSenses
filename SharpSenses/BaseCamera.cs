@@ -11,8 +11,11 @@ namespace SharpSenses {
         
         public abstract int ResolutionWidth { get; }
         public abstract int ResolutionHeight { get; }
+        public abstract int FramesPerSecond { get; }
         public Hand LeftHand { get; private set; }
         public Hand RightHand { get; private set; }
+
+        public ImageStream ImageStream { get; set; }
         
         public Face Face {
             get {
@@ -37,6 +40,7 @@ namespace SharpSenses {
             RightHand = new Hand(Side.Right);
             _gestures = new GestureSensor();
             _poses = new PoseSensor();
+            ImageStream = new ImageStream();
         }
 
         protected abstract IFaceRecognizer GetFaceRecognizer();

@@ -14,6 +14,8 @@ namespace SharpSenses.Tests {
             get { return null; }
         }
 
+        public ImageStream ImageStream { get; private set; }
+
         public int ResolutionWidth {
             get { return 320; }
         }

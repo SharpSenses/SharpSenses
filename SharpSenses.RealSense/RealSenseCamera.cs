@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,6 +14,7 @@ using FaceExpression = PXCMFaceData.ExpressionsData.FaceExpression;
 
 namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera, IFaceRecognizer {
+
         public static pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
         public static int ExpressionThreashod = 30;
         private PXCMSenseManager _manager;
@@ -36,6 +39,10 @@ namespace SharpSenses.RealSense {
 
         public override int ResolutionHeight {
             get { return 480; }
+        }
+
+        public override int FramesPerSecond {
+            get { return 30; }
         }
 
         public override ISpeech Speech {
@@ -112,6 +119,7 @@ namespace SharpSenses.RealSense {
                     handConfig.ApplyChanges();
                 }
             }
+            //EnableStreams();
             Debug.WriteLine("Initializing Camera...");
 
             var status = _manager.Init();
@@ -121,6 +129,40 @@ namespace SharpSenses.RealSense {
             Task.Factory.StartNew(Loop,
                                   TaskCreationOptions.LongRunning,
                                   _cancellationToken.Token);
+        }
+
+        private void EnableStreams() {
+            //var streamProfile = PXCMCapture.StreamTypeToIndex(PXCMCapture.StreamType.STREAM_TYPE_COLOR);
+            //var info = new
+            //    PXCMImage.PixelFormat.PIXEL_FORMAT_YUY2
+            var desc = new PXCMSession.ImplDesc();
+            desc.group = PXCMSession.ImplGroup.IMPL_GROUP_SENSOR;
+            desc.subgroup = PXCMSession.ImplSubgroup.IMPL_SUBGROUP_VIDEO_CAPTURE;
+
+            for (int i = 0; ; i++) {
+                PXCMSession.ImplDesc implDesc;
+                if (Session.QueryImpl(desc, i, out implDesc) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                    break;
+                PXCMCapture capture;
+                if (session.CreateImpl<PXCMCapture>(implDesc, out capture) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                    continue;
+                for (int j = 0; ; j++) {
+                    PXCMCapture.DeviceInfo dinfo;
+                    if (capture.QueryDeviceInfo(j, out dinfo) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                        break;
+
+                    ToolStripMenuItem sm1 = new ToolStripMenuItem(dinfo.name, null, new EventHandler(Device_Item_Click));
+                    devices[sm1] = dinfo;
+                    devices_iuid[sm1] = implDesc.iuid;
+                    DeviceMenu.DropDownItems.Add(sm1);
+                }
+                capture.Dispose();
+            }
+
+            _manager.captureManager.FilterByDeviceInfo(dinfo2);
+            _manager.captureManager.FilterByStreamProfiles(profiles);
+            _manager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
+                ResolutionWidth, ResolutionHeight, FramesPerSecond);
         }
 
         private void Loop(object notUsed) {
@@ -153,6 +195,7 @@ namespace SharpSenses.RealSense {
                     TrackExpressions(face);
                 }
                 TrackEmotions();
+                TrackImageFrame();
 
                 _manager.ReleaseFrame();
                 if (CyclePauseInMillis > 0) {
@@ -163,6 +206,23 @@ namespace SharpSenses.RealSense {
             faceData.Dispose();
             handModule.Dispose();
             faceModule.Dispose();
+        }
+
+        private void TrackImageFrame() {
+            var sample = _manager.QuerySample();
+            if (sample == null) {
+                return;
+            }
+            PXCMImage image = sample.color;
+            PXCMImage.ImageData imageData;
+            image.AcquireAccess(PXCMImage.Access.ACCESS_READ, 
+                                PXCMImage.PixelFormat.PIXEL_FORMAT_RGB32, 
+                                out imageData);
+            Bitmap bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
+            var ms = new MemoryStream();
+            bitmap.Save(ms, ImageFormat.Bmp);
+            ImageStream.CurrentBitmapImage = ms.ToArray();
+            image.ReleaseAccess(imageData);
         }
 
         private PXCMFaceData.Face FindFace(PXCMFaceData faceData) {

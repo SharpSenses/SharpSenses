@@ -23,6 +23,10 @@ namespace SharpSenses.Client {
             }
         }
 
+        public override int FramesPerSecond {
+            get { return 60; }
+        }
+
         public override ISpeech Speech {
             get {
                 return new SpeechClient();

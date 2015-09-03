@@ -72,6 +72,8 @@
     <Compile Include="Hand.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="IFaceRecognizer.cs" />
+    <Compile Include="ImageEventArgs.cs" />
+    <Compile Include="ImageStream.cs" />
     <Compile Include="ISpeech.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Mouth.cs" />
