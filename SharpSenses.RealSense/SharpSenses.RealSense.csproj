@@ -48,9 +48,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libpxcclr.cs, Version=5.0.3.7777, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\libpxcclr.cs.5.0.3.7777\lib\net40\libpxcclr.cs.dll</HintPath>
+    <Reference Include="libpxcclr.cs, Version=6.0.21.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\libpxcclr.cs.6.0.21.0\lib\net40\libpxcclr.cs.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

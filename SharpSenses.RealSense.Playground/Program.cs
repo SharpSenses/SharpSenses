@@ -20,31 +20,31 @@ namespace SharpSenses.RealSense.Playground {
                 Console.Write('\r');
             };
 
-            //_cam.Face.LeftEye.Blink += (sender, eventArgs) => {
-            //    Console.WriteLine("Blink");
-            //};
-            //_cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
-            //    Console.WriteLine("Double Blink");
-            //};
-            //_cam.Face.WinkedLeft += (sender, eventArgs) => {
-            //    Console.WriteLine("WinkedLeft");
-            //};
-            //_cam.Face.WinkedRight += (sender, eventArgs) => {
-            //    Console.WriteLine("WinkedRight");
-            //};
+            _cam.Face.LeftEye.Blink += (sender, eventArgs) => {
+                Console.WriteLine("Blink");
+            };
+            _cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => {
+                Console.WriteLine("Double Blink");
+            };
+            _cam.Face.WinkedLeft += (sender, eventArgs) => {
+                Console.WriteLine("WinkedLeft");
+            };
+            _cam.Face.WinkedRight += (sender, eventArgs) => {
+                Console.WriteLine("WinkedRight");
+            };
 
             //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
             //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
             //};
             //_cam.Speech.EnableRecognition(SupportedLanguage.PtBR);
 
-            //_cam.Face.LeftEye.Closed += (s, e) => {
-            //    Console.WriteLine("-> Olho esquerdo fechado ");
-            //};
+            _cam.Face.LeftEye.Closed += (s, e) => {
+                Console.WriteLine("-> Olho esquerdo fechado ");
+            };
 
-            //_cam.RightHand.Visible += (sender, eventArgs) => {
-            //    Console.WriteLine("-> Visible ");
-            //};
+            _cam.RightHand.Visible += (sender, eventArgs) => {
+                Console.WriteLine("-> Visible ");
+            };
             //_cam.Start();
 
 
@@ -56,13 +56,13 @@ namespace SharpSenses.RealSense.Playground {
             //    Console.WriteLine("-> NotVisible ");
             //};
 
-            //_cam.RightHand.Opened += (sender, eventArgs) => {
-            //    Console.WriteLine("-> Open");
-            //};
+            _cam.RightHand.Opened += (sender, eventArgs) => {
+                Console.WriteLine("-> Open");
+            };
 
-            //_cam.RightHand.Closed += (sender, eventArgs) => {
-            //    Console.WriteLine("-> Closed");
-            //};
+            _cam.RightHand.Closed += (sender, eventArgs) => {
+                Console.WriteLine("-> Closed");
+            };
 
             //_cam.RightHand.Moved += (sender, eventArgs) => {
             //    Console.Write((char)13);
@@ -156,7 +156,7 @@ namespace SharpSenses.RealSense.Playground {
             //_cam.Start();
             //Console.WriteLine("Cam Started");
             //Console.ReadLine();
-            
+
 
 
             //_cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi  l");

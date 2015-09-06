@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Gestures;
@@ -16,7 +15,11 @@ namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera, IFaceRecognizer {
 
         public static pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
-        public static int ExpressionThreashod = 30;
+        public static int ExpressionThreshold = 30;
+        public static int SmileThreshold = 40;
+        public static int MonthOpenThreshold = 15;
+        public static int EyesClosedThreshold = 15;
+
         private PXCMSenseManager _manager;
         private ISpeech _speech;
         private CancellationTokenSource _cancellationToken;
@@ -135,34 +138,34 @@ namespace SharpSenses.RealSense {
             //var streamProfile = PXCMCapture.StreamTypeToIndex(PXCMCapture.StreamType.STREAM_TYPE_COLOR);
             //var info = new
             //    PXCMImage.PixelFormat.PIXEL_FORMAT_YUY2
-            var desc = new PXCMSession.ImplDesc();
-            desc.group = PXCMSession.ImplGroup.IMPL_GROUP_SENSOR;
-            desc.subgroup = PXCMSession.ImplSubgroup.IMPL_SUBGROUP_VIDEO_CAPTURE;
+            //var desc = new PXCMSession.ImplDesc();
+            //desc.group = PXCMSession.ImplGroup.IMPL_GROUP_SENSOR;
+            //desc.subgroup = PXCMSession.ImplSubgroup.IMPL_SUBGROUP_VIDEO_CAPTURE;
 
-            for (int i = 0; ; i++) {
-                PXCMSession.ImplDesc implDesc;
-                if (Session.QueryImpl(desc, i, out implDesc) < pxcmStatus.PXCM_STATUS_NO_ERROR)
-                    break;
-                PXCMCapture capture;
-                if (session.CreateImpl<PXCMCapture>(implDesc, out capture) < pxcmStatus.PXCM_STATUS_NO_ERROR)
-                    continue;
-                for (int j = 0; ; j++) {
-                    PXCMCapture.DeviceInfo dinfo;
-                    if (capture.QueryDeviceInfo(j, out dinfo) < pxcmStatus.PXCM_STATUS_NO_ERROR)
-                        break;
+            //for (int i = 0; ; i++) {
+            //    PXCMSession.ImplDesc implDesc;
+            //    if (Session.QueryImpl(desc, i, out implDesc) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+            //        break;
+            //    PXCMCapture capture;
+            //    if (session.CreateImpl<PXCMCapture>(implDesc, out capture) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+            //        continue;
+            //    for (int j = 0; ; j++) {
+            //        PXCMCapture.DeviceInfo dinfo;
+            //        if (capture.QueryDeviceInfo(j, out dinfo) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+            //            break;
 
-                    ToolStripMenuItem sm1 = new ToolStripMenuItem(dinfo.name, null, new EventHandler(Device_Item_Click));
-                    devices[sm1] = dinfo;
-                    devices_iuid[sm1] = implDesc.iuid;
-                    DeviceMenu.DropDownItems.Add(sm1);
-                }
-                capture.Dispose();
-            }
+            //        //ToolStripMenuItem sm1 = new ToolStripMenuItem(dinfo.name, null, new EventHandler(Device_Item_Click));
+            //        //devices[sm1] = dinfo;
+            //        //devices_iuid[sm1] = implDesc.iuid;
+            //        //DeviceMenu.DropDownItems.Add(sm1);
+            //    }
+            //    capture.Dispose();
+            //}
 
-            _manager.captureManager.FilterByDeviceInfo(dinfo2);
-            _manager.captureManager.FilterByStreamProfiles(profiles);
-            _manager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
-                ResolutionWidth, ResolutionHeight, FramesPerSecond);
+            //_manager.captureManager.FilterByDeviceInfo(dinfo2);
+            //_manager.captureManager.FilterByStreamProfiles(profiles);
+            //_manager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
+            //    ResolutionWidth, ResolutionHeight, FramesPerSecond);
         }
 
         private void Loop(object notUsed) {
@@ -265,11 +268,11 @@ namespace SharpSenses.RealSense {
             if (data == null) {
                 return;
             }
-            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE, 40);
-            Face.Mouth.IsOpen = CheckFaceExpression(data, FaceExpression.EXPRESSION_MOUTH_OPEN, 15);
+            Face.Mouth.IsSmiling = CheckFaceExpression(data, FaceExpression.EXPRESSION_SMILE, SmileThreshold);
+            Face.Mouth.IsOpen = CheckFaceExpression(data, FaceExpression.EXPRESSION_MOUTH_OPEN, MonthOpenThreshold);
 
-            Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT, 15);
-            Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, 15);
+            Face.LeftEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_LEFT, EyesClosedThreshold);
+            Face.RightEye.IsOpen = !CheckFaceExpression(data, FaceExpression.EXPRESSION_EYES_CLOSED_RIGHT, EyesClosedThreshold);
             
             Face.EyesDirection = GetEyesDirection(data);
         }
