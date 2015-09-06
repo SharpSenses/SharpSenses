@@ -4,7 +4,7 @@
 <p>
 An easier way to use the **RealSense** SDK! Custom poses, gestures and much more.
 
-<sub>***Warning:*** *Make sure you have the RealSense SDK version 5.0.3.7777 installed before using SharpSenses. This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.*</sub>
+<sub>***Warning:*** *Make sure you have the RealSense SDK version 6.0.21.6598 installed before using SharpSenses. This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.*</sub>
 
 ## SharpSenses.RealSense
 > Nuget: Install-Package SharpSenses.RealSense
@@ -26,7 +26,6 @@ An easier way to use the **RealSense** SDK! Custom poses, gestures and much more
     cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");
     cam.Gestures.SlideUp += (s, a) => Console.WriteLine("Swipe Up");
     cam.Gestures.SlideDown += (s, a) => Console.WriteLine("Swipe Down");
-    cam.Gestures.MoveForward += (s, a) => Console.WriteLine("Move Forward");
 ```
 
 ##Poses
@@ -122,4 +121,4 @@ I can hear you, man!
     cam.Speech.EnableRecognition();
 ```
 
-Don't forget that you have to have the Intel RealSense SDK v5.0.3.7777 (and the 3d camera, of course) for this library to work!
+Don't forget that you have to have the Intel RealSense SDK v6.0.21.6598 (and the 3d camera, of course) for this library to work!
