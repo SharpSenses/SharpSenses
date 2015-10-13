@@ -13,7 +13,7 @@ namespace SharpSenses.RealSense.Playground {
         private static void Main(string[] args) {
             Item.DefaultNoiseThreshold = 0;
             
-            _cam = Camera.Create(Capability.GestureTracking);
+            _cam = Camera.Create(Capability.FaceTracking);
 
             //TestHands();
             //TestHandsRotations();
@@ -22,7 +22,7 @@ namespace SharpSenses.RealSense.Playground {
             //TestFaceRecognition();
             //TestEyes();
             //TestSpeech();
-            TestGestures();
+            //TestGestures();
             _cam.Start();
             
             //int yawned = 0;
@@ -114,16 +114,6 @@ namespace SharpSenses.RealSense.Playground {
             //_cam.Face.FacialExpresssionChanged += (s, e) => Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
 
 
-            Action moved = () => {
-                Write("\r");
-                Write("LeftXY: {0}|{1} | Right XY: {2}|{3}",
-                    _cam.LeftHand.Index.Position.Image.X,
-                    _cam.LeftHand.Index.Position.Image.Y,
-                    _cam.RightHand.Index.Position.Image.X,
-                    _cam.RightHand.Index.Position.Image.Y
-                    );
-            };
-
             //_cam.LeftHand.Index.Moved += (s, a) => moved();
             //_cam.RightHand.Index.Moved += (s, a) => moved();
 
@@ -152,12 +142,28 @@ namespace SharpSenses.RealSense.Playground {
         }
 
         private static void TestFace() {
+            var face = default(Point3D);
+            var visible = false;
+            var id = 0;
+            Action update = () => {
+                Clear();
+                WriteLine($"-> Face: {face} Id: {id}");
+                WriteLine($"-> Visible: {visible}");
+            };
+
             _cam.Face.Visible += (sender, eventArgs) => {
-                WriteLine("-> Face visible " + _cam.Face.UserId);
+                visible = true;
+                id = _cam.Face.UserId;
+                update.Invoke();
             };
 
             _cam.Face.NotVisible += (sender, eventArgs) => {
-                WriteLine("-> Face not visible " + _cam.Face.UserId);
+                visible = false;
+                update.Invoke();
+            };
+            _cam.Face.Moved += (sender, args) => {
+                face = args.NewPosition.World;
+                update.Invoke();
             };
         }
 

@@ -67,6 +67,8 @@
     </Compile>
     <Compile Include="Camera.cs" />
     <Compile Include="Capabilities\Capability.cs" />
+    <Compile Include="Capabilities\FaceCapability.cs" />
+    <Compile Include="Capabilities\FaceRecognitionCapability.cs" />
     <Compile Include="Capabilities\GesturesCapability.cs" />
     <Compile Include="DisposableExtensions.cs" />
     <Compile Include="Capabilities\ICapability.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="SpeechSynthesis.cs" />
     <Compile Include="Storage\UserIdRepository.cs" />
     <Compile Include="SupportedLanguageMapper.cs" />
+    <Compile Include="Util\Point3dExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="x32\libpxccpp2c.dll" />

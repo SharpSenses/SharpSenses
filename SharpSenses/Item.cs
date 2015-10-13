@@ -29,12 +29,10 @@ namespace SharpSenses {
         public event EventHandler<PositionEventArgs> Moved;
 
         protected virtual void OnNotVisible() {
-            var handler = NotVisible;
-            if (handler != null) handler(this, new EventArgs());
+            NotVisible?.Invoke(this, new EventArgs());
         }
         protected virtual void OnVisible() {
-            var handler = Visible;
-            if (handler != null) handler(this, new EventArgs());
+            Visible?.Invoke(this, new EventArgs());
         }
 
         private Position _position;
@@ -91,8 +89,7 @@ namespace SharpSenses {
         }
 
         protected virtual void OnMove(Position oldPosition, Position newPosition) {
-            var handler = Moved;
-            if (handler != null) handler(this, new PositionEventArgs(oldPosition, newPosition));
+            Moved?.Invoke(this, new PositionEventArgs(oldPosition, newPosition));
         }
     }
 

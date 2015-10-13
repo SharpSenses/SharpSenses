@@ -29,7 +29,7 @@ namespace SharpSenses.RealSense.Capabilities {
                 }
             }
             _sensor = (GestureSensor) camera.Gestures;
-            //GestureSlide.Configure(camera, (GestureSensor) camera.Gestures);
+            GestureSlide.Configure(camera, (GestureSensor) camera.Gestures);
         }
 
         private void OnGesture(PXCMHandData.GestureData gesturedata) {
@@ -46,6 +46,9 @@ namespace SharpSenses.RealSense.Capabilities {
         }
 
         public void Loop() {
+        }
+
+        public void Dispose() {
         }
     }
 }

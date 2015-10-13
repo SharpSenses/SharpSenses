@@ -6,12 +6,17 @@ using static SharpSenses.RealSense.Errors;
 namespace SharpSenses.RealSense.Capabilities {
     public class HandTrackingCapability : ICapability {
         private RealSenseCamera _camera;
+        private Dictionary<Item, PXCMSmoother.Smoother3D> _smoothers = new Dictionary<Item, PXCMSmoother.Smoother3D>(); 
+        private PXCMSmoother _smootherFactory;
 
         public IEnumerable<Capability> Dependencies => new List<Capability>();
 
         public void Configure(RealSenseCamera camera) {
             _camera = camera;
             _camera.Manager.EnableHand();
+            _camera.Session.CreateImpl(out _smootherFactory);
+            _smoothers.Add(_camera.LeftHand, _smootherFactory.Create3DQuadratic(0.8f));
+            _smoothers.Add(_camera.RightHand, _smootherFactory.Create3DQuadratic(0.8f));
         }
 
         public void Loop() {
@@ -56,8 +61,12 @@ namespace SharpSenses.RealSense.Capabilities {
         }
 
         private void SetHandPosition(Hand hand, PXCMHandData.IHand handInfo) {
+            var world = handInfo.QueryMassCenterWorld();
+            if (_smoothers.ContainsKey(hand)) {
+                world = _smoothers[hand].SmoothValue(world);
+            }
             var imagePosition = ToPoint3D(handInfo.QueryMassCenterImage());
-            var worldPosition = ToPoint3D(handInfo.QueryMassCenterWorld());
+            var worldPosition = ToPoint3D(world);
             hand.Position = CreatePosition(imagePosition, worldPosition);
         }
 
@@ -147,5 +156,11 @@ namespace SharpSenses.RealSense.Capabilities {
             return new Point3D(p.x, p.y, p.z);
         }
 
+        public void Dispose() {
+            _smootherFactory.SilentlyDispose();
+            foreach (var item in _smoothers.Values) {
+                item.SilentlyDispose();
+            }
+        }
     }
 }

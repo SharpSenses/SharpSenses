@@ -5,7 +5,8 @@ using SharpSenses.Util;
 namespace SharpSenses.RealSense.Capabilities {
     public enum Capability {
         HandTracking,
-        GestureTracking
+        GestureTracking,
+        FaceTracking
     }
 
     public static class CapabilityHelper {
