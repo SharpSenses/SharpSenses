@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Camera.cs" />
     <Compile Include="Capabilities\Capability.cs" />
+    <Compile Include="Capabilities\EmotionCapability.cs" />
     <Compile Include="Capabilities\FaceCapability.cs" />
     <Compile Include="Capabilities\FaceRecognitionCapability.cs" />
     <Compile Include="Capabilities\GesturesCapability.cs" />

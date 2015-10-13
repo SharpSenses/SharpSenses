@@ -13,8 +13,7 @@ namespace SharpSenses.RealSense.Playground {
         private static void Main(string[] args) {
             Item.DefaultNoiseThreshold = 0;
             
-            _cam = Camera.Create(Capability.FaceTracking);
-
+            _cam = Camera.Create(Capability.EmotionCapability);
             //TestHands();
             //TestHandsRotations();
             //TestHandsMovements();
@@ -23,6 +22,7 @@ namespace SharpSenses.RealSense.Playground {
             //TestEyes();
             //TestSpeech();
             //TestGestures();
+            TestEmotions();
             _cam.Start();
             
             //int yawned = 0;
@@ -127,6 +127,12 @@ namespace SharpSenses.RealSense.Playground {
 
             ReadLine();
             _cam.Dispose();
+        }
+
+        private static void TestEmotions() {
+            _cam.Face.FacialExpresssionChanged += (sender, args) => {
+                WriteLine("Facial Expression: " + args.NewFacialExpression);
+            };
         }
 
         private static void TestFaceRecognition() {

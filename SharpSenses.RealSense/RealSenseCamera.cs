@@ -25,7 +25,8 @@ namespace SharpSenses.RealSense {
         private static Dictionary<Capability, ICapability> _availableCapabilities = new Dictionary<Capability, ICapability> {
             [Capability.HandTracking] = new HandTrackingCapability(),
             [Capability.GestureTracking] = new GesturesCapability(),
-            [Capability.FaceTracking] = new FaceCapability()
+            [Capability.FaceTracking] = new FaceCapability(),
+            [Capability.EmotionCapability] = new EmotionCapability()
         };
 
         private List<Capability> _enabledCapabilities = new List<Capability>(); 
@@ -253,15 +254,6 @@ namespace SharpSenses.RealSense {
             bitmap.Save(ms, ImageFormat.Bmp);
             ImageStream.CurrentBitmapImage = ms.ToArray();
             image.ReleaseAccess(imageData);
-        }
-
-        private PXCMFaceData.Face FindFace(PXCMFaceData faceData) {
-            if (faceData.QueryNumberOfDetectedFaces() == 0) {
-                Face.IsVisible = false;
-                return null;
-            }
-            Face.IsVisible = true;
-            return faceData.QueryFaces().First();
         }
 
         private void TrackEmotions() {

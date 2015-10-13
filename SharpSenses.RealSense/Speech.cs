@@ -37,8 +37,7 @@ namespace SharpSenses.RealSense {
         public event EventHandler<SpeechRecognitionEventArgs> SpeechRecognized;
 
         protected virtual void FireSpeechRecognized(string sentence) {
-            var handler = SpeechRecognized;
-            if (handler != null) handler(this, new SpeechRecognitionEventArgs(sentence));
+            SpeechRecognized?.Invoke(this, new SpeechRecognitionEventArgs(sentence));
         }
 
         public void Dispose() {

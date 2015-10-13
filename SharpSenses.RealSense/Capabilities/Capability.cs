@@ -6,7 +6,9 @@ namespace SharpSenses.RealSense.Capabilities {
     public enum Capability {
         HandTracking,
         GestureTracking,
-        FaceTracking
+        FaceTracking,
+        EmotionCapability,
+        FacialExpressionTracking
     }
 
     public static class CapabilityHelper {
