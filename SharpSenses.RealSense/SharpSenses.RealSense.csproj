@@ -66,8 +66,13 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Camera.cs" />
+    <Compile Include="Capabilities\Capability.cs" />
+    <Compile Include="Capabilities\GesturesCapability.cs" />
     <Compile Include="DisposableExtensions.cs" />
+    <Compile Include="Capabilities\ICapability.cs" />
+    <Compile Include="Errors.cs" />
     <Compile Include="LanguageNotSupportedException.cs" />
+    <Compile Include="Capabilities\HandTrackingCapability.cs" />
     <Compile Include="RealSenseAssembliesLoader.cs" />
     <Compile Include="RealSenseCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

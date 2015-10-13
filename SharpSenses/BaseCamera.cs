@@ -1,5 +1,4 @@
-﻿using System;
-using SharpSenses.Gestures;
+﻿using SharpSenses.Gestures;
 using SharpSenses.Poses;
 
 namespace SharpSenses {
@@ -44,17 +43,5 @@ namespace SharpSenses {
         }
 
         protected abstract IFaceRecognizer GetFaceRecognizer();
-
-        protected Position CreatePosition(Point3D imagePosition, Point3D worldPosition) {
-            return new Position {
-                Image = new Point3D(imagePosition.X, imagePosition.Y),
-                World = new Point3D(ToRoundedCentimeters(worldPosition.X),
-                                    ToRoundedCentimeters(worldPosition.Y),
-                                    ToRoundedCentimeters(worldPosition.Z))
-            };
-        }
-        protected double ToRoundedCentimeters(double value) {
-            return Math.Round(value * 100, 2);
-        }
     }
 }

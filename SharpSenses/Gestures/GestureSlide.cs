@@ -82,7 +82,7 @@ namespace SharpSenses.Gestures {
 
         protected virtual void OnSlideDetected() {
             var handler = SlideDetected;
-            if (handler != null) handler(this, EventArgs.Empty);
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 }

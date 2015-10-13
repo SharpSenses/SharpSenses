@@ -42,7 +42,7 @@ namespace SharpSenses.RealSense {
             _session.CreateImpl(out _synthesisModule);
             for (int i = 0;; i++) {
                 PXCMSpeechSynthesis.ProfileInfo profile;
-                if (_synthesisModule.QueryProfile(i, out profile) != RealSenseCamera.NoError) {
+                if (_synthesisModule.QueryProfile(i, out profile) != Errors.NoError) {
                     break;
                 }
                 var languageLabel = profile.language.ToString();

@@ -9,24 +9,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
+using SharpSenses.RealSense.Capabilities;
+using static SharpSenses.PositionHelper;
+using static SharpSenses.RealSense.Errors;
 using FaceExpression = PXCMFaceData.ExpressionsData.FaceExpression;
 
 namespace SharpSenses.RealSense {
     public class RealSenseCamera : Camera, IFaceRecognizer {
 
-        public static pxcmStatus NoError = pxcmStatus.PXCM_STATUS_NO_ERROR;
         public static int ExpressionThreshold = 30;
         public static int SmileThreshold = 40;
         public static int MonthOpenThreshold = 15;
         public static int EyesClosedThreshold = 15;
 
-        private PXCMSenseManager _manager;
+        private static Dictionary<Capability, ICapability> _availableCapabilities = new Dictionary<Capability, ICapability> {
+            [Capability.HandTracking] = new HandTrackingCapability(),
+            [Capability.GestureTracking] = new GesturesCapability()
+        };
+
+        private List<Capability> _enabledCapabilities = new List<Capability>(); 
+
         private ISpeech _speech;
         private CancellationTokenSource _cancellationToken;
         private const string StorageName = "SharpSensesDb";
         private static string StorageFileName = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "SharpSensesDb.bin";
         private RecognitionState _recognitionState = RecognitionState.Idle;
-        public PXCMSession Session { get; private set; }
+        public PXCMSenseManager Manager { get; }
+        public PXCMSession Session { get; }
 
         private Dictionary<Direction, double> _eyesThresholds;
         private enum RecognitionState {
@@ -56,9 +65,8 @@ namespace SharpSenses.RealSense {
 
         public RealSenseCamera() {
             Session = PXCMSession.CreateInstance();
-            _manager = Session.CreateSenseManager();
+            Manager = Session.CreateSenseManager();
             ConfigurePoses();
-            ConfigureGestures();
             _speech = new Speech();
             _eyesThresholds = new Dictionary<Direction, double> {
                 { Direction.Up, 10},
@@ -69,8 +77,15 @@ namespace SharpSenses.RealSense {
             Debug.WriteLine("SDK Version {0}.{1}", Session.QueryVersion().major, Session.QueryVersion().minor);
         }
 
-        private void ConfigureGestures() {
-            GestureSlide.Configure(this, _gestures);
+        public void AddCapability(Capability capability) {
+            if (_enabledCapabilities.Contains(capability)) {
+                return;
+            }
+            var capImpl = _availableCapabilities[capability];
+            foreach (var dependency in capImpl.Dependencies) {
+                AddCapability(dependency);
+            }
+            _enabledCapabilities.Add(capability);
         }
 
         private void ConfigurePoses() {
@@ -80,52 +95,56 @@ namespace SharpSenses.RealSense {
 
         public override void Start() {
             _cancellationToken = new CancellationTokenSource();
-            _manager.EnableEmotion();
-            _manager.EnableFace();
-
-            using (var faceModule = _manager.QueryFace()) {
-                using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) {
-                    moduleConfiguration.detection.maxTrackedFaces = 1;
-                    var expressionCofig = moduleConfiguration.QueryExpressions();
-                    expressionCofig.Enable();
-                    expressionCofig.EnableAllExpressions();
-
-                    var desc = new PXCMFaceConfiguration.RecognitionConfiguration.RecognitionStorageDesc();
-                    desc.maxUsers = 10;
-                    desc.isPersistent = true;
-                    var recognitionConfiguration = moduleConfiguration.QueryRecognition();
-                    recognitionConfiguration.CreateStorage(StorageName, out desc);
-                    recognitionConfiguration.UseStorage(StorageName);
-                    recognitionConfiguration.SetRegistrationMode(PXCMFaceConfiguration.RecognitionConfiguration.RecognitionRegistrationMode.REGISTRATION_MODE_CONTINUOUS);
-
-                    if (File.Exists(StorageFileName)) {
-                        var bytes = File.ReadAllBytes(StorageFileName);
-                        recognitionConfiguration.SetDatabaseBuffer(bytes);
-                    }
-                    recognitionConfiguration.Enable();
-                    moduleConfiguration.ApplyChanges();
-                }
+            foreach (var capability in _enabledCapabilities) {
+                _availableCapabilities[capability].Configure(this);
             }
-            _manager.EnableHand();
-            using (var handModule = _manager.QueryHand()) {
-                using (var handConfig = handModule.CreateActiveConfiguration()) {
-                    //handConfig.EnableAllAlerts();
-                    int numGestures = handConfig.QueryGesturesTotalNumber();
-                    for (int i = 0; i < numGestures; i++) {
-                        string name;
-                        handConfig.QueryGestureNameByIndex(i, out name);
-                        Debug.WriteLine("Gestures: " + name);
-                    }
-                    handConfig.EnableAllGestures();
-                    handConfig.SubscribeGesture(OnGesture);
-                    handConfig.EnableTrackedJoints(true);
-                    handConfig.ApplyChanges();
-                }
-            }
+
+            //_manager.EnableEmotion();
+            //_manager.EnableFace();
+
+            //using (var faceModule = _manager.QueryFace()) {
+            //    using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) {
+            //        moduleConfiguration.detection.maxTrackedFaces = 1;
+            //        var expressionCofig = moduleConfiguration.QueryExpressions();
+            //        expressionCofig.Enable();
+            //        expressionCofig.EnableAllExpressions();
+
+            //        var desc = new PXCMFaceConfiguration.RecognitionConfiguration.RecognitionStorageDesc();
+            //        desc.maxUsers = 10;
+            //        desc.isPersistent = true;
+            //        var recognitionConfiguration = moduleConfiguration.QueryRecognition();
+            //        recognitionConfiguration.CreateStorage(StorageName, out desc);
+            //        recognitionConfiguration.UseStorage(StorageName);
+            //        recognitionConfiguration.SetRegistrationMode(PXCMFaceConfiguration.RecognitionConfiguration.RecognitionRegistrationMode.REGISTRATION_MODE_CONTINUOUS);
+
+            //        if (File.Exists(StorageFileName)) {
+            //            var bytes = File.ReadAllBytes(StorageFileName);
+            //            recognitionConfiguration.SetDatabaseBuffer(bytes);
+            //        }
+            //        recognitionConfiguration.Enable();
+            //        moduleConfiguration.ApplyChanges();
+            //    }
+            //}
+            //_manager.EnableHand();
+            //using (var handModule = _manager.QueryHand()) {
+            //    using (var handConfig = handModule.CreateActiveConfiguration()) {
+            //        //handConfig.EnableAllAlerts();
+            //        int numGestures = handConfig.QueryGesturesTotalNumber();
+            //        for (int i = 0; i < numGestures; i++) {
+            //            string name;
+            //            handConfig.QueryGestureNameByIndex(i, out name);
+            //            Debug.WriteLine("Gestures: " + name);
+            //        }
+            //        handConfig.EnableAllGestures();
+            //        handConfig.SubscribeGesture(OnGesture);
+            //        handConfig.EnableTrackedJoints(true);
+            //        handConfig.ApplyChanges();
+            //    }
+            //}
             //EnableStreams();
             Debug.WriteLine("Initializing Camera...");
 
-            var status = _manager.Init();
+            var status = Manager.Init();
             if (status != NoError) { 
                 throw new CameraException(status.ToString());
             }
@@ -180,39 +199,49 @@ namespace SharpSenses.RealSense {
 
         private void TryLoop() {
             Debug.WriteLine("Loop started");
-            var handModule = _manager.QueryHand();
-            var handData = handModule.CreateOutput();
-            var faceModule = _manager.QueryFace();
-            var faceData = faceModule.CreateOutput();
 
             while (!_cancellationToken.IsCancellationRequested) {
-                _manager.AcquireFrame(true);
-                handData.Update();
-                TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
-                TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
-                faceData.Update();
-                var face = FindFace(faceData);
-                if (face != null) {
-                    TrackFace(face);
-                    RecognizeFace(faceData, face);
-                    TrackExpressions(face);
+                Manager.AcquireFrame(false);
+                foreach (var capability in _enabledCapabilities) {
+                    _availableCapabilities[capability].Loop();
                 }
-                TrackEmotions();
-                TrackImageFrame();
-
-                _manager.ReleaseFrame();
-                if (CyclePauseInMillis > 0) {
-                    Thread.Sleep(CyclePauseInMillis);
-                }
+                Manager.ReleaseFrame();
             }
-            handData.Dispose();
-            faceData.Dispose();
-            handModule.Dispose();
-            faceModule.Dispose();
+
+
+            //var handModule = Manager.QueryHand();
+            //var handData = handModule.CreateOutput();
+            //var faceModule = Manager.QueryFace();
+            //var faceData = faceModule.CreateOutput();
+
+            //while (!_cancellationToken.IsCancellationRequested) {
+            //    Manager.AcquireFrame(true);
+            //    handData.Update();
+            //    TrackHandAndFingers(LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
+            //    TrackHandAndFingers(RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
+            //    faceData.Update();
+            //    var face = FindFace(faceData);
+            //    if (face != null) {
+            //        TrackFace(face);
+            //        RecognizeFace(faceData, face);
+            //        TrackExpressions(face);
+            //    }
+            //    TrackEmotions();
+            //    TrackImageFrame();
+
+            //    Manager.ReleaseFrame();
+            //    if (CyclePauseInMillis > 0) {
+            //        Thread.Sleep(CyclePauseInMillis);
+            //    }
+            //}
+            //handData.Dispose();
+            //faceData.Dispose();
+            //handModule.Dispose();
+            //faceModule.Dispose();
         }
 
         private void TrackImageFrame() {
-            var sample = _manager.QuerySample();
+            var sample = Manager.QuerySample();
             if (sample == null) {
                 return;
             }
@@ -241,7 +270,7 @@ namespace SharpSenses.RealSense {
             if (!Face.IsVisible) {
                 return;
             }
-            var emotionInfo = _manager.QueryEmotion();
+            var emotionInfo = Manager.QueryEmotion();
             if (emotionInfo == null) {
                 return;
             }
@@ -391,7 +420,7 @@ namespace SharpSenses.RealSense {
         }
 
         private string _last = "";
-    
+
         private void OnGesture(PXCMHandData.GestureData gesturedata) {
             string g = String.Format("Gesture: {0}-{1}-{2}",
                 gesturedata.name,
@@ -543,10 +572,8 @@ namespace SharpSenses.RealSense {
         }
 
         public override void Dispose() {
-            if (_cancellationToken != null) {
-                _cancellationToken.Cancel();                
-            }
-            _manager.SilentlyDispose();
+            _cancellationToken?.Cancel();
+            Manager.SilentlyDispose();
             Session.SilentlyDispose();
         }
     }

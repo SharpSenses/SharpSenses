@@ -86,12 +86,14 @@
     <Compile Include="Poses\PosePeace.cs" />
     <Compile Include="Poses\PoseSensor.cs" />
     <Compile Include="Position.cs" />
+    <Compile Include="PositionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rotation.cs" />
     <Compile Include="RotationablePart.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="SpeechRecognitionEventArgs.cs" />
     <Compile Include="SupportedLanguage.cs" />
+    <Compile Include="Util\EnumUtil.cs" />
     <Compile Include="Util\MathEx.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
