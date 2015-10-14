@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace SharpSenses.RealSense {
-    public class Speech : ISpeech, IDisposable {
+namespace SharpSenses.RealSense.Speech {
+    public class SpeechManager : ISpeech, IDisposable {
         
         private SpeechSynthesis _speechSynthesis;
         private SpeechRecognition _speechRecognition;
 
-        public Speech() {
+        public SpeechManager() {
             _speechSynthesis = new SpeechSynthesis();
             _speechRecognition = new SpeechRecognition();
             _speechRecognition.SpeechRecognized += (s, a) => FireSpeechRecognized(a.Sentence);

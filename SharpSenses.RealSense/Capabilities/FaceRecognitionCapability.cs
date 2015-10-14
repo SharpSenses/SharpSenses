@@ -6,13 +6,6 @@ namespace SharpSenses.RealSense.Capabilities {
     public class FaceRecognitionCapability : ICapability {
         private static string StorageFileName = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "SharpSensesDb.bin";
         private const string StorageName = "SharpSensesDb";
-        private RecognitionState _recognitionState = RecognitionState.Idle;
-        private enum RecognitionState {
-            Idle,
-            Requested,
-            Working,
-            Done
-        }
 
         private RealSenseCamera _camera;
         public IEnumerable<Capability> Dependencies => new List<Capability>();
@@ -44,40 +37,9 @@ namespace SharpSenses.RealSense.Capabilities {
             }
         }
 
-        private void RecognizeFace(PXCMFaceData faceData, PXCMFaceData.Face face) {
-            var rdata = face.QueryRecognition();
-            var userId = rdata.QueryUserID();
+        
 
-            switch (_recognitionState) {
-                case RecognitionState.Idle:
-                    break;
-                case RecognitionState.Requested:
-                    rdata.RegisterUser();
-                    _recognitionState = RecognitionState.Working;
-                    break;
-                case RecognitionState.Working:
-                    if (userId > 0) {
-                        _recognitionState = RecognitionState.Done;
-                    }
-                    break;
-                case RecognitionState.Done:
-                    SaveDatabase(faceData);
-                    _recognitionState = RecognitionState.Idle;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            _camera.Face.UserId = userId;
-        }
-
-        private void SaveDatabase(PXCMFaceData faceData) {
-            var rmd = faceData.QueryRecognitionModule();
-            var buffer = new Byte[rmd.QueryDatabaseSize()];
-            rmd.QueryDatabaseBuffer(buffer);
-            File.WriteAllBytes(StorageFileName, buffer);
-        }
-
-        public void Loop() {}
+        public void Loop(LoopObjects loopObjects) {}
         public void Dispose() {}
     }
 }

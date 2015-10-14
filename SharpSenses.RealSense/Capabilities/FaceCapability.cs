@@ -16,12 +16,14 @@ namespace SharpSenses.RealSense.Capabilities {
             _faceModule = camera.Manager.QueryFace();
             _faceData = _faceModule.CreateOutput();
         }
-        public void Loop() {
+        public void Loop(LoopObjects loopObjects) {
             _faceData.Update();
             var face = FindFace(_faceData);
-            if (face != null) {
-                TrackFace(face);
+            if (face == null) {
+                return;
             }
+            loopObjects.Add(face);
+            TrackFace(face);
         }
 
         private PXCMFaceData.Face FindFace(PXCMFaceData faceData) {

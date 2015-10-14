@@ -68,23 +68,28 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Capabilities\Capability.cs" />
     <Compile Include="Capabilities\EmotionCapability.cs" />
+    <Compile Include="Capabilities\FacialExpressionCapability.cs" />
     <Compile Include="Capabilities\FaceCapability.cs" />
     <Compile Include="Capabilities\FaceRecognitionCapability.cs" />
     <Compile Include="Capabilities\GesturesCapability.cs" />
+    <Compile Include="Capabilities\ImageStreamCapability.cs" />
+    <Compile Include="Capabilities\LoopObjects.cs" />
     <Compile Include="DisposableExtensions.cs" />
     <Compile Include="Capabilities\ICapability.cs" />
     <Compile Include="Errors.cs" />
+    <Compile Include="FaceRecognition\FaceRecognizer.cs" />
     <Compile Include="LanguageNotSupportedException.cs" />
     <Compile Include="Capabilities\HandTrackingCapability.cs" />
     <Compile Include="RealSenseAssembliesLoader.cs" />
     <Compile Include="RealSenseCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealSenseAudioPlayer.cs" />
-    <Compile Include="Speech.cs" />
-    <Compile Include="SpeechRecognition.cs" />
-    <Compile Include="SpeechSynthesis.cs" />
+    <Compile Include="Speech\RealSenseAudioPlayer.cs" />
+    <Compile Include="RecognitionState.cs" />
+    <Compile Include="Speech\SpeechManager.cs" />
+    <Compile Include="Speech\SpeechRecognition.cs" />
+    <Compile Include="Speech\SpeechSynthesis.cs" />
     <Compile Include="Storage\UserIdRepository.cs" />
-    <Compile Include="SupportedLanguageMapper.cs" />
+    <Compile Include="Speech\SupportedLanguageMapper.cs" />
     <Compile Include="Util\Point3dExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +105,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

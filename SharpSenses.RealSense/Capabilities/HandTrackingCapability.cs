@@ -19,8 +19,11 @@ namespace SharpSenses.RealSense.Capabilities {
             _smoothers.Add(_camera.RightHand, _smootherFactory.Create3DQuadratic(0.8f));
         }
 
-        public void Loop() {
+        public void Loop(LoopObjects loopObjects) {
             var handModule = _camera.Manager.QueryHand();
+            if (handModule == null) {
+                return;
+            }
             var handData = handModule.CreateOutput();
             handData.Update();
             TrackHandAndFingers(_camera.LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);

@@ -45,7 +45,7 @@ namespace SharpSenses.RealSense.Capabilities {
             }
         }
 
-        public void Loop() {
+        public void Loop(LoopObjects loopObjects) {
         }
 
         public void Dispose() {

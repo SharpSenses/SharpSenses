@@ -13,7 +13,7 @@ namespace SharpSenses.RealSense.Capabilities {
             Debug.WriteLine("EmotionCapability enabled");
         }
 
-        public void Loop() {
+        public void Loop(LoopObjects loopObjects) {
             if (!_camera.Face.IsVisible) {
                 return;
             }

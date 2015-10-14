@@ -1,4 +1,4 @@
-﻿namespace SharpSenses.RealSense {
+﻿namespace SharpSenses.RealSense.Speech {
     public static class SupportedLanguageMapper {
         public static SupportedLanguage FromString(string language) {
             if (language == "LANGUAGE_US_ENGLISH") return SupportedLanguage.EnUS;

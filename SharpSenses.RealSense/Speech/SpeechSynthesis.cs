@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SharpSenses.RealSense {
+namespace SharpSenses.RealSense.Speech {
     public class SpeechSynthesis : IDisposable {
         private PXCMSession _session;
         private PXCMSpeechSynthesis _synthesisModule;

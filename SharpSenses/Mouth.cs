@@ -20,8 +20,7 @@ namespace SharpSenses {
         }
 
         protected virtual void FireSmiled() {
-            var handler = Smiled;
-            if (handler != null) handler(this, EventArgs.Empty);
+            Smiled?.Invoke(this, EventArgs.Empty);
         }
     }
 }

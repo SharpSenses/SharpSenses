@@ -1,7 +1,7 @@
 using System.IO;
 using System.Media;
 
-namespace SharpSenses.RealSense {
+namespace SharpSenses.RealSense.Speech {
     public static class RealSenseAudioPlayer {
         // Conversion extracted from the sample voice_synthesis.cs (RSSDK\framework\CSharp\voice_synthesis.cs)
         // To understand a little bit more about the WAV file format, acess the following links: 

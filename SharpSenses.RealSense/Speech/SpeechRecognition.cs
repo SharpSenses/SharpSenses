@@ -2,15 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
-namespace SharpSenses.RealSense {
+namespace SharpSenses.RealSense.Speech {
     public class SpeechRecognition : IDisposable {
         private PXCMSession _session;
         private PXCMSpeechRecognition _speechRecognition;
         private PXCMSpeechRecognition.Handler _speechRecognitionHandler;
         private Dictionary<SupportedLanguage, PXCMSpeechRecognition.ProfileInfo> _recognitionProfiles;
-        private SupportedLanguage _language;
 
         public event EventHandler<SpeechRecognitionEventArgs> SpeechRecognized;
 
@@ -27,7 +25,6 @@ namespace SharpSenses.RealSense {
         }
 
         public void EnableRecognition(SupportedLanguage language) {
-            _language = language;
             _session = PXCMSession.CreateInstance();
             var audioSource = FindAudioSource();
             _session.CreateImpl(out _speechRecognition);
@@ -76,8 +73,7 @@ namespace SharpSenses.RealSense {
             FireSpeechRecognized(data.scores[0].sentence);
         }
         protected virtual void FireSpeechRecognized(string sentence) {
-            var handler = SpeechRecognized;
-            if (handler != null) handler(this, new SpeechRecognitionEventArgs(sentence));
+            SpeechRecognized?.Invoke(this, new SpeechRecognitionEventArgs(sentence));
         }
 
         public void DisableRecognition() {
