@@ -1,7 +1,5 @@
-﻿namespace SharpSenses
-{
-    public enum FacialExpression
-    {
+﻿namespace SharpSenses {
+    public enum Emotion {
         Anger = 1,
         Contempt = 2,
         Disgust = 4,

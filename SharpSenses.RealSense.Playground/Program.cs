@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
+using System.Threading.Tasks;
 using SharpSenses.Gestures;
 using SharpSenses.Poses;
 using SharpSenses.RealSense.Capabilities;
@@ -8,137 +11,114 @@ using static System.Console;
 namespace SharpSenses.RealSense.Playground {
     internal class Program {
 
-        private static ICamera _cam;
+        private static RealSenseCamera _cam;
+        private static Dictionary<string, string> _items = new Dictionary<string, string>();
+
+        private static StringBuilder _sb = new StringBuilder();
+        private static object _syncRoot = new object();
 
         private static void Main(string[] args) {
             Item.DefaultNoiseThreshold = 0;
+
+            RealSenseAssembliesLoader.Load();
+            _cam = new RealSenseCamera();
             
-            _cam = Camera.Create(Capability.FacialExpressionTracking);
             //TestHands();
-            //TestHandsRotations();
-            //TestHandsMovements();
             //TestFace();
             //TestFaceRecognition();
-            TestFacialExpressions();
+            //TestFacialExpressions();
             //TestEmotions();
-            //TestEyes();
             //TestSpeech();
-            //TestGestures();
+            TestGestures();
             _cam.Start();
-            
-            //int yawned = 0;
-            //_cam.Face.Yawned += (sender, eventArgs) => {
-            //    Console.WriteLine("-> YAWNED " + yawned++);
-            //};
-
-            
-
-            
-
-
-            //_cam.Speech.CurrentLanguage = SupportedLanguage.EnUS;
-            //_cam.Speech.Say("Hello world!");
-            //_cam.Speech.Say("Hello world!");
-            //_cam.Speech.Say("Hello world!");
-
-            //_cam.Speech.SpeechRecognized += (sender, eventArgs) => {
-            //    Console.WriteLine("-> " + eventArgs.Sentence.ToLower());
-            //};
-
-            //_cam.Face.EyesDirectionChanged += (s, a) => {
-            //    if (a.NewDirection == Direction.None) return;
-            //    Console.WriteLine("-> " + a.NewDirection);
-            //};
-
-            //_cam.Face.LeftEye.Opened += (s, a) => {
-            //    Console.WriteLine("-> LeftEye opened");
-            //};
-            //_cam.Face.LeftEye.Closed += (s, a) => {
-            //    Console.WriteLine("-> LeftEye Closed");
-            //};
-
-            //_cam.Face.LeftEye.Blink += (s, a) => {
-            //    Console.WriteLine("-> LeftEye Blink");
-            //};
-
-            //_cam.Face.LeftEye.DoubleBlink += (s, a) => {
-            //    Console.WriteLine("-> LeftEye DoubleBlink");
-            //};
-
-            //_cam.Face.Mouth.Opened += (s, a) => {
-            //    Console.WriteLine("-> month opened");
-            //};
-
-            //_cam.Face.Mouth.Closed += (s, a) => {
-            //    Console.WriteLine("-> month closed");
-            //};
-
-            //_cam.Face.Mouth.Smiled += (s, a) => {
-            //    Console.WriteLine("-> month smiled");
-            //};
-
-            //_cam.Speech.EnableRecognition();
-            //Console.WriteLine("Speech");
-            //Console.ReadLine();
-            //_cam.Start();
-            //Console.WriteLine("Cam Started");
-            //Console.ReadLine();
-
-
-
-            //_cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi  l");
-            //_cam.LeftHand.NotVisible += (s,a) => Console.WriteLine("Bye l");
-            //_cam.RightHand.Visible += (s,a) => Console.WriteLine("Hi r");
-
-            //_cam.Gestures.SlideRight += (s, a) => Console.WriteLine(a.GestureName);
-            //_cam.Gestures.SlideLeft += (s, a) => Console.WriteLine(a.GestureName);
-            //_cam.Gestures.SlideUp += (s, a) => Console.WriteLine(a.GestureName);
-            //_cam.Gestures.SlideDown += (s, a) => Console.WriteLine(a.GestureName);
-
-            //int xmoved = 0;
-            //_cam.LeftHand.Moved += (s, a) => {
-            //    Console.WriteLine(++xmoved);
-            //};
-
-            //_cam.RightHand.Moved += (s,a) => Console.WriteLine("-> " + a.NewPosition.Image.X);
-
-            //_cam.Face.RecognizeFace();
-            //_cam.Face.FaceRecognized += (s, a) => {
-            //    Console.WriteLine("Hello " + a.UserId); 
-            //};
-
-            //_cam.LeftHand.FingerOpened += (sender, eventArgs) => {
-            //    var finger = (Finger) sender;
-            //    Console.WriteLine("Finger Open: " + finger.Kind);
-            //};
-
-            //_cam.Face.FacialExpresssionChanged += (s, e) => Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
-
-
-            //_cam.LeftHand.Index.Moved += (s, a) => moved();
-            //_cam.RightHand.Index.Moved += (s, a) => moved();
-
-            
-
-            //var pose = PoseBuilder.Create().ShouldBeNear(_cam.LeftHand, _cam.RightHand,100).Build();
-            //pose.Begin += (s, a) => {
-            //    Console.WriteLine("Super pose!");
-            //};
-            
 
             ReadLine();
             _cam.Dispose();
         }
 
-        private static void TestFacialExpressions() {
-            _cam.Face.Mouth.Smiled += (sender, args) => {
-                WriteLine("Facial Expression: Smiled!");
+        private static void Update(string key, string value, string valueAfterTwoSeconds = null) {
+            lock (_syncRoot) {
+                _items[key] = value;
+                _sb.Clear();
+                foreach (var k in _items.Keys) {
+                    _sb.Append(k).Append(": ").AppendLine(_items[k]);
+                }
+                Clear();
+                WriteLine(_sb.ToString());
+                if (valueAfterTwoSeconds != null) {
+                    UpdateLater(key, valueAfterTwoSeconds);
+                }
+            }
+        }
+
+        private static void UpdateLater(string key, string value, int delayInMillis = 2000) {
+            Task.Run(async () => {
+                await Task.Delay(delayInMillis);
+                Update(key, value);
+            });
+        }
+
+        private static void TestHands() {
+            _cam.AddCapability(Capability.HandTracking);
+
+            _cam.RightHand.Visible += (s, a) => { Update("Hand Right Visible", "True"); };
+            _cam.RightHand.NotVisible += (s, a) => { Update("Hand Right Visible","False"); };
+            _cam.RightHand.Opened += (s, a) => { Update("Hand Right Open", "True"); };
+            _cam.RightHand.Closed += (s, a) => { Update("Hand Right Open", "False");};
+
+            _cam.LeftHand.Visible += (s, a) => { Update("Hand Left Visible", "True"); };
+            _cam.LeftHand.NotVisible += (s, a) => { Update("Hand Left Visible", "False"); };
+            _cam.LeftHand.Opened += (s, a) => { Update("Hand Left Open", "True"); };
+            _cam.LeftHand.Closed += (s, a) => { Update("Hand Left Open", "False"); };
+
+            _cam.RightHand.Moved += (s, a) => { Update("Hand Right Move", a.NewPosition.World.ToString()); };
+            _cam.LeftHand.Moved += (s, a) => { Update("Hand Left Move", a.NewPosition.World.ToString()); };
+
+            _cam.RightHand.RotationChanged += (s, a) => {
+                var roll = _cam.RightHand.Rotation.Roll;
+                var yaw = _cam.RightHand.Rotation.Yaw;
+                var pitch = _cam.RightHand.Rotation.Pitch;
+                Update("Hand Right Rotation", $"Roll: {roll:0} Yaw: {yaw:0} Pitch {pitch:0}");
+            };
+            _cam.LeftHand.RotationChanged += (s, a) => {
+                var roll = _cam.LeftHand.Rotation.Roll;
+                var yaw = _cam.LeftHand.Rotation.Yaw;
+                var pitch = _cam.LeftHand.Rotation.Pitch;
+                Update("Hand Left Rotation", $"Roll: {roll:0} Yaw: {yaw:0} Pitch {pitch:0}");
             };
         }
 
+        private static void TestFace() {
+            _cam.AddCapability(Capability.FaceTracking);
+
+            _cam.Face.Visible += (s, a) => { Update("Face Visible", "True -> id:" + _cam.Face.UserId); };
+            _cam.Face.NotVisible += (s, a) => { Update("Face Visible", "False -> id:" + _cam.Face.UserId); };
+            _cam.Face.Moved += (s, a) => { Update("Face Move", a.NewPosition.World.ToString()); };
+        }
+
+        private static void TestFacialExpressions() {
+            _cam.AddCapability(Capability.FacialExpressionTracking);
+            _cam.Face.Mouth.Smiled += (s, a) => { Update("Facial Smile", "True", "False"); };
+            _cam.Face.EyesDirectionChanged += (s, a) => { Update("Eyes direction", a.NewDirection.ToString()); };
+
+            _cam.Face.LeftEye.Opened += (s, a) => { Update("Eye Left Open", "True"); };
+            _cam.Face.LeftEye.Closed += (s, a) => { Update("Eye Left Open", "False"); };
+            _cam.Face.LeftEye.Blink += (s, a) => { Update("Eye Left Blink", "True", "False"); };
+            _cam.Face.LeftEye.DoubleBlink += (s, a) => { Update("Eye Left Blink", "True", "False"); };
+            _cam.Face.WinkedLeft += (s, a) => { Update("Winked Left", "True", "False"); };
+
+            _cam.Face.RightEye.Opened += (s, a) => { Update("Eye Right Open", "True"); };
+            _cam.Face.RightEye.Closed += (s, a) => { Update("Eye Right Open", "False"); };
+            _cam.Face.RightEye.Blink += (s, a) => { Update("Eye Right Blink", "True", "False"); };
+            _cam.Face.RightEye.DoubleBlink += (s, a) => { Update("Eye Right Blink", "True", "False"); };
+            _cam.Face.WinkedRight += (s, a) => { Update("Winked Right", "True", "False"); };
+        }
+
         private static void TestEmotions() {
-            _cam.Face.FacialExpresssionChanged += (sender, args) => {
-                WriteLine("Facial Expression: " + args.NewFacialExpression);
+            _cam.AddCapability(Capability.EmotionTracking);
+
+            _cam.Face.EmotionChanged += (sender, args) => {
+                WriteLine("Emotion: " + args.NewEmotion);
             };
         }
 
@@ -154,38 +134,14 @@ namespace SharpSenses.RealSense.Playground {
             }
         }
 
-        private static void TestFace() {
-            var face = default(Point3D);
-            var visible = false;
-            var id = 0;
-            Action update = () => {
-                Clear();
-                WriteLine($"-> Face: {face} Id: {id}");
-                WriteLine($"-> Visible: {visible}");
-            };
-
-            _cam.Face.Visible += (sender, eventArgs) => {
-                visible = true;
-                id = _cam.Face.UserId;
-                update.Invoke();
-            };
-
-            _cam.Face.NotVisible += (sender, eventArgs) => {
-                visible = false;
-                update.Invoke();
-            };
-            _cam.Face.Moved += (sender, args) => {
-                face = args.NewPosition.World;
-                update.Invoke();
-            };
-        }
-
         private static void TestGestures() {
-            _cam.Gestures.SlideLeft += (s, a) => Console.WriteLine("Swipe Left");
-            _cam.Gestures.SlideRight += (s, a) => Console.WriteLine("Swipe Right");
-            _cam.Gestures.SlideUp += (s, a) => Console.WriteLine("Swipe Up");
-            _cam.Gestures.SlideDown += (s, a) => Console.WriteLine("Swipe Down");
-            _cam.Gestures.MoveForward += (s, a) => Console.WriteLine("Move Forward");
+            _cam.AddCapability(Capability.GestureTracking);
+
+            _cam.Gestures.SlideLeft += (s, a) => Update("Swipe Left","True","False");
+            _cam.Gestures.SlideRight += (s, a) => Update("Swipe Right", "True", "False");
+            _cam.Gestures.SlideUp += (s, a) => Update("Swipe Up", "True", "False");
+            _cam.Gestures.SlideDown += (s, a) => Update("Swipe Down", "True", "False");
+            _cam.Gestures.MoveForward += (s, a) => Update("Move Forward", "True", "False");
         }
 
         private static void TestSpeech() {
@@ -194,58 +150,7 @@ namespace SharpSenses.RealSense.Playground {
             };
             _cam.Speech.EnableRecognition(SupportedLanguage.PtBR);
         }
-
-        private static void TestEyes() {
-            _cam.Face.LeftEye.Blink += (sender, eventArgs) => { WriteLine("Blink"); };
-            _cam.Face.LeftEye.DoubleBlink += (sender, eventArgs) => { WriteLine("Double Blink"); };
-            _cam.Face.WinkedLeft += (sender, eventArgs) => { WriteLine("WinkedLeft"); };
-            _cam.Face.WinkedRight += (sender, eventArgs) => { WriteLine("WinkedRight"); };
-
-            _cam.Face.LeftEye.Closed += (s, e) => {
-                WriteLine("-> Olho esquerdo fechado ");
-            };
-        }
-
-        private static void TestHands() {
-            _cam.RightHand.Visible += (s, a) => { WriteLine("-> Right Hand: Visible "); };
-            _cam.RightHand.NotVisible += (s, a) => { WriteLine("-> Right Hand: NotVisible "); };
-            _cam.RightHand.Opened += (s, a) => { WriteLine("-> Right Hand: Open"); };
-            _cam.RightHand.Closed += (s, a) => { WriteLine("-> Right Hand: Closed");};
-
-            _cam.LeftHand.Visible += (s, a) => { WriteLine("-> Left Hand: Visible "); };
-            _cam.LeftHand.NotVisible += (s, a) => { WriteLine("-> Left Hand: NotVisible "); };
-            _cam.LeftHand.Opened += (s, a) => { WriteLine("-> Left Hand: Open"); };
-            _cam.LeftHand.Closed += (s, a) => { WriteLine("-> Left Hand: Closed"); };
-        }
-
-        private static void TestHandsMovements() {
-            var right = default(Point3D);
-            var left = default(Point3D);
-            Action update = () => {
-                Clear();
-                WriteLine($"-> Hands: Right: {right}");
-                WriteLine($"-> Hands: Left: {left}");
-            };
-            _cam.RightHand.Moved += (s, a) => {
-                right = a.NewPosition.World;
-                update.Invoke();
-            };
-            _cam.LeftHand.Moved += (s, a) => {
-                left = a.NewPosition.World;
-                update.Invoke();
-            };
-        }
-
-        private static void TestHandsRotations() {
-            _cam.LeftHand.RotationChanged += (sender, eventArgs) => {
-                WriteLine("-> Left Hand: Roll: {0:0} Yaw: {1:0} Pitch {2:0}",
-                    _cam.LeftHand.Rotation.Roll,
-                    _cam.LeftHand.Rotation.Yaw,
-                    _cam.LeftHand.Rotation.Pitch);
-                Write((char)13);
-            };
-        }
-
+       
         private static void TrackMovement(Movement m) {
             m.Completed += () => WriteLine(m.Name + " -> DONE!!!!");
             m.Restarted += () => WriteLine(m.Name + " -> Restarted");
@@ -257,7 +162,6 @@ namespace SharpSenses.RealSense.Playground {
                 WriteLine(">");
             };
         }
-
 
         private static void TrackHandMovement(ICamera cam) {
             int i = 0;

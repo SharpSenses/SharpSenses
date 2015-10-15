@@ -6,14 +6,14 @@ namespace SharpSenses {
     public class Face : Item {
         private readonly IFaceRecognizer _faceRecognizer;
         private int _userId;
-        private FacialExpression _facialExpression;
+        private Emotion _emotion;
         private Direction _eyesDirection;
         public Mouth Mouth { get; private set; }
         public Eye LeftEye { get; set; }
         public Eye RightEye { get; set; }
 
         public event EventHandler<FaceRecognizedEventArgs> FaceRecognized;
-        public event EventHandler<FacialExpressionEventArgs> FacialExpresssionChanged;
+        public event EventHandler<FacialExpressionEventArgs> EmotionChanged;
         public event EventHandler<DirectionEventArgs> EyesDirectionChanged;
         public event EventHandler<EventArgs> WinkedLeft;
         public event EventHandler<EventArgs> WinkedRight;
@@ -61,16 +61,16 @@ namespace SharpSenses {
             }
         }
 
-        public FacialExpression FacialExpression {
-            get { return _facialExpression; }
+        public Emotion Emotion {
+            get { return _emotion; }
             set {
-                if (_facialExpression == value) {
+                if (_emotion == value) {
                     return;
                 }
-                var old = _facialExpression;
-                _facialExpression = value;
-                RaisePropertyChanged(() => FacialExpression);
-                OnFacialExpresssionChanged(old, value);
+                var old = _emotion;
+                _emotion = value;
+                RaisePropertyChanged(() => Emotion);
+                OnEmotionChanged(old, value);
             }
         }
 
@@ -109,40 +109,28 @@ namespace SharpSenses {
             return true;
         }
 
-        protected virtual void OnFacialExpresssionChanged(FacialExpression old, FacialExpression @new) {
-            var handler = FacialExpresssionChanged;
-            if (handler != null) handler(this, new FacialExpressionEventArgs(old, @new));
+        protected virtual void OnEmotionChanged(Emotion old, Emotion @new) {
+            EmotionChanged?.Invoke(this, new FacialExpressionEventArgs(old, @new));
         }
 
         protected virtual void OnPersonRecognized() {
-            var handler = FaceRecognized;
-            if (handler != null) handler(this, new FaceRecognizedEventArgs(UserId));
+            FaceRecognized?.Invoke(this, new FaceRecognizedEventArgs(UserId));
         }
 
         protected virtual void FireEyesDirectionChanged(Direction old, Direction newDirection) {
-            var handler = EyesDirectionChanged;
-            if (handler != null) handler(this, new DirectionEventArgs(old, newDirection));
+            EyesDirectionChanged?.Invoke(this, new DirectionEventArgs(old, newDirection));
         }
 
         protected virtual void FireYawned() {
-            var handler = Yawned;
-            if (handler != null) {
-                handler(this, EventArgs.Empty);
-            }
+            Yawned?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void FireWinkedLeft() {
-            var handler = WinkedLeft;
-            if (handler != null) {
-                handler(this, EventArgs.Empty);
-            }
+            WinkedLeft?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void FireWinkedRight() {
-            var handler = WinkedRight;
-            if (handler != null) {
-                handler(this, EventArgs.Empty);
-            }
+            WinkedRight?.Invoke(this, EventArgs.Empty);
         }
     }
 }

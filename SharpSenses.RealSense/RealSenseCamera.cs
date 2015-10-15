@@ -16,7 +16,7 @@ namespace SharpSenses.RealSense {
                 [Capability.HandTracking] = new HandTrackingCapability(),
                 [Capability.GestureTracking] = new GesturesCapability(),
                 [Capability.FaceTracking] = new FaceCapability(),
-                [Capability.EmotionCapability] = new EmotionCapability(),
+                [Capability.EmotionTracking] = new EmotionCapability(),
                 [Capability.FacialExpressionTracking] = new FacialExpressionCapability()
             };
 

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using SharpSenses.RealSense;
+﻿using SharpSenses.RealSense;
 using SharpSenses.RealSense.Capabilities;
 
 namespace SharpSenses {

@@ -2,12 +2,12 @@
 
 namespace SharpSenses {
     public class FacialExpressionEventArgs : EventArgs {
-        public FacialExpression OldFacialExpression { get; set; }
-        public FacialExpression NewFacialExpression { get; set; }
+        public Emotion OldEmotion { get; set; }
+        public Emotion NewEmotion { get; set; }
 
-        public FacialExpressionEventArgs(FacialExpression oldFacialExpression, FacialExpression newFacialExpression) {
-            OldFacialExpression = oldFacialExpression;
-            NewFacialExpression = newFacialExpression;
+        public FacialExpressionEventArgs(Emotion oldEmotion, Emotion newEmotion) {
+            OldEmotion = oldEmotion;
+            NewEmotion = newEmotion;
         }
     }
 }
