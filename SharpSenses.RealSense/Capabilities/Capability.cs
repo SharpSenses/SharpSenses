@@ -8,7 +8,8 @@ namespace SharpSenses.RealSense.Capabilities {
         GestureTracking,
         FaceTracking,
         EmotionTracking,
-        FacialExpressionTracking
+        FacialExpressionTracking,
+        ImageStreamTracking
     }
 
     public static class CapabilityHelper {

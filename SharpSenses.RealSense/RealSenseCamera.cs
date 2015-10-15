@@ -17,7 +17,8 @@ namespace SharpSenses.RealSense {
                 [Capability.GestureTracking] = new GesturesCapability(),
                 [Capability.FaceTracking] = new FaceCapability(),
                 [Capability.EmotionTracking] = new EmotionCapability(),
-                [Capability.FacialExpressionTracking] = new FacialExpressionCapability()
+                [Capability.FacialExpressionTracking] = new FacialExpressionCapability(),
+                [Capability.ImageStreamTracking] = new ImageStreamCapability()
             };
 
         private CancellationTokenSource _cancellationToken;
@@ -94,7 +95,7 @@ namespace SharpSenses.RealSense {
             var loopObjects = new LoopObjects();
 
             while (!_cancellationToken.IsCancellationRequested) {
-                Manager.AcquireFrame(false);
+                Manager.AcquireFrame(true);
                 foreach (var capability in _enabledCapabilities) {
                     _availableCapabilities[capability].Loop(loopObjects);
                 }

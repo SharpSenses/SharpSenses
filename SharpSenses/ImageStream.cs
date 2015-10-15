@@ -18,10 +18,7 @@ namespace SharpSenses {
         public event EventHandler<ImageEventArgs> NewImageAvailable;
 
         protected virtual void RaiseNewImageAvailable(byte[] bitmapImage) {
-            var handler = NewImageAvailable;
-            if (handler != null) {
-                handler(this, new ImageEventArgs(bitmapImage));
-            }
+            NewImageAvailable?.Invoke(this, new ImageEventArgs(bitmapImage));
         }
     }
 }

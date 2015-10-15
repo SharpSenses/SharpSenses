@@ -29,7 +29,8 @@ namespace SharpSenses.RealSense.Playground {
             //TestFacialExpressions();
             //TestEmotions();
             //TestSpeech();
-            TestGestures();
+            //TestGestures();
+            TestImageStreaming();
             _cam.Start();
 
             ReadLine();
@@ -150,7 +151,7 @@ namespace SharpSenses.RealSense.Playground {
             };
             _cam.Speech.EnableRecognition(SupportedLanguage.PtBR);
         }
-       
+
         private static void TrackMovement(Movement m) {
             m.Completed += () => WriteLine(m.Name + " -> DONE!!!!");
             m.Restarted += () => WriteLine(m.Name + " -> Restarted");
@@ -163,19 +164,10 @@ namespace SharpSenses.RealSense.Playground {
             };
         }
 
-        private static void TrackHandMovement(ICamera cam) {
-            int i = 0;
-            cam.LeftHand.Moved += (s,a) => {
-                var d = a.NewPosition;
-                i++;
-                if (i%3 == 0) {
-                    WriteLine("Left: IX: {0} IY: {1} WX: {2}, WY:{3} WZ: {4} ",
-                        d.Image.X, d.Image.Y, d.World.X, d.World.Y, d.World.Z);
-                }
-            };
-            cam.RightHand.Moved += (s, a) => {
-                var d = a.NewPosition;
-                WriteLine("Right: X: {0} Y: {1} Z: {2}", d.Image.X, d.Image.Y, d.World.Z);
+        private static void TestImageStreaming() {
+            _cam.AddCapability(Capability.ImageStreamTracking);
+            _cam.ImageStream.NewImageAvailable += (s, a) => {
+                Update("Image:",a.BitmapImage.Length.ToString());
             };
         }
     }
