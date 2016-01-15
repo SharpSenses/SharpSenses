@@ -19,7 +19,8 @@ namespace SharpSenses.RealSense {
                 [Capability.EmotionTracking] = new EmotionCapability(),
                 [Capability.FacialExpressionTracking] = new FacialExpressionCapability(),
                 [Capability.FaceRecognition] = new FaceRecognitionCapability(),
-                [Capability.ImageStreamTracking] = new ImageStreamCapability()
+                [Capability.ImageStreamTracking] = new ImageStreamCapability(),
+                [Capability.SegmentationStreamTracking] = new SegmentationStreamCapability()
             };
 
         private CancellationTokenSource _cancellationToken;

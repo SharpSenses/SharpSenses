@@ -75,6 +75,7 @@
     <Compile Include="Capabilities\GesturesCapability.cs" />
     <Compile Include="Capabilities\ImageStreamCapability.cs" />
     <Compile Include="Capabilities\LoopObjects.cs" />
+    <Compile Include="Capabilities\SegmentationStreamCapability.cs" />
     <Compile Include="DisposableExtensions.cs" />
     <Compile Include="Capabilities\ICapability.cs" />
     <Compile Include="Errors.cs" />

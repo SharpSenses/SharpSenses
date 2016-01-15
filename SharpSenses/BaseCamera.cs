@@ -15,6 +15,7 @@ namespace SharpSenses {
         public Hand RightHand { get; private set; }
 
         public ImageStream ImageStream { get; set; }
+        public ImageStream SegmentationStream { get; set; }
         
         public Face Face {
             get {
