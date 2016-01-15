@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 
 namespace SharpSenses.RealSense.Capabilities {
     public class LoopObjects {
-        private Dictionary<Type, object> _dic = new Dictionary<Type, object>();
+        private Dictionary<string, object> _dic = new Dictionary<string, object>();
 
-        public T Get<T>() where  T : class {
-            if (!_dic.ContainsKey(typeof (T))) {
+        public T Get<T>(string tag = "") where  T : class {
+            if (!_dic.ContainsKey(GetKey<T>(tag))) {
                 return null;
             }
-            return (T) _dic[typeof (T)];
+            return (T) _dic[GetKey<T>(tag)];
         }
 
-        public void Add<T>(T obj) where T : class {
-            _dic[typeof (T)] = obj;
+        public void Add<T>(T obj, string tag = "") where T : class {
+            _dic[GetKey<T>(tag)] = obj;
+        }
+
+        private static string GetKey<T>(string tag) where T : class {
+            return typeof(T) + tag;
         }
     }
 }

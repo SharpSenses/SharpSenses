@@ -5,8 +5,10 @@ using SharpSenses.Util;
 namespace SharpSenses.RealSense.Capabilities {
     public enum Capability {
         HandTracking,
+        FingersTracking,
         GestureTracking,
         FaceTracking,
+        FaceRecognition,
         EmotionTracking,
         FacialExpressionTracking,
         ImageStreamTracking

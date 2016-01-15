@@ -94,6 +94,7 @@
     <Compile Include="SpeechRecognitionEventArgs.cs" />
     <Compile Include="SupportedLanguage.cs" />
     <Compile Include="Util\EnumUtil.cs" />
+    <Compile Include="Util\FlexiblePartExtensions.cs" />
     <Compile Include="Util\MathEx.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

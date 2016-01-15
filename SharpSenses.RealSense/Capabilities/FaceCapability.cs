@@ -23,6 +23,7 @@ namespace SharpSenses.RealSense.Capabilities {
                 return;
             }
             loopObjects.Add(face);
+            loopObjects.Add(_faceData);
             TrackFace(face);
         }
 

@@ -8,4 +8,5 @@ namespace SharpSenses.Util {
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
     }
+
 }

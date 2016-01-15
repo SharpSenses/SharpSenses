@@ -24,19 +24,20 @@ namespace SharpSenses.RealSense.Playground {
             _cam = new RealSenseCamera();
             
             //TestHands();
+            //TestFingers();
             //TestFace();
-            //TestFaceRecognition();
+            TestFaceRecognition();
             //TestFacialExpressions();
             //TestEmotions();
             //TestSpeech();
             //TestGestures();
-            TestImageStreaming();
+            //TestImageStreaming();
             _cam.Start();
 
             ReadLine();
             _cam.Dispose();
         }
-
+        
         private static void Update(string key, string value, string valueAfterTwoSeconds = null) {
             lock (_syncRoot) {
                 _items[key] = value;
@@ -89,6 +90,29 @@ namespace SharpSenses.RealSense.Playground {
             };
         }
 
+        private static void TestFingers() {
+            _cam.AddCapability(Capability.FingersTracking);
+            TestFingers("left");
+            TestFingers("right");
+        }
+
+        private static void TestFingers(string side) {
+            var fingers = _cam.LeftHand.GetAllFingers().ToArray();
+            for (int i = 0; i < fingers.Length; i++) {
+                var joints = fingers[i].GetAllJoints().ToArray();
+                fingers[i].Visible += (s, a) => { Update($"Hand {side} {i} Visible", "True"); };
+                fingers[i].NotVisible += (s, a) => { Update($"Hand {side} {i} Visible", "False"); };
+                fingers[i].Opened += (s, a) => { Update($"Hand {side} {i} Open", "True"); };
+                fingers[i].Closed += (s, a) => { Update($"Hand {side} {i} Open", "False"); };
+                fingers[i].Moved += (s, a) => { Update($"Hand {side} {i}  Move", a.NewPosition.World.ToString()); };
+                for (int j = 0; j < joints.Length; j++) {
+                    joints[j].Visible += (s, a) => { Update($"Hand {side} {i}/{j} Visible", "True"); };
+                    joints[j].NotVisible += (s, a) => { Update($"Hand {side} {i}/{j} Visible", "False"); };
+                    joints[j].Moved += (s, a) => { Update($"Hand {side} {i}/{j}  Move", a.NewPosition.World.ToString()); };
+                }
+            }
+        }
+
         private static void TestFace() {
             _cam.AddCapability(Capability.FaceTracking);
 
@@ -127,8 +151,10 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Face.FaceRecognized += (sender, eventArgs) => {
                 WriteLine("User: " + eventArgs.UserId);
             };
-
+            _cam.AddCapability(Capability.FaceRecognition);
+            _cam.Start();
             while (true) {
+                WriteLine("Press any key");
                 ReadLine();
                 _cam.Face.RecognizeFace();
                 WriteLine("Recognize!");

@@ -31,12 +31,12 @@ namespace SharpSenses {
 
         protected virtual void FireBlink() {
             var handler = Blink;
-            if (handler != null) handler(this, EventArgs.Empty);
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void FireDoubleBlink() {
             var handler = DoubleBlink;
-            if (handler != null) handler(this, EventArgs.Empty);
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 }

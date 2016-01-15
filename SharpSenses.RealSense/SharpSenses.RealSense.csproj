@@ -71,13 +71,13 @@
     <Compile Include="Capabilities\FacialExpressionCapability.cs" />
     <Compile Include="Capabilities\FaceCapability.cs" />
     <Compile Include="Capabilities\FaceRecognitionCapability.cs" />
+    <Compile Include="Capabilities\FingerTrackingCapability.cs" />
     <Compile Include="Capabilities\GesturesCapability.cs" />
     <Compile Include="Capabilities\ImageStreamCapability.cs" />
     <Compile Include="Capabilities\LoopObjects.cs" />
     <Compile Include="DisposableExtensions.cs" />
     <Compile Include="Capabilities\ICapability.cs" />
     <Compile Include="Errors.cs" />
-    <Compile Include="FaceRecognition\FaceRecognizer.cs" />
     <Compile Include="LanguageNotSupportedException.cs" />
     <Compile Include="Capabilities\HandTrackingCapability.cs" />
     <Compile Include="RealSenseAssembliesLoader.cs" />

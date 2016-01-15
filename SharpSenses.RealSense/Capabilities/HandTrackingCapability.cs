@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharpSenses.RealSense.Util;
+using SharpSenses.Util;
 using static SharpSenses.PositionHelper;
 using static SharpSenses.RealSense.Errors;
 
 namespace SharpSenses.RealSense.Capabilities {
+
     public class HandTrackingCapability : ICapability {
         private RealSenseCamera _camera;
         private Dictionary<Item, PXCMSmoother.Smoother3D> _smoothers = new Dictionary<Item, PXCMSmoother.Smoother3D>(); 
         private PXCMSmoother _smootherFactory;
+        private PXCMHandData _handData;
+        private LoopObjects _loopObjects;
+
+        public static string LeftHandDataKey = "LeftHandDataKey"; 
+        public static string RightHandDataKey = "RightHandDataKey"; 
 
         public IEnumerable<Capability> Dependencies => new List<Capability>();
 
@@ -20,20 +28,21 @@ namespace SharpSenses.RealSense.Capabilities {
         }
 
         public void Loop(LoopObjects loopObjects) {
+            _loopObjects = loopObjects;
             var handModule = _camera.Manager.QueryHand();
             if (handModule == null) {
                 return;
             }
-            var handData = handModule.CreateOutput();
-            handData.Update();
-            TrackHandAndFingers(_camera.LeftHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
-            TrackHandAndFingers(_camera.RightHand, handData, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
-            handData.Dispose();
+            _handData = handModule.CreateOutput();
+            _handData.Update();
+
+            TrackHand(_camera.LeftHand, PXCMHandData.AccessOrderType.ACCESS_ORDER_LEFT_HANDS);
+            TrackHand(_camera.RightHand, PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS);
         }
 
-        private void TrackHandAndFingers(Hand hand, PXCMHandData data, PXCMHandData.AccessOrderType label) {
+        private void TrackHand(Hand hand, PXCMHandData.AccessOrderType label) {
             PXCMHandData.IHand handInfo;
-            if (data.QueryHandData(label, 0, out handInfo) != NoError) {
+            if (_handData.QueryHandData(label, 0, out handInfo) != NoError) {
                 hand.IsVisible = false;
                 return;
             }
@@ -42,11 +51,8 @@ namespace SharpSenses.RealSense.Capabilities {
             SetHandOrientation(hand, handInfo);
             SetHandOpenness(hand, handInfo);
             SetHandPosition(hand, handInfo);
-            TrackIndex(hand.Index, handInfo);
-            TrackMiddle(hand.Middle, handInfo);
-            TrackRing(hand.Ring, handInfo);
-            TrackPinky(hand.Pinky, handInfo);
-            TrackThumb(hand.Thumb, handInfo);
+
+            _loopObjects.Add(handInfo, label.ToString());
         }
 
         private void SetHandOrientation(Hand hand, PXCMHandData.IHand handInfo) {
@@ -68,95 +74,14 @@ namespace SharpSenses.RealSense.Capabilities {
             if (_smoothers.ContainsKey(hand)) {
                 world = _smoothers[hand].SmoothValue(world);
             }
-            var imagePosition = ToPoint3D(handInfo.QueryMassCenterImage());
-            var worldPosition = ToPoint3D(world);
+            var imagePosition = handInfo.QueryMassCenterImage().ToPoint3D();
+            var worldPosition = world.ToPoint3D();
             hand.Position = CreatePosition(imagePosition, worldPosition);
         }
 
         private void SetHandOpenness(Hand hand, PXCMHandData.IHand handInfo) {
             int openness = handInfo.QueryOpenness();
-            SetOpenness(hand, openness);
-        }
-
-        private void TrackIndex(Finger finger, PXCMHandData.IHand handInfo) {
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_BASE, finger.BaseJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_JT1, finger.FirstJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_JT2, finger.SecondJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_INDEX_TIP, finger);
-            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_INDEX, handInfo);
-        }
-
-        private void TrackMiddle(Finger finger, PXCMHandData.IHand handInfo) {
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_BASE, finger.BaseJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_JT1, finger.FirstJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_JT2, finger.SecondJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_MIDDLE_TIP, finger);
-            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_MIDDLE, handInfo);
-        }
-
-        private void TrackRing(Finger finger, PXCMHandData.IHand handInfo) {
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_BASE, finger.BaseJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_JT1, finger.FirstJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_JT2, finger.SecondJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_RING_TIP, finger);
-            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_RING, handInfo);
-        }
-
-        private void TrackPinky(Finger finger, PXCMHandData.IHand handInfo) {
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_BASE, finger.BaseJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_JT1, finger.FirstJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_JT2, finger.SecondJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_PINKY_TIP, finger);
-            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_PINKY, handInfo);
-        }
-
-        private void TrackThumb(Finger finger, PXCMHandData.IHand handInfo) {
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_BASE, finger.BaseJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_JT1, finger.FirstJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_JT2, finger.SecondJoint);
-            SetJointdata(handInfo, PXCMHandData.JointType.JOINT_THUMB_TIP, finger);
-            SetFingerOpenness(finger, PXCMHandData.FingerType.FINGER_THUMB, handInfo);
-        }
-
-        private void SetFingerOpenness(Finger finger, PXCMHandData.FingerType fingerType, PXCMHandData.IHand handInfo) {
-            PXCMHandData.FingerData fingerData;
-            if (handInfo.QueryFingerData(fingerType, out fingerData) != NoError) {
-                return;
-            }
-            SetOpenness(finger, fingerData.foldedness);
-        }
-
-        private void SetJointdata(PXCMHandData.IHand handInfo, PXCMHandData.JointType jointType, Item joint) {
-            PXCMHandData.JointData jointData;
-            if (handInfo.QueryTrackedJoint(jointType, out jointData) != NoError) {
-                joint.IsVisible = false;
-                return;
-            }
-            SetVisibleJointPosition(joint, jointData);
-        }
-
-        private void SetOpenness(FlexiblePart part, int scaleZeroToHundred) {
-            if (scaleZeroToHundred > 75) {
-                part.IsOpen = true;
-            }
-            else if (scaleZeroToHundred < 35) {
-                part.IsOpen = false;
-            }
-        }
-
-        private void SetVisibleJointPosition(Item item, PXCMHandData.JointData jointData) {
-            var imagePosition = ToPoint3D(jointData.positionImage);
-            var worldPosition = ToPoint3D(jointData.positionWorld);
-            item.IsVisible = true;
-            item.Position = CreatePosition(imagePosition, worldPosition);
-        }
-
-        private Point3D ToPoint3D(PXCMPointF32 p) {
-            return new Point3D(p.x, p.y);
-        }
-
-        private Point3D ToPoint3D(PXCMPoint3DF32 p) {
-            return new Point3D(p.x, p.y, p.z);
+            hand.SetOpenness(openness);
         }
 
         public void Dispose() {
@@ -164,6 +89,7 @@ namespace SharpSenses.RealSense.Capabilities {
             foreach (var item in _smoothers.Values) {
                 item.SilentlyDispose();
             }
+            _handData.Dispose();
         }
     }
 }

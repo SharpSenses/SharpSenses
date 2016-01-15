@@ -17,10 +17,10 @@ namespace SharpSenses.RealSense.Capabilities {
 
         public void Loop(LoopObjects loopObjects) {
             var sample = _camera.Manager.QuerySample();
-            if (sample == null) {
+            PXCMImage image = sample?.color;
+            if (image == null) {
                 return;
             }
-            PXCMImage image = sample.color;
             PXCMImage.ImageData imageData;
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ,
                                 PXCMImage.PixelFormat.PIXEL_FORMAT_RGB32,

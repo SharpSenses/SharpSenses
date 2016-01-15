@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpSenses.Poses;
 using SharpSenses.RealSense.Capabilities;
-using SharpSenses.RealSense.FaceRecognition;
 using SharpSenses.RealSense.Speech;
 using static SharpSenses.RealSense.Errors;
 
@@ -14,17 +13,18 @@ namespace SharpSenses.RealSense {
         private static Dictionary<Capability, ICapability> _availableCapabilities =
             new Dictionary<Capability, ICapability> {
                 [Capability.HandTracking] = new HandTrackingCapability(),
+                [Capability.FingersTracking] = new FingerTrackingCapability(),
                 [Capability.GestureTracking] = new GesturesCapability(),
                 [Capability.FaceTracking] = new FaceCapability(),
                 [Capability.EmotionTracking] = new EmotionCapability(),
                 [Capability.FacialExpressionTracking] = new FacialExpressionCapability(),
+                [Capability.FaceRecognition] = new FaceRecognitionCapability(),
                 [Capability.ImageStreamTracking] = new ImageStreamCapability()
             };
 
         private CancellationTokenSource _cancellationToken;
 
         private List<Capability> _enabledCapabilities = new List<Capability>();
-        private FaceRecognizer _faceRecognizer = new FaceRecognizer();
 
         public RealSenseCamera() {
             Session = PXCMSession.CreateInstance();
@@ -107,7 +107,7 @@ namespace SharpSenses.RealSense {
         }
 
         protected override IFaceRecognizer GetFaceRecognizer() {
-            return _faceRecognizer;
+            return (IFaceRecognizer)_availableCapabilities[Capability.FaceRecognition];
         }
 
         public override void Dispose() {
@@ -117,6 +117,11 @@ namespace SharpSenses.RealSense {
             foreach (var capability in _enabledCapabilities) {
                 _availableCapabilities[capability].SilentlyDispose();
             }
+        }
+    }
+
+    public class CapabilityException : Exception {
+        public CapabilityException(string message) : base(message) {
         }
     }
 }
