@@ -43,6 +43,8 @@ You can enable the modules when creating the Camera object or calling the method
     cam.AddCapability(Capability.FaceTracking);
 ```
 
+# Examples:
+
 ##Gestures
 
 ```
