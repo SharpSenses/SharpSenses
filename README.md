@@ -11,7 +11,7 @@ An easier way to use the **RealSense** SDK! Custom poses, gestures and much more
 
 ## Sample:
 ```
-    ICamera cam = Camera.Create();
+    var cam = Camera.Create(Capability.HandTracking);
     cam.LeftHand.Visible += (s,a) => Console.WriteLine("Hi left hand!");
     cam.RightHand.Closed += (s,a) => Console.WriteLine("Hand Closed");
     cam.RightHand.Moved += (s,a) => {
@@ -19,6 +19,32 @@ An easier way to use the **RealSense** SDK! Custom poses, gestures and much more
     }
     cam.Start();
 ````
+
+## Enabling Capabilities
+
+For performance reasons, you have to tell the camera which modules will be loaded for use.
+The available modules are:
+
+- HandTracking,
+- FingersTracking,
+- GestureTracking,
+- FaceTracking,
+- FaceRecognition,
+- EmotionTracking,
+- FacialExpressionTracking,
+- ImageStreamTracking,
+- SegmentationStreamTracking 
+
+You can enable the modules when creating the Camera object or calling the method "AddCapability", always before calling "Start".
+
+```
+    var cam = Camera.Create(Capability.HandTracking, Capability.FingersTracking);
+    or
+    cam.AddCapability(Capability.FaceTracking);
+```
+
+# Examples:
+
 ##Gestures
 
 ```
