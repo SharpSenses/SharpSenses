@@ -6,14 +6,12 @@ namespace SharpSenses {
     public class Face : Item {
         private readonly IFaceRecognizer _faceRecognizer;
         private int _userId;
-        private Emotion _emotion;
         private Direction _eyesDirection;
         public Mouth Mouth { get; private set; }
         public Eye LeftEye { get; set; }
         public Eye RightEye { get; set; }
 
         public event EventHandler<FaceRecognizedEventArgs> FaceRecognized;
-        public event EventHandler<FacialExpressionEventArgs> EmotionChanged;
         public event EventHandler<DirectionEventArgs> EyesDirectionChanged;
         public event EventHandler<EventArgs> WinkedLeft;
         public event EventHandler<EventArgs> WinkedRight;
@@ -61,19 +59,6 @@ namespace SharpSenses {
             }
         }
 
-        public Emotion Emotion {
-            get { return _emotion; }
-            set {
-                if (_emotion == value) {
-                    return;
-                }
-                var old = _emotion;
-                _emotion = value;
-                RaisePropertyChanged(() => Emotion);
-                OnEmotionChanged(old, value);
-            }
-        }
-
         public Direction EyesDirection {
             get { return _eyesDirection; }
             set {
@@ -107,10 +92,6 @@ namespace SharpSenses {
             }
             _faceRecognizer.RecognizeFace();
             return true;
-        }
-
-        protected virtual void OnEmotionChanged(Emotion old, Emotion @new) {
-            EmotionChanged?.Invoke(this, new FacialExpressionEventArgs(old, @new));
         }
 
         protected virtual void OnPersonRecognized() {

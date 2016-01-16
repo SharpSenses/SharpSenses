@@ -43,8 +43,6 @@
     <Compile Include="Eye.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="FaceRecognizedEventArgs.cs" />
-    <Compile Include="Emotion.cs" />
-    <Compile Include="FacialExpressionEventArgs.cs" />
     <Compile Include="Finger.cs" />
     <Compile Include="FingerKind.cs" />
     <Compile Include="FlexiblePart.cs" />

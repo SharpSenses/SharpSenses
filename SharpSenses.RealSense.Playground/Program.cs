@@ -139,14 +139,6 @@ namespace SharpSenses.RealSense.Playground {
             _cam.Face.WinkedRight += (s, a) => { Update("Winked Right", "True", "False"); };
         }
 
-        private static void TestEmotions() {
-            _cam.AddCapability(Capability.EmotionTracking);
-
-            _cam.Face.EmotionChanged += (sender, args) => {
-                WriteLine("Emotion: " + args.NewEmotion);
-            };
-        }
-
         private static void TestFaceRecognition() {
             _cam.Face.FaceRecognized += (sender, eventArgs) => {
                 WriteLine("User: " + eventArgs.UserId);

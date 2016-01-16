@@ -48,8 +48,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libpxcclr.cs, Version=6.0.21.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\libpxcclr.cs.6.0.21.0\lib\net40\libpxcclr.cs.dll</HintPath>
+    <Reference Include="libpxcclr.cs, Version=7.0.23.8038, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\libpxcclr.cs.7.0.23.8038\lib\net40\libpxcclr.cs.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -67,7 +67,6 @@
     </Compile>
     <Compile Include="Camera.cs" />
     <Compile Include="Capabilities\Capability.cs" />
-    <Compile Include="Capabilities\EmotionCapability.cs" />
     <Compile Include="Capabilities\FacialExpressionCapability.cs" />
     <Compile Include="Capabilities\FaceCapability.cs" />
     <Compile Include="Capabilities\FaceRecognitionCapability.cs" />
@@ -106,7 +105,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
