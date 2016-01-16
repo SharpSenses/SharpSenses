@@ -30,7 +30,6 @@ The available modules are:
 - GestureTracking,
 - FaceTracking,
 - FaceRecognition,
-- EmotionTracking,
 - FacialExpressionTracking,
 - ImageStreamTracking,
 - SegmentationStreamTracking 
