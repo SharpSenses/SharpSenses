@@ -28,7 +28,6 @@ namespace SharpSenses.RealSense.Playground {
             //TestFace();
             TestFaceRecognition();
             //TestFacialExpressions();
-            //TestEmotions();
             //TestSpeech();
             //TestGestures();
             //TestImageStreaming();
