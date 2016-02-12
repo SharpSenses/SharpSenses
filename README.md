@@ -4,7 +4,7 @@
 <p>
 An easier way to use the **RealSense** SDK! Custom poses, gestures and much more.
 
-<sub>***Warning:*** *Make sure you have the RealSense SDK version 6.0.21.6598 installed before using SharpSenses. This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.*</sub>
+<sub>***Warning:*** *Make sure you have the RealSense SDK version 7.0.23.8048 installed before using SharpSenses. This is not ready for production, I'm changing the SDK (breaking changes sometimes) while I add new features, so stay tuned for version 1.0.*</sub>
 
 ## SharpSenses.RealSense
 > Nuget: Install-Package SharpSenses.RealSense
@@ -30,7 +30,6 @@ The available modules are:
 - GestureTracking,
 - FaceTracking,
 - FaceRecognition,
-- EmotionTracking,
 - FacialExpressionTracking,
 - ImageStreamTracking,
 - SegmentationStreamTracking 
@@ -110,11 +109,7 @@ You can enable the modules when creating the Camera object or calling the method
 - Sadness
 - Surprise
 
-```
-    cam.Face.FacialExpresssionChanged += (s, e) => {
-        Console.WriteLine("FacialExpression: " + e.NewFacialExpression);
-    }
-```
+OBS: Unfortunately this feature was deprecated by Intel
 
 ##Face Recognition
 
@@ -147,4 +142,4 @@ I can hear you, man!
     cam.Speech.EnableRecognition();
 ```
 
-Don't forget that you have to have the Intel RealSense SDK v6.0.21.6598 (and the 3d camera, of course) for this library to work!
+Don't forget that you have to have the Intel RealSense SDK v7.0.23.8048 (and the 3d camera, of course) for this library to work!
