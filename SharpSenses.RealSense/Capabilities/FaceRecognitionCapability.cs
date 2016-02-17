@@ -15,14 +15,8 @@ namespace SharpSenses.RealSense.Capabilities {
             _camera = camera;
             using (var faceModule = _camera.Manager.QueryFace()) {
                 using (var moduleConfiguration = faceModule.CreateActiveConfiguration()) {
-                    var desc = new PXCMFaceConfiguration.RecognitionConfiguration.RecognitionStorageDesc();
-                    desc.maxUsers = Int32.MaxValue;
-                    desc.isPersistent = true;
                     var recognitionConfiguration = moduleConfiguration.QueryRecognition();
-                    recognitionConfiguration.CreateStorage(StorageName, out desc);
-                    recognitionConfiguration.UseStorage(StorageName);
                     recognitionConfiguration.SetRegistrationMode(PXCMFaceConfiguration.RecognitionConfiguration.RecognitionRegistrationMode.REGISTRATION_MODE_CONTINUOUS);
-
                     if (File.Exists(StorageFileName)) {
                         var bytes = File.ReadAllBytes(StorageFileName);
                         recognitionConfiguration.SetDatabaseBuffer(bytes);
