@@ -26,11 +26,11 @@ namespace SharpSenses.RealSense.Playground {
             //TestHands();
             //TestFingers();
             //TestFace();
-            TestFaceRecognition();
+            //TestFaceRecognition();
             //TestFacialExpressions();
             //TestSpeech();
             //TestGestures();
-            //TestImageStreaming();
+            TestImageStreaming();
             _cam.Start();
 
             ReadLine();
@@ -123,6 +123,8 @@ namespace SharpSenses.RealSense.Playground {
         private static void TestFacialExpressions() {
             _cam.AddCapability(Capability.FacialExpressionTracking);
             _cam.Face.Mouth.Smiled += (s, a) => { Update("Facial Smile", "True", "False"); };
+            _cam.Face.Mouth.Opened += (s, a) => { Update("Mouth Open", "True", "False"); };
+            _cam.Face.Mouth.Closed += (s, a) => { Update("Mouth Open", "True", "False"); };
             _cam.Face.EyesDirectionChanged += (s, a) => { Update("Eyes direction", a.NewDirection.ToString()); };
 
             _cam.Face.LeftEye.Opened += (s, a) => { Update("Eye Left Open", "True"); };
