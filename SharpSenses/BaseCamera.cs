@@ -41,6 +41,7 @@ namespace SharpSenses {
             _gestures = new GestureSensor();
             _poses = new PoseSensor();
             ImageStream = new ImageStream();
+            SegmentationStream = new ImageStream();
         }
 
         protected abstract IFaceRecognizer GetFaceRecognizer();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.RealSense", "SharpSenses.RealSense\SharpSenses.RealSense.csproj", "{054DB117-F173-488B-94A1-43E1A4F61A66}"
 EndProject
@@ -33,6 +33,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.Playground.Universal.Windows", "SharpSenses.Playground.Universal\SharpSenses.Playground.Universal.Windows\SharpSenses.Playground.Universal.Windows.csproj", "{7CCCAFDB-2E4F-4C29-A851-E88BF872CC30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.Playground.Universal.WindowsPhone", "SharpSenses.Playground.Universal\SharpSenses.Playground.Universal.WindowsPhone\SharpSenses.Playground.Universal.WindowsPhone.csproj", "{78BD8FB6-A33A-4148-9A50-68A1F6F22F09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSenses.RealSense.Wpf", "SharpSenses.RealSense.Wpf\SharpSenses.RealSense.Wpf.csproj", "{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -177,6 +179,22 @@ Global
 		{78BD8FB6-A33A-4148-9A50-68A1F6F22F09}.Release|x86.ActiveCfg = Release|x86
 		{78BD8FB6-A33A-4148-9A50-68A1F6F22F09}.Release|x86.Build.0 = Release|x86
 		{78BD8FB6-A33A-4148-9A50-68A1F6F22F09}.Release|x86.Deploy.0 = Release|x86
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|ARM.Build.0 = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Debug|x86.Build.0 = Debug|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|ARM.Build.0 = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|x64.Build.0 = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{9F4B803F-B136-4ACA-8E18-E0095B5BD2CA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

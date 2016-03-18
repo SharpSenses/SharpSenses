@@ -26,11 +26,13 @@ namespace SharpSenses.RealSense.Capabilities {
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ,
                                 PXCMImage.PixelFormat.PIXEL_FORMAT_RGB32,
                                 out imageData);
-            Bitmap bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
-            using (var ms = new MemoryStream()) {
-                bitmap.Save(ms, ImageFormat.Bmp);
-                _camera.SegmentationStream.CurrentBitmapImage = ms.ToArray();
-                image.ReleaseAccess(imageData);
+            PXCMImage.ImageInfo imageInfo = image.QueryInfo();
+            using (var bitmap = new Bitmap(imageData.ToBitmap(0, imageInfo.width, imageInfo.height))) {
+                using (var ms = new MemoryStream()) {
+                    bitmap.Save(ms, ImageFormat.Bmp);
+                    _camera.SegmentationStream.CurrentBitmapImage = ms.ToArray();
+                    image.ReleaseAccess(imageData);
+                }
             }
         }
 
