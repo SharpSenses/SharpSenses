@@ -2,20 +2,20 @@
 <package >
 	<metadata>
 		<id>sharpsenses.realsense</id>
-		<version>$version$</version>
-		<title>$title$</title>
-		<authors>$author$</authors>
-		<owners>$author$</owners>
+		<version>1.0-beta</version>
+		<title>SharpSenses - Intel RealSense SDK</title>
+		<authors>Andre Carlucci</authors>
+		<owners>Andre Carlucci</owners>
 		<licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
 		<projectUrl>https://github.com/SharpSenses/SharpSenses</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/SharpSenses/SharpSenses/master/Assets/ss.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>$description$</description>
+		<description>An easier way to use Intel RealSense SDK. Custom poses, gestures and much more.</description>
 		<copyright>Copyright Andre Carlucci 2014</copyright>
 		<tags>realsense intel camera3d gestures</tags>
 		<references>
-			<reference file="sharpsenses.dll" />
-			<reference file="sharpsenses.RealSense.dll" />
+			<reference file="Sharpsenses.dll" />
+			<reference file="Sharpsenses.RealSense.dll" />
 		</references>
 		
 	</metadata>
