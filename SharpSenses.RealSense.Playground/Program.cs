@@ -23,14 +23,14 @@ namespace SharpSenses.RealSense.Playground {
             RealSenseAssembliesLoader.Load();
             _cam = new RealSenseCamera();
             
-            //TestHands();
+            TestHands();
             //TestFingers();
             //TestFace();
             //TestFaceRecognition();
             //TestFacialExpressions();
             //TestSpeech();
             //TestGestures();
-            TestImageStreaming();
+            //TestImageStreaming();
             _cam.Start();
 
             ReadLine();
