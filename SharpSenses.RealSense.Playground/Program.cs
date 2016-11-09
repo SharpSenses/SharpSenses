@@ -23,9 +23,9 @@ namespace SharpSenses.RealSense.Playground {
             RealSenseAssembliesLoader.Load();
             _cam = new RealSenseCamera();
             
-            TestHands();
+            //TestHands();
             //TestFingers();
-            //TestFace();
+            TestFace();
             //TestFaceRecognition();
             //TestFacialExpressions();
             //TestSpeech();

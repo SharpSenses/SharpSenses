@@ -37,14 +37,6 @@ namespace SharpSenses.RealSense.Capabilities {
         }
 
         private void TrackFace(PXCMFaceData.Face face) {
-            //PXCMFaceData.HeadPosition position;
-            //face.QueryPose().QueryHeadPosition(out position);
-            //PXCMRectI32 rect;
-            //face.QueryDetection().QueryBoundingRect(out rect);
-            //var point = new Point3D(rect.x + rect.w / 2, rect.y + rect.h / 2);
-            //_camera.Face.Position = CreatePosition(point, new Point3D());
-            //_camera.Face.Position = CreatePosition(position.headCenter.ToPoint3D(), );
-
             PXCMFaceData.LandmarksData landmarksData = face.QueryLandmarks();
             if (landmarksData == null) {
                 return;
@@ -54,22 +46,16 @@ namespace SharpSenses.RealSense.Capabilities {
             if (facePoints == null) {
                 return;
             }
-            foreach (var item in facePoints) {
-                switch (item.source.alias) {
-                    case PXCMFaceData.LandmarkType.LANDMARK_UPPER_LIP_CENTER:
-                        _camera.Face.Mouth.Position = CreatePosition(item.image.ToPoint3D(), item.world.ToPoint3D());
-                        break;
-                    case PXCMFaceData.LandmarkType.LANDMARK_EYE_LEFT_CENTER:
-                        _camera.Face.LeftEye.Position = CreatePosition(item.image.ToPoint3D(), item.world.ToPoint3D());
-                        break;
-                    case PXCMFaceData.LandmarkType.LANDMARK_EYE_RIGHT_CENTER:
-                        _camera.Face.RightEye.Position = CreatePosition(item.image.ToPoint3D(), item.world.ToPoint3D());
-                        break;
-                    case PXCMFaceData.LandmarkType.LANDMARK_NOSE_TOP:
-                        _camera.Face.Position = CreatePosition(item.image.ToPoint3D(), item.world.ToPoint3D());
-                        break;
-                }
-            }
+            SetLandmarkPoint(landmarksData, facePoints, PXCMFaceData.LandmarkType.LANDMARK_UPPER_LIP_CENTER, _camera.Face.Mouth);
+            SetLandmarkPoint(landmarksData, facePoints, PXCMFaceData.LandmarkType.LANDMARK_EYE_LEFT_CENTER, _camera.Face.LeftEye);
+            SetLandmarkPoint(landmarksData, facePoints, PXCMFaceData.LandmarkType.LANDMARK_EYE_RIGHT_CENTER, _camera.Face.RightEye);
+            SetLandmarkPoint(landmarksData, facePoints, PXCMFaceData.LandmarkType.LANDMARK_NOSE_TOP, _camera.Face);
+        }
+
+        private void SetLandmarkPoint(PXCMFaceData.LandmarksData data, PXCMFaceData.LandmarkPoint[] points, PXCMFaceData.LandmarkType type, Item item) {
+            var index = data.QueryPointIndex(type);
+            var pos = points[index];
+            item.Position = CreatePosition(pos.image.ToPoint3D(), pos.world.ToPoint3D());
         }
 
         public void Dispose() {

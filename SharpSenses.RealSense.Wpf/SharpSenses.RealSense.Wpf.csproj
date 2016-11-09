@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libpxcclr.cs, Version=8.0.24.6528, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\libpxcclr.cs.8.0.24.6528\lib\net40\libpxcclr.cs.dll</HintPath>
+    <Reference Include="libpxcclr.cs, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\libpxcclr.cs.10.0.26.400\lib\net40\libpxcclr.cs.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

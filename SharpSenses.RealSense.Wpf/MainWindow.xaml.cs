@@ -12,7 +12,7 @@ namespace SharpSenses.RealSense.Wpf {
         public MainWindow() {
             InitializeComponent();
 
-            var cam = Camera.Create(Capability.ImageStreamTracking, Capability.SegmentationStreamTracking);
+            var cam = Camera.Create(Capability.ImageStreamTracking);
             cam.ImageStream.NewImageAvailable += (s, e) => {
                 if (_useSegmentation) return;
                 UpdateImage(e.BitmapImage);
