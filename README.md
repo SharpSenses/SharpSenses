@@ -78,15 +78,15 @@ You can enable the modules when creating the Camera object or calling the method
 ##Mouth
 ```
     cam.Face.Mouth.Opened += (s, a) => {
-        Console.WriteLine("-> month opened");
+        Console.WriteLine("-> Mouth opened");
     };
 
     cam.Face.Mouth.Closed += (s, a) => {
-        Console.WriteLine("-> month closed");
+        Console.WriteLine("-> Mouth closed");
     };
 
     cam.Face.Mouth.Smiled += (s, a) => {
-        Console.WriteLine("-> month smiled");
+        Console.WriteLine("-> Mouth smiled");
     };
 ```
 
