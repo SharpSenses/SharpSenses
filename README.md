@@ -1,3 +1,7 @@
+<h1>THIS REPOSITORY IS ARCHIVED</h1>
+
+---
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/SharpSenses/logos/master/sharp_senses.png" width="350px" alt="SharpSenses" />
 </p>
